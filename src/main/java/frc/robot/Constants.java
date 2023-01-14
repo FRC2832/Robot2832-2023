@@ -49,7 +49,8 @@ public final class Constants {
     public static final double MAX_DRIVETRAIN_OMEGA = 3 * Math.PI;  //max Radians per Second the robot can spin
     public static final double NOM_BATTERY_VOLTAGE = 12.5;
 
-    public static final double MAX_DRIVER_SPEED = 3;                //Max speed (meters/sed) the driver can go
+    public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
+    public static final double MAX_DRIVER_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.5 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
