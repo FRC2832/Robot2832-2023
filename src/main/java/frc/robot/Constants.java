@@ -20,8 +20,8 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 41;
 
     //falcon 500 CAN ids for Turn Motors
-    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 12;
-    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 22;
+    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 12;
+    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 22;
     public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 32;
     public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 42;
 

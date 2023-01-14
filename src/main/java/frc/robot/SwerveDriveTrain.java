@@ -110,7 +110,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             //figure out delta angle from the current swerve state
             var delta = requestStates[i].angle.minus(swerveStates[i].angle);
             //add it to the current hardware motor angle since we control that motor
-            requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta);
+            requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
             hardware.setCornerState(i, requestStates[i]);
 
             SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
