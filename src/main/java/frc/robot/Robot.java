@@ -48,10 +48,8 @@ public class Robot extends TimedRobot {
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
-            //drive = new Drivetrain();
             drive = new SwerveDriveTrain(new SwerveDriveHw());
         } else {
-            //drive = new Drivetrain();
             drive = new SwerveDriveTrain(new SwerveDriveSim());
         }
         

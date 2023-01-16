@@ -29,5 +29,12 @@ public  interface ISwerveDriveIo {
      * @return The speed of the swerve corner in meters per second
      */
     double getCornerSpeed(int wheel);
+
+    /**
+     * Returns the distance the swerve corner as traveled in meters
+     * @param wheel Which corner to look at
+     * @return The distance the swerve corner as traveled in meters
+     */
+    double getCornerDistance(int wheel);
     void setCornerState(int wheel, SwerveModuleState swerveModuleState);
 }

@@ -1,8 +1,5 @@
 package frc.robot;
 
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper.GearRatio;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,7 +41,6 @@ public final class Constants {
     public static final Translation2d SWERVE_BACK_LEFT_LOCATION = new Translation2d(-0.291, 0.291);
     public static final Translation2d SWERVE_BACK_RIGHT_LOCATION = new Translation2d(-0.291, -0.291);
 
-    public static final GearRatio SWERVE_GEAR_SET = Mk4iSwerveModuleHelper.GearRatio.L2;  //16.3 ft/s
     public static final double MAX_DRIVETRAIN_SPEED = 4.96;         //max meters per second the swerve modules can go
     public static final double MAX_DRIVETRAIN_OMEGA = 3 * Math.PI;  //max Radians per Second the robot can spin
     public static final double NOM_BATTERY_VOLTAGE = 12.5;

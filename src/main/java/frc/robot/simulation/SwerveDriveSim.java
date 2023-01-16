@@ -19,6 +19,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     private double absAngle[];
     private double turnAngle[];
     private double driveSpeed[];
+    private double driveDist[];
 
     private FlywheelSim turnMotorSim[];
     private PIDController turningPIDController[];
@@ -28,6 +29,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         absAngle = new double[Constants.NUM_WHEELS];
         turnAngle = new double[Constants.NUM_WHEELS];
         driveSpeed = new double[Constants.NUM_WHEELS];
+        driveDist = new double[Constants.NUM_WHEELS];
         for(int i=0; i<swerveStates.length; i++) {
             swerveStates[i] = new SwerveModuleState();
         }
@@ -59,6 +61,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         //TODO: Simulate the actual swerve corners... https://www.chiefdelphi.com/t/sysid-gains-on-sds-mk4i-modules/400373/7
         for(int i=0; i<swerveStates.length; i++) {
             driveSpeed[i] = swerveStates[i].speedMetersPerSecond;
+            driveDist[i] += swerveStates[i].speedMetersPerSecond * Constants.LOOP_TIME;
             //turnAngle[i] = swerveStates[i].angle.getDegrees();
             //absAngle[i] = turnAngle[i];
 
@@ -121,6 +124,11 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     @Override
     public void setCornerState(int wheel, SwerveModuleState swerveModuleState) {
         swerveStates[wheel] = swerveModuleState;
+    }
+
+    @Override
+    public double getCornerDistance(int wheel) {
+        return driveDist[wheel];
     }
     
 }
