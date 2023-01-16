@@ -92,8 +92,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
         // ask the kinematics to determine our swerve command
         ChassisSpeeds speeds;
 
-        
-
         if (fieldOriented) {
             //90* is needed since we view the field on a 90* rotation
             var angle = robotPose.getRotation().minus(Rotation2d.fromDegrees(90));
@@ -111,7 +109,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for (int i = 0; i < requestStates.length; i++) {
             SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
             
+            //check to see if the robot request is moving
             if (Math.abs(requestStates[i].speedMetersPerSecond) < Constants.MIN_DRIVER_SPEED) {
+                //stop the requests if there is no movement
                 requestStates[i].angle = Rotation2d.fromDegrees(-hardware.getCornerAngle(i));
                 requestStates[i].speedMetersPerSecond = 0;
             }
