@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,7 +13,7 @@ import frc.robot.interfaces.ISwerveDrive;
 
 public class Odometry extends SubsystemBase {
     private final boolean PLOT_SWERVE_CORNERS = false;
-    //SwerveDriveOdometry odometry;
+    SwerveDriveOdometry odometry;
     ISwerveDrive drive;
     IDriveControls controls;
     Pose2d robotPose = new Pose2d();
@@ -30,15 +30,15 @@ public class Odometry extends SubsystemBase {
         this.drive = drive;
         this.controls = controls;
 
-        //odometry = new SwerveDriveOdometry(drive.getKinematics(), drive.getHeading());
+        odometry = new SwerveDriveOdometry(drive.getKinematics(), drive.getHeading(), drive.getSwerveStates());
         SmartDashboard.putData("Field", field);
     }
     
     @Override
     public void periodic() {
         Rotation2d heading = drive.getHeading();
-        SwerveModuleState[] states = drive.getSwerveStates();
-        //robotPose = odometry.update(heading, states);
+        SwerveModulePosition[] states = drive.getSwerveStates();
+        robotPose = odometry.update(heading, states);
         drive.setPose(robotPose);
         field.setRobotPose(robotPose);
 
@@ -62,13 +62,13 @@ public class Odometry extends SubsystemBase {
     }
 
     public void resetPose(Pose2d pose) {
-        //odometry.resetPosition(pose, drive.getHeading());
+        odometry.resetPosition(drive.getHeading(), drive.getSwerveStates(), pose);
     }
 
     public void resetHeading() {
         //reset the robot back to it's spot, just facing forward now
         Pose2d pose = new Pose2d(robotPose.getTranslation(),Rotation2d.fromDegrees(90));
-        //odometry.resetPosition(pose, drive.getHeading());
+        odometry.resetPosition(drive.getHeading(), drive.getSwerveStates(), pose);
     }
 
     public Pose2d getPose() {

@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
@@ -12,7 +13,7 @@ import frc.robot.interfaces.ISwerveDriveIo;
 public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveDriveKinematics kinematics;
     private ISwerveDriveIo hardware;
-    private SwerveModuleState[] swerveStates;
+    private SwerveModulePosition[] swerveStates;
     private Pose2d robotPose;
     private String moduleNames[];
     private double swerveOffsets[];
@@ -30,9 +31,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         hardware.setKinematics(kinematics);
         
         //initialize the swerve states
-        swerveStates = new SwerveModuleState[Constants.NUM_WHEELS];
+        swerveStates = new SwerveModulePosition[Constants.NUM_WHEELS];
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
-            swerveStates[wheel] = new SwerveModuleState();
+            swerveStates[wheel] = new SwerveModulePosition();
         }
 
         //initialize the swerve offsets
@@ -68,7 +69,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         //read the swerve corner state
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
-            swerveStates[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
+            swerveStates[wheel].distanceMeters = hardware.getCornerDistance(wheel);
             //double angle = (hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel]) + (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
             double angle = (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
@@ -139,7 +140,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     }
 
     @Override
-    public SwerveModuleState[] getSwerveStates() {
+    public SwerveModulePosition[] getSwerveStates() {
         return swerveStates;
     }
 

@@ -11,7 +11,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
@@ -35,6 +34,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private double ypr_deg[];
     private double absSensorValue[];
     private double driveWheelVelocity[];
+    private double driveWheelDistance[];
     private double turnMotorAngle[];
 
     public SwerveDriveHw() {
@@ -94,6 +94,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         ypr_deg = new double[3];
         absSensorValue = new double[Constants.NUM_WHEELS];
         driveWheelVelocity = new double[Constants.NUM_WHEELS];
+        driveWheelDistance = new double[Constants.NUM_WHEELS];
         turnMotorAngle = new double[Constants.NUM_WHEELS];
 
         SmartDashboard.putNumber("Angle", 0);
@@ -106,6 +107,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
             absSensorValue[i] = absSensor[i].getAbsolutePosition();
             driveWheelVelocity[i] = driveMotor[i].getSelectedSensorVelocity() / COUNTS_PER_METER;
+            driveWheelDistance[i] = driveMotor[i].getSelectedSensorPosition() / COUNTS_PER_METER;
             turnMotorAngle[i] = -turnMotor[i].getSelectedSensorPosition() / COUNTS_PER_DEGREE;
         }
     }
@@ -181,6 +183,11 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public void setKinematics(SwerveDriveKinematics kinematics) {
         //not needed
+    }
+
+    @Override
+    public double getCornerDistance(int wheel) {
+        return driveWheelDistance[wheel];
     }
     
 }
