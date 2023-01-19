@@ -7,7 +7,7 @@ import frc.robot.interfaces.IDriveControls;
 
 public class DriveControls implements IDriveControls {
     private XboxController driveCont;
-    private Saitek armCont;
+    //private Saitek armCont;
 
     public DriveControls() {
         driveCont = new XboxController(0);
