@@ -7,6 +7,7 @@ import frc.robot.interfaces.IDriveControls;
 
 public class DriveControls implements IDriveControls {
     private XboxController driveCont;
+    private Saitek armCont;
 
     public DriveControls() {
         driveCont = new XboxController(0);
@@ -31,4 +32,15 @@ public class DriveControls implements IDriveControls {
     public double GetTurnPct() {
         return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
     }
+
+    @Override
+    public boolean BoostTriggerRequested() {
+        return driveCont.getLeftBumperPressed();
+    }
+
+    @Override
+    public boolean PrecisionTriggerRequested() {
+        return driveCont.getRightBumperPressed();
+    }
+
 }
