@@ -3,16 +3,18 @@ package frc.robot;
 import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Saitek;
 import frc.robot.interfaces.IDriveControls;
 
 public class DriveControls implements IDriveControls {
     private XboxController driveCont;
-    //private Saitek armCont;
+    private Saitek armCont;
 
     public DriveControls() {
         driveCont = new XboxController(0);
+        armCont = new Saitek(1);
     }
-
+    
     @Override
     public boolean IsFieldOrientedResetRequested() {
         return driveCont.getLeftStickButtonPressed();
@@ -43,4 +45,36 @@ public class DriveControls implements IDriveControls {
         return driveCont.getRightBumperPressed();
     }
 
+    @Override
+    public double GetArmAxis1Pct() {
+        
+        return 0;
+    }
+
+    @Override
+    public double GetArmAxis2Pct() {
+        return 0;
+    }
+
+    @Override
+    public boolean IntakeConeRequested() {
+        return armCont.getPinkTopLeftButton();
+    }
+
+    @Override
+    public boolean OuttakeConeRequested() {
+        return armCont.getPinkTopLeftButton();
+    }
+
+    @Override
+    public boolean CubeGrabCloseRequested() {
+        return false;
+    }
+
+    @Override
+    public boolean CubeGrabOpenRequested() {
+        return false;
+    }
+
+    
 }
