@@ -48,32 +48,32 @@ public class DriveControls implements IDriveControls {
     @Override
     public double GetArmAxis1Pct() {
         
-        return 0;
+        return -UtilFunctions.deadband(armCont.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
     public double GetArmAxis2Pct() {
-        return 0;
+        return -UtilFunctions.deadband(armCont.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
     public boolean IntakeConeRequested() {
-        return armCont.getPinkTopLeftButton();
+        return armCont.getYellowTopLeftButton();
     }
 
     @Override
     public boolean OuttakeConeRequested() {
-        return armCont.getPinkTopLeftButton();
+        return armCont.getYellowTopLeftButton();
     }
 
     @Override
     public boolean CubeGrabCloseRequested() {
-        return false;
+        return armCont.getPinkTopLeftButton();
     }
 
     @Override
     public boolean CubeGrabOpenRequested() {
-        return false;
+        return armCont.getPinkTopLeftButton();
     }
 
     
