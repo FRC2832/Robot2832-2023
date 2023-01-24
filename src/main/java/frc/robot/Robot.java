@@ -30,7 +30,10 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
-    private PneumaticHub pneumatic;
+
+    private GrabberIntake intake;
+
+    private PneumaticHub pneumatics;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -43,9 +46,9 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
 
-        pneumatic = new PneumaticHub();
-        pneumatic.enableCompressorDigital();
-        
+        pneumatics = new PneumaticHub();
+        pneumatics.enableCompressorDigital();
+
         // initialize robot parts and locations where they are
         controls = new DriveControls();
 
@@ -56,13 +59,17 @@ public class Robot extends TimedRobot {
         } else {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
         }
-        
+        intake = new GrabberIntake();
+
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_POS);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
+        controls.CubeGrabOpenRequested().whileActiveContinuous(new OpenCube(intake));
+        controls.CubeGrabCloseRequested().whileActiveContinuous(new CloseCube(intake));
+
     }
 
     /**
@@ -85,8 +92,7 @@ public class Robot extends TimedRobot {
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
 
-        //make a command that combines our sequence together
-        SequentialCommandGroup commands = new SequentialCommandGroup(
+        new SequentialCommandGroup(
             //drive forward 2 sec, turn right, forward 2 sec, left, drive 1 sec
             new DriveTimed(drive, 2),
             new WaitCommand(1.5),

@@ -3,7 +3,7 @@ package frc.robot;
 import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.Saitek;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.interfaces.IDriveControls;
 
 public class DriveControls implements IDriveControls {
@@ -63,17 +63,17 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public boolean OuttakeConeRequested() {
-        return armCont.getYellowTopLeftButton();
+        return armCont.getYellowTopMiddleButton();
     }
 
     @Override
-    public boolean CubeGrabCloseRequested() {
-        return armCont.getPinkTopLeftButton();
+    public JoystickButton CubeGrabCloseRequested() {
+        return new JoystickButton(armCont, Saitek.Button.pinkTopLeft.value);
     }
 
     @Override
-    public boolean CubeGrabOpenRequested() {
-        return armCont.getPinkTopLeftButton();
+    public JoystickButton CubeGrabOpenRequested() {
+        return new JoystickButton(armCont, Saitek.Button.pinkTopMiddle.value);
     }
 
     
