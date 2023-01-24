@@ -1,5 +1,7 @@
 package frc.robot.simulation;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
+import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveSim implements ISwerveDriveIo {
@@ -35,12 +38,19 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         }
         chassisAngle = 0;
 
+        absAngle[ISwerveDrive.FL] = -Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
+        absAngle[ISwerveDrive.FR] = -Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
+        absAngle[ISwerveDrive.RL] = -Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
+        absAngle[ISwerveDrive.RR] = -Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+
         turnMotorSim = new FlywheelSim[Constants.NUM_WHEELS];
         turningPIDController = new PIDController[Constants.NUM_WHEELS];
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
-            turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.6095, 0.0648),
+            //kv = Volt Seconds per Meter
+            //ka = ka VoltSecondsSquaredPerMotor
+            turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.3850, 0.0385),
                 DCMotor.getFalcon500(1), 150f/7);
-            turningPIDController[i] = new PIDController(5.0, 0.0, 50.0, 0.001);
+            turningPIDController[i] = new PIDController(0.1, 0.0015, 10.0, 0.001);
         }
     }
 
@@ -62,9 +72,10 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         for(int i=0; i<swerveStates.length; i++) {
             driveSpeed[i] = swerveStates[i].speedMetersPerSecond;
             driveDist[i] += swerveStates[i].speedMetersPerSecond * Constants.LOOP_TIME;
-            //turnAngle[i] = swerveStates[i].angle.getDegrees();
-            //absAngle[i] = turnAngle[i];
+            turnAngle[i] = -swerveStates[i].angle.getDegrees();
+            absAngle[i] = turnAngle[i];
 
+            /*
             //run at 1ms rate to simulate hardware
             for(var loops =0; loops < Constants.LOOP_TIME / 0.001; loops++) {
                 //use the PID to calculate a voltage to apply to the motor
@@ -86,7 +97,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
                 //update the sensor values
                 turnAngle[i] += angChange;
                 absAngle[i] += angChange;
-            }
+            }*/
         }
         
     }
@@ -129,6 +140,18 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     @Override
     public double getCornerDistance(int wheel) {
         return driveDist[wheel];
+    }
+
+    @Override
+    public void setDriveCommand(int wheel, ControlMode mode, double output) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setTurnCommand(int wheel, ControlMode mode, double output) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

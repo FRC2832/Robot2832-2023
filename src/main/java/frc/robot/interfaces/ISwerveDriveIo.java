@@ -1,5 +1,7 @@
 package frc.robot.interfaces;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -37,4 +39,8 @@ public  interface ISwerveDriveIo {
      */
     double getCornerDistance(int wheel);
     void setCornerState(int wheel, SwerveModuleState swerveModuleState);
+
+    void setDriveCommand(int wheel, ControlMode mode, double output);
+
+    void setTurnCommand(int wheel, ControlMode mode, double output);
 }

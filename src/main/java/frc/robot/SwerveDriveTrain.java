@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -113,16 +115,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
             //check to see if the robot request is moving
             if (Math.abs(requestStates[i].speedMetersPerSecond) < Constants.MIN_DRIVER_SPEED) {
                 //stop the requests if there is no movement
-                requestStates[i].angle = Rotation2d.fromDegrees(-hardware.getCornerAngle(i));
-                requestStates[i].speedMetersPerSecond = 0;
+                hardware.setDriveCommand(i, ControlMode.Disabled, 0);
+                hardware.setTurnCommand(i, ControlMode.Disabled, 0);
             }
             else {
                 //figure out delta angle from the current swerve state
                 var delta = requestStates[i].angle.minus(swerveStates[i].angle);
                 //add it to the current hardware motor angle since we control that motor
                 requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
+                hardware.setCornerState(i, requestStates[i]);
             }
-            hardware.setCornerState(i, requestStates[i]);
 
             SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
             SmartDashboard.putNumber(moduleNames[i] + "Command Speed", requestStates[i].speedMetersPerSecond);
