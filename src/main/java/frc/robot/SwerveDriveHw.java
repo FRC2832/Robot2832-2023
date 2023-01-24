@@ -1,10 +1,11 @@
 package frc.robot;
 
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.music.Orchestra;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -28,7 +29,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private TalonFX driveMotor[];
     private CANCoder absSensor[];
     private PigeonIMU pigeon;
-    private Orchestra siren;
     
     //sensor value buffers
     private double ypr_deg[];
@@ -64,30 +64,36 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
 
         for(TalonFX motor : driveMotor) {
-            motor.getAllConfigs(allConfigs);
+            motor.configFactoryDefault(100);
+            motor.getAllConfigs(allConfigs,100);
             allConfigs.slot0.kP = 0.02;
             allConfigs.slot0.kI = 0.0005;
             allConfigs.slot0.kD = 4;
             allConfigs.slot0.kF = 0.047;
             allConfigs.slot0.integralZone = 200;
-            motor.configAllSettings(allConfigs);
+            motor.configAllSettings(allConfigs,100);
         }
 
         for(TalonFX motor : turnMotor) {
-            motor.getAllConfigs(allConfigs);
-            allConfigs.slot0.kP = 0.1;
-            allConfigs.slot0.kI = 0.0015;
-            allConfigs.slot0.kD = 10;
-            allConfigs.slot0.kF = 0;
-            allConfigs.slot0.integralZone = 900;
-            allConfigs.slot0.allowableClosedloopError = 90;
-            motor.configAllSettings(allConfigs);
-        }
-
-        siren = new Orchestra();
-        siren.loadMusic("Warning_Siren.chrp");
-        for(TalonFX motor : turnMotor) {
-            siren.addInstrument(motor);
+            motor.configFactoryDefault(100);
+            var error = motor.getAllConfigs(allConfigs,100);
+            System.out.println("Turn Read config: " + error.name());
+            allConfigs.slot1.kP = 0.4;
+            allConfigs.slot1.kI = 0.0005;
+            allConfigs.slot1.kD = 40;
+            allConfigs.slot1.kF = 0;
+            allConfigs.slot1.integralZone = 0;
+            allConfigs.slot1.allowableClosedloopError = 300;
+            allConfigs.motionCruiseVelocity = 20960;
+            allConfigs.motionAcceleration = 40960;
+            error = motor.configAllSettings(allConfigs,100);
+            StatorCurrentLimitConfiguration cfg = new StatorCurrentLimitConfiguration();
+            cfg.enable = true;
+            cfg.currentLimit = 20;
+            cfg.triggerThresholdCurrent = 40;
+            motor.configStatorCurrentLimit(cfg);
+            motor.selectProfileSlot(1, 0);
+            System.out.println("Turn motor config: " + error.name());
         }
         
         //initialize sensor buffers
@@ -163,9 +169,19 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     }
 
     @Override
+    public void setDriveCommand(int wheel, ControlMode mode, double output) {
+        driveMotor[wheel].set(mode, output);
+    }
+
+    @Override
+    public void setTurnCommand(int wheel, ControlMode mode, double output) {
+        turnMotor[wheel].set(mode, output);
+    }
+
+    @Override
     public void setCornerState(int wheel, SwerveModuleState swerveModuleState) {
         driveMotor[wheel].set(ControlMode.Velocity, swerveModuleState.speedMetersPerSecond * COUNTS_PER_METER);
-        turnMotor[wheel].set(ControlMode.Position, swerveModuleState.angle.getDegrees() * COUNTS_PER_DEGREE);
+        turnMotor[wheel].set(ControlMode.MotionMagic, swerveModuleState.angle.getDegrees() * COUNTS_PER_DEGREE);
 
         //var counts = SmartDashboard.getNumber("Angle", 0);
         //turnMotor[3].set(ControlMode.Position, counts * COUNTS_PER_DEGREE);

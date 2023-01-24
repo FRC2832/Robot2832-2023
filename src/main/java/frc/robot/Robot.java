@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
+    private PneumaticHub pneumatic;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -42,6 +43,9 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
 
+        pneumatic = new PneumaticHub();
+        pneumatic.enableCompressorDigital();
+        
         // initialize robot parts and locations where they are
         controls = new DriveControls();
 
