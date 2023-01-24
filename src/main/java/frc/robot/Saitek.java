@@ -28,7 +28,7 @@ public class Saitek extends GenericHID {
     yellowBottomMiddle(14),
     yellowBottomRight(16);
   
-    private final int value;
+    public final int value;
     Button(int value) {
       this.value = value;
     }
