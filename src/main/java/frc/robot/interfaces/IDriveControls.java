@@ -6,8 +6,10 @@ public interface IDriveControls {
     double GetXDrivePct();
     double GetYDrivePct();
     double GetTurnPct();
-    double GetArmAxis1Pct(); //Might change if design changes.
-    double GetArmAxis2Pct();
+    double GetArmShoulderPct();
+    double GetArmElbowPct();
+    double GetArmKinXCommand();
+    double GetArmKinZCommand();
     boolean IntakeConeRequested();
     boolean OuttakeConeRequested();
     JoystickButton CubeGrabCloseRequested(); 

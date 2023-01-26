@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
+import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 
 /**
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
     private GrabberIntake intake;
 
     private PneumaticHub pneumatics;
+    private Arm arm;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -56,17 +58,20 @@ public class Robot extends TimedRobot {
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
             drive = new SwerveDriveTrain(new SwerveDriveHw());
+            arm = new Arm(new ArmHw());
         } else {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
+            arm = new Arm(new ArmSim());
         }
         intake = new GrabberIntake();
-
+        
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_POS);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
+        arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         controls.CubeGrabOpenRequested().whileActiveContinuous(new OpenCube(intake));
         controls.CubeGrabCloseRequested().whileActiveContinuous(new CloseCube(intake));
 
