@@ -45,15 +45,34 @@ public class DriveControls implements IDriveControls {
         return driveCont.getRightBumperPressed();
     }
 
-    @Override
-    public double GetArmAxis1Pct() {
-        
-        return -UtilFunctions.deadband(armCont.getyAxis1(), Constants.STICK_DEADBAND);
+    public double GetArmKinXCommand() {
+        return armCont.getxAxis1();
+    }
+
+    public double GetArmKinZCommand() {
+        return armCont.getyAxis1();
     }
 
     @Override
-    public double GetArmAxis2Pct() {
-        return -UtilFunctions.deadband(armCont.getyAxis1(), Constants.STICK_DEADBAND);
+    public double GetArmShoulderPct() {
+        if(armCont.getOrangeTopLeftButton()) {
+            return 1;
+        } else if (armCont.getOrangeBottomLeftButton()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double GetArmElbowPct() {
+        if(armCont.getOrangeTopRightButton()) {
+            return 1;
+        } else if (armCont.getOrangeBottomRightButton()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     @Override

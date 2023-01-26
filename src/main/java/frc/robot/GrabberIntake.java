@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-public class GrabberIntake implements Subsystem { //make this a subsystem or create another interface and implement that?
+public class GrabberIntake implements Subsystem { 
     private DoubleSolenoid grabber;
 
     public GrabberIntake(){
@@ -18,7 +18,4 @@ public class GrabberIntake implements Subsystem { //make this a subsystem or cre
             grabber.set(Value.kReverse);
         }
     }
-
-
-    
 }
