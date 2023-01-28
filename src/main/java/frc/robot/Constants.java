@@ -51,4 +51,7 @@ public final class Constants {
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
     public static final Pose2d START_POS = new Pose2d(3.186,6.072,Rotation2d.fromDegrees(-135));  //where does the robot start at?
+
+    public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
+    public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
 }

@@ -18,13 +18,14 @@ public class DriveArmToPoint extends CommandBase{
 
     @Override
     public void initialize() {
-        xPos = 36;
-        zPos = 36;
+        
     }
 
     @Override
     public void execute() {
-        //take the current position and +/- 0.1" per loop
+        xPos = arm.getArmXPosition();
+        zPos = arm.getArmZPosition();
+        //take the current position and +/- max 0.2" per loop
         xPos += controls.GetArmKinXCommand() * 0.2;
         zPos += -controls.GetArmKinZCommand() * 0.2;
         var x = xPos;
@@ -35,7 +36,7 @@ public class DriveArmToPoint extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return false; 
+        return true; 
     }
 
     @Override

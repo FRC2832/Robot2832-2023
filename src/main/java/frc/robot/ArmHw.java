@@ -21,6 +21,8 @@ public class ArmHw implements IArmControl {
     final double SHOULDER_MAX_ANGLE = 180+65.3;
     final double ELBOW_MIN_ANGLE = -55.7;
     final double ELBOW_MAX_ANGLE = 180+65.3;
+    final double COUNTS_PER_DEGREE_SHOULDER = 152.492;
+    final double COUNTS_PER_DEGREE_ELBOW =  426.667;
 
     public ArmHw() {
         shoulderMotor = new TalonFX(60);
@@ -31,13 +33,13 @@ public class ArmHw implements IArmControl {
     @Override
     public void setShoulderAngle(double angleDeg) {
         // TODO Implement ARM PID
-        
+        shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
     }
 
     @Override
     public void setElbowAngle(double angleDeg) {
         // TODO Implement ARM PID
-        
+        elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
     }
 
     @Override
@@ -69,9 +71,14 @@ public class ArmHw implements IArmControl {
         var dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
         shoulderAngle = SHOULDER_MIN_ANGLE + dcFrac * (SHOULDER_MAX_ANGLE - SHOULDER_MIN_ANGLE);
 
+        shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
+
         rawDC = elbowEncoder.getOutput();
         dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
         elbowAngle = ELBOW_MIN_ANGLE + dcFrac * (ELBOW_MAX_ANGLE - ELBOW_MIN_ANGLE);
+
+        elbowMotor.setSelectedSensorPosition(elbowAngle * COUNTS_PER_DEGREE_ELBOW);
+
     }
     
 }
