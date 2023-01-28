@@ -71,7 +71,8 @@ public class Robot extends TimedRobot {
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        //arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        arm.setDefaultCommand(new ArmPointToPointDifLengths(arm, controls));
         controls.CubeGrabOpenRequested().whileActiveContinuous(new OpenCube(intake));
         controls.CubeGrabCloseRequested().whileActiveContinuous(new CloseCube(intake));
 
