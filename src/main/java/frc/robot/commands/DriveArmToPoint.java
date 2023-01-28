@@ -30,26 +30,7 @@ public class DriveArmToPoint extends CommandBase{
         var x = xPos;
         var z = zPos;
 
-        double shoulder = 0;
-        double elbow = 0;
-        if(x >= 0) {
-            double l = x;
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            shoulder = phi + theta;
-            elbow = (phi - theta);
-        }
-        else{
-            double l = -x;
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            shoulder = 180 - (phi + theta);
-            elbow = 180 - (phi - theta);
-        }
-        arm.setElbowAngle(elbow);
-        arm.setShoulderAngle(shoulder);
+        arm.calcAngles(x, z);
     }
 
     @Override
