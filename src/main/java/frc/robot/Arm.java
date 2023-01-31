@@ -49,6 +49,7 @@ public class Arm implements Subsystem{
 
     //this one will become not good once we figure out the equation for an arm with two segments of different lengths
     public void calcAngles(double x, double z) { //calculate the angles for each part of the arm to get to the point (x, z)
+        // from https://www.youtube.com/watch?v=Q-UeYEpwXXU
         double shoulder = 0;
         double elbow = 0;
         boolean side = (x > -46); //arm cannot reach outside of 48 inches, we have a grabber on the arm so it checks for <46
@@ -75,36 +76,14 @@ public class Arm implements Subsystem{
         this.setShoulderAngle(shoulder);
     }
 
-    //we will use this one when we figure out the equation for an arm with two different segment lengths
-    public void newCalcAngles(double x, double z) {
-        double shoulderLength = 34.0;
-        double elbowLength = 26.0;
-        double shoulder = 0;
-        double elbow = 0;
-        boolean side = (x > -46); //arm cannot reach outside of 48 inches, we have a grabber on the arm so it checks for <46
-        boolean armLength = Math.sqrt((x*x) + (z*z)) < 60; //total armLength for 34in plus 26in
-        if(side && armLength){
-            double l = Math.abs(x);
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            //double q1equation = Math.atan(x/z) - Math.atan((elbowLength*Math.sin(q2)) / (shoulderlength + elbowlength * cos(q2)));
-            //double q2equation = Math.PI - Math.acos()
-            if(x >= 0) {
-                shoulder = phi + theta;
-                elbow = (phi - theta);
-            }
-            else{
-                shoulder = 180 - (phi + theta);
-                elbow = 180 - (phi - theta);
-            }
-        }
-        else { //if requested point is outside limited range then set arm angles to what they were before
-            elbow = getElbowAngle();
-            shoulder = getShoulderAngle();
-        }
-        this.setElbowAngle(elbow);
-        this.setShoulderAngle(shoulder);
+    public double getArmXPosition(){
+        double xPos = (Math.cos(getShoulderAngle())*Constants.BICEP_LENGTH) + (Math.cos(getShoulderAngle()+getElbowAngle())*Constants.FOREARM_LENGTH);
+        return xPos;
+    }
+
+    public double getArmZPosition(){
+        double zPos = (Math.sin(getShoulderAngle())*Constants.BICEP_LENGTH) + (Math.sin(getShoulderAngle()+getElbowAngle())*Constants.FOREARM_LENGTH);
+        return zPos;
     }
 
 }

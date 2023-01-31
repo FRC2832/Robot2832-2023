@@ -17,4 +17,9 @@ public interface IDriveControls {
     boolean BoostTriggerRequested();
     boolean PrecisionTriggerRequested();
     boolean IsFieldOrientedResetRequested();
+    JoystickButton ShoulderPosRequested();
+    JoystickButton ShoulderNegRequested();
+    JoystickButton ElbowPosRequested();
+    JoystickButton ElbowNegRequested();
+    
 }

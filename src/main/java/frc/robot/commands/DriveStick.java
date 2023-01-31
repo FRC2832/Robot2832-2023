@@ -12,6 +12,9 @@ import frc.robot.interfaces.ISwerveDrive;
 public class DriveStick extends CommandBase {
     private ISwerveDrive drive;
     private IDriveControls cont;
+    private double boostSpeed;
+    private double turtleSpeed;
+    private double turtleTurnSpeed;
 
     /**
      * Inject the drivetain and controller to use
@@ -27,21 +30,40 @@ public class DriveStick extends CommandBase {
     @Override
     public void initialize() {
         SmartDashboard.putBoolean("Field Oriented", false);
+        SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
+        SmartDashboard.putNumber("Turtle Speed", 1);
+        SmartDashboard.putNumber("Turtle Turn Speed", 4);
     }
 
     @Override
     public void execute() {
         boolean fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
-
+        boostSpeed = SmartDashboard.getNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
+        turtleSpeed = SmartDashboard.getNumber("Turtle Speed", 1);
+        turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 4);
         double xSpeed = cont.GetXDrivePct();
         double ySpeed = cont.GetYDrivePct();
         double turn   = cont.GetTurnPct();
-
-        drive.SwerveDrive(
-            xSpeed  * Constants.MAX_DRIVER_SPEED, 
-            ySpeed  * Constants.MAX_DRIVER_SPEED, 
-            turn    * Constants.MAX_DRIVER_OMEGA, 
-            fieldOriented);
+        if(cont.BoostTriggerRequested()){
+            drive.SwerveDrive(
+                xSpeed  * boostSpeed, //maybe make max driver speed constants into boost constants? or get boost constants from a driver profile?
+                ySpeed  * boostSpeed, 
+                turn    * Constants.MAX_DRIVER_OMEGA, 
+                fieldOriented);
+        } else if(cont.PrecisionTriggerRequested()) {
+            drive.SwerveDrive(
+                xSpeed  * turtleSpeed, 
+                ySpeed  * turtleSpeed, 
+                turn    * turtleTurnSpeed, 
+                fieldOriented);
+        } 
+        else {
+            drive.SwerveDrive(
+                xSpeed  * Constants.MAX_DRIVER_SPEED, 
+                ySpeed  * Constants.MAX_DRIVER_SPEED, 
+                turn    * Constants.MAX_DRIVER_OMEGA, 
+                fieldOriented);
+        }
     }
 
     @Override
