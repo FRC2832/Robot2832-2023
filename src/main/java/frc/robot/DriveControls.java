@@ -116,4 +116,39 @@ public class DriveControls implements IDriveControls {
         return new JoystickButton(armCont, Saitek.Button.orangeBottomRight.value);
     }
 
+    @Override
+    public JoystickButton ArmToPickupGround(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopLeft.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToPickupTail(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomLeft.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupHuman(){
+        return new JoystickButton(armCont, Saitek.Button.pinkBottomLeft.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToSecureLocation(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopMiddle.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreLow(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomMiddle.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreMiddle(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomRight.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreTop(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
+    }
+
 }

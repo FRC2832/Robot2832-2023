@@ -54,4 +54,29 @@ public final class Constants {
 
     public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
     public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
+
+    public static final double ARM_ACCEPT_ERROR = 0.5;      //MAX error in inches for arm going to set points autonomously 
+    
+    //Arm set point constants 
+    public static final double ArmToPickupGround_X = 36;
+    public static final double ArmToPickupGround_Z = -2;
+
+    public static final double ArmToPickupTail_X = 30;
+    public static final double ArmToPickupTail_Z = 0;
+
+    public static final double ArmToPickupHuman_X = 30;
+    public static final double ArmToPickupHuman_Z = 20;
+
+    public static final double ArmToSecureLocation_X = 20;
+    public static final double ArmToSecureLocation_Z = 0;
+
+    public static final double ArmToScoreLow_X = -10;
+    public static final double ArmToScoreLow_Z = -4;
+
+    public static final double ArmToScoreMiddle_X = -20;
+    public static final double ArmToScoreMiddle_Z = 20;
+
+    public static final double ArmToScoreTop_X = -43;
+    public static final double ArmToScoreTop_Z = 30;
+    
 }
