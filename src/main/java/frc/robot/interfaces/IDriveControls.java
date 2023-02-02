@@ -21,5 +21,12 @@ public interface IDriveControls {
     JoystickButton ShoulderNegRequested();
     JoystickButton ElbowPosRequested();
     JoystickButton ElbowNegRequested();
+    JoystickButton ArmToPickupGround(); //possibly need one for each game piece type
+    JoystickButton ArmToPickupTail();
+    JoystickButton ArmToPickupHuman();
+    JoystickButton ArmToSecureLocation();
+    JoystickButton ArmToScoreLow();
+    JoystickButton ArmToScoreMiddle();
+    JoystickButton ArmToScoreTop();
     
 }
