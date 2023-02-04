@@ -78,7 +78,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
 
         //display data on SmartDashboard
-        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
+        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());       
+        SmartDashboard.putNumber("Pitch", hardware.getPitch());
+        SmartDashboard.putNumber("Roll", hardware.getRoll());
         for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
             SmartDashboard.putNumber(moduleNames[wheel] + "Abs Sensor", hardware.getCornerAbsAngle(wheel));
             SmartDashboard.putNumber(moduleNames[wheel] + "Turn Sensor", hardware.getCornerAngle(wheel));

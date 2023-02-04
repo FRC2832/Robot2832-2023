@@ -153,5 +153,17 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public double getPitch() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getRoll() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
     
 }

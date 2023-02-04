@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public  interface ISwerveDriveIo {
     void updateInputs();
     Rotation2d getHeading();
+    double getPitch();
+    double getRoll();
     void setKinematics(SwerveDriveKinematics kinematics);
     void setTurnMotorBrakeMode(boolean brakeOn);
     void setDriveMotorBrakeMode(boolean brakeOn);
