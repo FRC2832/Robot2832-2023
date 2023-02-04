@@ -47,7 +47,7 @@ public final class Constants {
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
     public static final double MAX_DRIVER_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
-    public static final double MAX_DRIVER_OMEGA = 1.5 * Math.PI;    //Max angle (rad/sec) the driver can go
+    public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
     public static final Pose2d START_POS = new Pose2d(3.186,6.072,Rotation2d.fromDegrees(-135));  //where does the robot start at?
