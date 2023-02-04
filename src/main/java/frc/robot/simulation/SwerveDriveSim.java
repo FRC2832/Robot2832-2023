@@ -58,7 +58,11 @@ public class SwerveDriveSim implements ISwerveDriveIo {
             //ka = ka VoltSecondsSquaredPerMotor
             turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.3850, 0.0385),
                 DCMotor.getFalcon500(1), 150f/7);
-            turningPIDController[i] = new PIDController(0.1, 0.0015, 10.0, 0.001);
+            
+            //scale factor for hardware PID to software PID
+            //360/2048 is 360 degrees per rev/encoder counts per rev divided by gear ratio
+            var k = (360f/2048) * (7f/150);
+            turningPIDController[i] = new PIDController(0.4 * k, 0.0005 * k, 0 * k, 0.001);
         }
     }
 
@@ -95,11 +99,15 @@ public class SwerveDriveSim implements ISwerveDriveIo {
             double deltaAngle;
             if(turnCommand[i] == ControlMode.Position) {
                 deltaAngle = -turnPower[i];
+                for(var loops =0; loops < Constants.LOOP_TIME / 0.001; loops++) {
+                    double turnOutput = turningPIDController[i].calculate(turnAngle[i], deltaAngle);
+                    //update the sensor values
+                    turnAngle[i] += turnOutput;
+                    absAngle[i] += turnOutput;
+                }
             } else {
                 deltaAngle = 0;
             }
-            turnAngle[i] = deltaAngle;
-            absAngle[i] = deltaAngle + absOffset[i];
             swerveStates[i].angle = Rotation2d.fromDegrees(turnAngle[i]);
 
             //reset turn command back to zero
