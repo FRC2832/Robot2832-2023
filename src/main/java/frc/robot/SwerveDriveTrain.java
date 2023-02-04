@@ -104,8 +104,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         ChassisSpeeds speeds;
 
         if (fieldOriented) {
-            //90* is needed since we view the field on a 90* rotation
-            var angle = robotPose.getRotation().minus(Rotation2d.fromDegrees(90));
+            var angle = robotPose.getRotation();
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turn, angle);
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, turn);
