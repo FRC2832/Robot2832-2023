@@ -38,12 +38,12 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public boolean BoostTriggerRequested() {
-        return driveCont.getLeftBumperPressed();
+        return driveCont.getRightTriggerAxis() > .1;
     }
 
     @Override
     public boolean PrecisionTriggerRequested() {
-        return driveCont.getRightBumperPressed();
+        return driveCont.getLeftTriggerAxis() > .1;
     }
 
     public double GetArmKinXCommand() {
