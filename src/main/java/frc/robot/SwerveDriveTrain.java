@@ -119,6 +119,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 hardware.setTurnCommand(i, ControlMode.Disabled, 0);
             }
             else {
+                requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 //figure out delta angle from the current swerve state
                 var delta = requestStates[i].angle.minus(swerveStates[i].angle);
                 //add it to the current hardware motor angle since we control that motor
