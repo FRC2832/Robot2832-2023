@@ -27,6 +27,6 @@ public class UtilFunctions {
      * @return A value between -180 to 180*
      */
     public static double degreeMod(double degAngle) {
-        return Math.toDegrees(MathUtil.angleModulus(Math.toRadians(degAngle)));
+        return MathUtil.inputModulus(degAngle,-180,180);
     }
 }

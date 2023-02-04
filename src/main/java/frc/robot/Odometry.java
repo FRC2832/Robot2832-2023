@@ -67,7 +67,7 @@ public class Odometry extends SubsystemBase {
 
     public void resetHeading() {
         //reset the robot back to it's spot, just facing forward now
-        Pose2d pose = new Pose2d(robotPose.getTranslation(),Rotation2d.fromDegrees(90));
+        Pose2d pose = new Pose2d(robotPose.getTranslation(),Rotation2d.fromDegrees(0));
         odometry.resetPosition(drive.getHeading(), drive.getSwerveStates(), pose);
     }
 
