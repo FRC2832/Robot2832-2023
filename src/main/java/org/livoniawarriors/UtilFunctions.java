@@ -1,5 +1,7 @@
 package org.livoniawarriors;
 
+import edu.wpi.first.math.MathUtil;
+
 public class UtilFunctions {
     /**
      * This function takes a joystick input from -1 to 1 and removes the center of the stick.
@@ -16,5 +18,15 @@ public class UtilFunctions {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * This function takes a input in degrees and makes it -180 to 180*.
+     * If you are in radians, use MathUtil.angleModulus() from WpiLib
+     * @param degAngle Angle to reduce
+     * @return A value between -180 to 180*
+     */
+    public static double degreeMod(double degAngle) {
+        return Math.toDegrees(MathUtil.angleModulus(Math.toRadians(degAngle)));
     }
 }

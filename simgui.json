@@ -13,6 +13,7 @@
         }
       },
       "/SmartDashboard/Field": {
+        "image": "2023-field.png",
         "window": {
           "visible": true
         }
