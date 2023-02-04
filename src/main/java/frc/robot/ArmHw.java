@@ -28,6 +28,7 @@ public class ArmHw implements IArmControl {
         shoulderMotor = new TalonFX(60);
         elbowMotor = new TalonFX(61);
         shoulderEncoder = new DutyCycle(new DigitalInput(2));
+        elbowEncoder = new DutyCycle(new DigitalInput(3));
     }
 
     @Override
