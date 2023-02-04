@@ -144,6 +144,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
     }
 
+    public void setWheelCommand(SwerveModuleState[] requests) {
+        for(int i=0; i<requests.length; i++) {
+            //figure out delta angle from the current swerve state
+            var delta = requests[i].angle.minus(swerveStates[i].angle);
+            //add it to the current hardware motor angle since we control that motor
+            requests[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
+            hardware.setCornerState(i, requests[i]);
+        }
+    }
+
     @Override
     public SwerveDriveKinematics getKinematics() {
         return kinematics;

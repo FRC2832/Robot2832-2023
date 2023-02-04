@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ISwerveDrive extends Subsystem {
@@ -30,4 +31,5 @@ public interface ISwerveDrive extends Subsystem {
 
     void setTurnMotorBrakeMode(boolean brakeOn);
     void setDriveMotorBrakeMode(boolean brakeOn);
+    void setWheelCommand(SwerveModuleState[] requests);
 }
