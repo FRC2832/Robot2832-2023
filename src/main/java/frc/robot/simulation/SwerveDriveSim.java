@@ -15,37 +15,45 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveSim implements ISwerveDriveIo {
-    private SwerveModuleState swerveStates[];
     private SwerveDriveKinematics kinematics;
     private double chassisAngle;
 
     private double absAngle[];
+    private double absOffset[];
     private double turnAngle[];
     private double driveSpeed[];
     private double driveDist[];
+    private ControlMode driveCommand[];
+    private ControlMode turnCommand[];
+    private double drivePower[];
+    private double turnPower[];
 
     private FlywheelSim turnMotorSim[];
     private PIDController turningPIDController[];
 
     public SwerveDriveSim() {
-        swerveStates = new SwerveModuleState[Constants.NUM_WHEELS];
         absAngle = new double[Constants.NUM_WHEELS];
+        absOffset = new double[Constants.NUM_WHEELS];
         turnAngle = new double[Constants.NUM_WHEELS];
         driveSpeed = new double[Constants.NUM_WHEELS];
         driveDist = new double[Constants.NUM_WHEELS];
-        for(int i=0; i<swerveStates.length; i++) {
-            swerveStates[i] = new SwerveModuleState();
-        }
+
+        driveCommand = new ControlMode[Constants.NUM_WHEELS];
+        turnCommand = new ControlMode[Constants.NUM_WHEELS];
+        drivePower = new double[Constants.NUM_WHEELS];
+        turnPower = new double[Constants.NUM_WHEELS];
+
         chassisAngle = 0;
 
-        absAngle[ISwerveDrive.FL] = -Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
-        absAngle[ISwerveDrive.FR] = -Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
-        absAngle[ISwerveDrive.RL] = -Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
-        absAngle[ISwerveDrive.RR] = -Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
 
         turnMotorSim = new FlywheelSim[Constants.NUM_WHEELS];
         turningPIDController = new PIDController[Constants.NUM_WHEELS];
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
+            absAngle[i] = absOffset[i];
             //kv = Volt Seconds per Meter
             //ka = ka VoltSecondsSquaredPerMotor
             turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.3850, 0.0385),
@@ -61,19 +69,42 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     
     @Override
     public void updateInputs() {
-        ChassisSpeeds speeds = kinematics.toChassisSpeeds(swerveStates);
-        
-        chassisAngle += Math.toDegrees(speeds.omegaRadiansPerSecond * Constants.LOOP_TIME);
-        
+        SwerveModuleState[] swerveStates = new SwerveModuleState[Constants.NUM_WHEELS];
+
         //xyz_mps[0] = speeds.vxMetersPerSecond / Constants.LOOP_TIME;
         //xyz_mps[1] = speeds.vyMetersPerSecond / Constants.LOOP_TIME;
 
         //TODO: Simulate the actual swerve corners... https://www.chiefdelphi.com/t/sysid-gains-on-sds-mk4i-modules/400373/7
         for(int i=0; i<swerveStates.length; i++) {
-            driveSpeed[i] = swerveStates[i].speedMetersPerSecond;
-            driveDist[i] += swerveStates[i].speedMetersPerSecond * Constants.LOOP_TIME;
-            turnAngle[i] = -swerveStates[i].angle.getDegrees();
-            absAngle[i] = turnAngle[i];
+            swerveStates[i] = new SwerveModuleState();
+
+            //process drive command
+            if(driveCommand[i] == ControlMode.Velocity) {
+                driveSpeed[i] = drivePower[i];
+            } else {
+                driveSpeed[i] = 0;
+            }
+            driveDist[i] += driveSpeed[i] * Constants.LOOP_TIME;
+            swerveStates[i].speedMetersPerSecond = driveSpeed[i];
+
+            //reset drive command back to zero
+            driveCommand[i] = ControlMode.Disabled;
+            drivePower[i] = 0;
+
+            //process turn command
+            double deltaAngle;
+            if(turnCommand[i] == ControlMode.Position) {
+                deltaAngle = -turnPower[i];
+            } else {
+                deltaAngle = 0;
+            }
+            turnAngle[i] = deltaAngle;
+            absAngle[i] = deltaAngle + absOffset[i];
+            swerveStates[i].angle = Rotation2d.fromDegrees(turnAngle[i]);
+
+            //reset turn command back to zero
+            turnCommand[i] = ControlMode.Disabled;
+            turnPower[i] = 0;
 
             /*
             //run at 1ms rate to simulate hardware
@@ -99,7 +130,9 @@ public class SwerveDriveSim implements ISwerveDriveIo {
                 absAngle[i] += angChange;
             }*/
         }
-        
+
+        ChassisSpeeds speeds = kinematics.toChassisSpeeds(swerveStates);
+        chassisAngle += Math.toDegrees(speeds.omegaRadiansPerSecond * Constants.LOOP_TIME);
     }
 
     @Override
@@ -134,7 +167,10 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     @Override
     public void setCornerState(int wheel, SwerveModuleState swerveModuleState) {
-        swerveStates[wheel] = swerveModuleState;
+        driveCommand[wheel] = ControlMode.Velocity;
+        drivePower[wheel] = swerveModuleState.speedMetersPerSecond;
+        turnCommand[wheel] = ControlMode.Position;
+        turnPower[wheel] = swerveModuleState.angle.getDegrees();
     }
 
     @Override
@@ -144,14 +180,14 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     @Override
     public void setDriveCommand(int wheel, ControlMode mode, double output) {
-        // TODO Auto-generated method stub
-        
+        driveCommand[wheel] = mode;
+        drivePower[wheel] = output;
     }
 
     @Override
     public void setTurnCommand(int wheel, ControlMode mode, double output) {
-        // TODO Auto-generated method stub
-        
+        turnCommand[wheel] = mode;
+        turnPower[wheel] = output;
     }
     
 }
