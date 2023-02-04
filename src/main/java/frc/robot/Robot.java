@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         controls.CubeGrabOpenRequested().whileTrue(new OpenCube(intake));
         controls.CubeGrabCloseRequested().whileTrue(new CloseCube(intake));
-
+        
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));

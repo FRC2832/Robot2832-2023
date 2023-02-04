@@ -197,5 +197,17 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         turnCommand[wheel] = mode;
         turnPower[wheel] = output;
     }
+
+    @Override
+    public double getPitch() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getRoll() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
     
 }
