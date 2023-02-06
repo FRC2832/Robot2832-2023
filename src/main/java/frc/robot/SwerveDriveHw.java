@@ -109,7 +109,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public void updateInputs() {
         pigeon.getYawPitchRoll(ypr_deg);
-
+        
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
             absSensorValue[i] = absSensor[i].getAbsolutePosition();
             driveWheelVelocity[i] = driveMotor[i].getSelectedSensorVelocity() / COUNTS_PER_METER;
@@ -121,6 +121,17 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(ypr_deg[0]);
+    }
+
+    @Override
+    public double getPitch() {
+        return ypr_deg[1];
+    }
+
+    @Override
+    public double getRoll() {
+        
+        return ypr_deg[2];
     }
 
     @Override

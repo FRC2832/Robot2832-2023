@@ -47,8 +47,36 @@ public final class Constants {
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
     public static final double MAX_DRIVER_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
-    public static final double MAX_DRIVER_OMEGA = 1.5 * Math.PI;    //Max angle (rad/sec) the driver can go
+    public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
     public static final Pose2d START_POS = new Pose2d(3.186,6.072,Rotation2d.fromDegrees(-135));  //where does the robot start at?
+
+    public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
+    public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
+
+    public static final double ARM_ACCEPT_ERROR = 0.5;      //MAX error in inches for arm going to set points autonomously 
+    
+    //Arm set point constants 
+    public static final double ArmToPickupGround_X = 36;
+    public static final double ArmToPickupGround_Z = -2;
+
+    public static final double ArmToPickupTail_X = 30;
+    public static final double ArmToPickupTail_Z = 0;
+
+    public static final double ArmToPickupHuman_X = 30;
+    public static final double ArmToPickupHuman_Z = 20;
+
+    public static final double ArmToSecureLocation_X = 20;
+    public static final double ArmToSecureLocation_Z = 0;
+
+    public static final double ArmToScoreLow_X = -10;
+    public static final double ArmToScoreLow_Z = -4;
+
+    public static final double ArmToScoreMiddle_X = -20;
+    public static final double ArmToScoreMiddle_Z = 20;
+
+    public static final double ArmToScoreTop_X = -43;
+    public static final double ArmToScoreTop_Z = 30;
+    
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
@@ -20,6 +21,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private String moduleNames[];
     private double swerveOffsets[];
     private double turnOffsets[];
+    private InterpolatingTreeMap<Double, Double> speedReduction;
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
@@ -63,6 +65,12 @@ public class SwerveDriveTrain implements ISwerveDrive {
         moduleNames[FR] = "Module FR/";
         moduleNames[RL] = "Module RL/";
         moduleNames[RR] = "Module RR/";
+
+        //input is angle off desired, output is percent reduction
+        speedReduction = new InterpolatingTreeMap<Double, Double>();
+        speedReduction.put(0., 1.);
+        speedReduction.put(45., 0.3);
+        speedReduction.put(90., 0.);
     }
     
     @Override
@@ -78,7 +86,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
 
         //display data on SmartDashboard
-        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
+        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());       
+        SmartDashboard.putNumber("Pitch", hardware.getPitch());
+        SmartDashboard.putNumber("Roll", hardware.getRoll());
         for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
             SmartDashboard.putNumber(moduleNames[wheel] + "Abs Sensor", hardware.getCornerAbsAngle(wheel));
             SmartDashboard.putNumber(moduleNames[wheel] + "Turn Sensor", hardware.getCornerAngle(wheel));
@@ -96,8 +106,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         ChassisSpeeds speeds;
 
         if (fieldOriented) {
-            //90* is needed since we view the field on a 90* rotation
-            var angle = robotPose.getRotation().minus(Rotation2d.fromDegrees(90));
+            var angle = robotPose.getRotation();
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turn, angle);
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, turn);
@@ -119,8 +128,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 hardware.setTurnCommand(i, ControlMode.Disabled, 0);
             }
             else {
+                requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 //figure out delta angle from the current swerve state
                 var delta = requestStates[i].angle.minus(swerveStates[i].angle);
+                
+                //reduce drive speed based on how far the wheel angle is off
+                var reduction = speedReduction.get(Math.abs(delta.getDegrees()));
+                requestStates[i].speedMetersPerSecond *= reduction;
+
                 //add it to the current hardware motor angle since we control that motor
                 requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
                 hardware.setCornerState(i, requestStates[i]);
@@ -128,6 +143,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
             SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
             SmartDashboard.putNumber(moduleNames[i] + "Command Speed", requestStates[i].speedMetersPerSecond);
+        }
+    }
+
+    public void setWheelCommand(SwerveModuleState[] requests) {
+        for(int i=0; i<requests.length; i++) {
+            //figure out delta angle from the current swerve state
+            var delta = requests[i].angle.minus(swerveStates[i].angle);
+            //add it to the current hardware motor angle since we control that motor
+            requests[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
+            hardware.setCornerState(i, requests[i]);
         }
     }
 

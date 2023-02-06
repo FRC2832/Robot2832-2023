@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.interfaces.IDriveControls;
 
+
 public class DriveControls implements IDriveControls {
     private XboxController driveCont;
     private Saitek armCont;
@@ -37,12 +38,12 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public boolean BoostTriggerRequested() {
-        return driveCont.getLeftBumperPressed();
+        return driveCont.getRightTriggerAxis() > .1;
     }
 
     @Override
     public boolean PrecisionTriggerRequested() {
-        return driveCont.getRightBumperPressed();
+        return driveCont.getLeftTriggerAxis() > .1;
     }
 
     public double GetArmKinXCommand() {
@@ -56,9 +57,9 @@ public class DriveControls implements IDriveControls {
     @Override
     public double GetArmShoulderPct() {
         if(armCont.getOrangeTopLeftButton()) {
-            return 1;
+            return 0.3;
         } else if (armCont.getOrangeBottomLeftButton()) {
-            return -1;
+            return -0.3;
         } else {
             return 0;
         }
@@ -67,9 +68,9 @@ public class DriveControls implements IDriveControls {
     @Override
     public double GetArmElbowPct() {
         if(armCont.getOrangeTopRightButton()) {
-            return 1;
+            return 0.3;
         } else if (armCont.getOrangeBottomRightButton()) {
-            return -1;
+            return -0.3;
         } else {
             return 0;
         }
@@ -95,5 +96,59 @@ public class DriveControls implements IDriveControls {
         return new JoystickButton(armCont, Saitek.Button.pinkTopMiddle.value);
     }
 
+    @Override
+    public JoystickButton ShoulderPosRequested() {
+        return new JoystickButton(armCont, Saitek.Button.orangeTopLeft.value);
+    }
+
+    @Override
+    public JoystickButton ShoulderNegRequested() {
+        return new JoystickButton(armCont, Saitek.Button.orangeBottomLeft.value);
+    }
+
+    @Override
+    public JoystickButton ElbowPosRequested() {
+        return new JoystickButton(armCont, Saitek.Button.orangeTopRight.value);
+    }
+
+    @Override
+    public JoystickButton ElbowNegRequested() {
+        return new JoystickButton(armCont, Saitek.Button.orangeBottomRight.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupGround(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopLeft.value);
+    }
     
+    @Override
+    public JoystickButton ArmToPickupTail(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomLeft.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupHuman(){
+        return new JoystickButton(armCont, Saitek.Button.pinkBottomLeft.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToSecureLocation(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopMiddle.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreLow(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomMiddle.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreMiddle(){
+        return new JoystickButton(armCont, Saitek.Button.yellowBottomRight.value);
+    }
+    
+    @Override
+    public JoystickButton ArmToScoreTop(){
+        return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
+    }
+
 }

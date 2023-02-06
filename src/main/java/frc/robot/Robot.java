@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,6 +40,9 @@ public class Robot extends TimedRobot {
     private PneumaticHub pneumatics;
     private Arm arm;
 
+    private final PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
+    private NetworkTable table;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -47,6 +53,8 @@ public class Robot extends TimedRobot {
         DataLogManager.start();
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
+        table = NetworkTableInstance.getDefault().getTable("/status");
+        new LoopTimeLogger(this);
 
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
@@ -71,11 +79,23 @@ public class Robot extends TimedRobot {
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        //arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
-        arm.setDefaultCommand(new ArmPointToPointDifLengths(arm, controls));
-        controls.CubeGrabOpenRequested().whileActiveContinuous(new OpenCube(intake));
-        controls.CubeGrabCloseRequested().whileActiveContinuous(new CloseCube(intake));
+        controls.CubeGrabOpenRequested().whileTrue(new OpenCube(intake));
+        controls.CubeGrabCloseRequested().whileTrue(new CloseCube(intake));
+        
+        arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
+        controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
+        controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
+        controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
+        controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+        controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
+        controls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+        controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
+        controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
+        SmartDashboard.putData(new MoveWheelsStraight(drive));
     }
 
     /**
@@ -87,6 +107,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
+        loggingPeriodic();
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -166,4 +187,47 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {
     }
+
+      //TODO: Fill in channel names with actual function names
+  public String[] pdpChannelNames = {
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15"
+  };
+
+  public void loggingPeriodic() {
+    for(int i=0; i<pdpChannelNames.length; i++) {
+      table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
+    }
+    table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
+    table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
+    table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
+  
+    var canStatus = RobotController.getCANStatus();
+    table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
+    table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
+    table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
+    table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
+    table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
+
+    table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
+    table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
+    table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
+    table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
+    table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
+    table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+  }
 }

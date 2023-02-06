@@ -18,43 +18,25 @@ public class DriveArmToPoint extends CommandBase{
 
     @Override
     public void initialize() {
-        xPos = 36;
-        zPos = 36;
+        
     }
 
     @Override
     public void execute() {
-        //take the current position and +/- 0.1" per loop
+        xPos = arm.getArmXPosition();
+        zPos = arm.getArmZPosition();
+        //take the current position and +/- max 0.2" per loop
         xPos += controls.GetArmKinXCommand() * 0.2;
         zPos += -controls.GetArmKinZCommand() * 0.2;
         var x = xPos;
         var z = zPos;
 
-        double shoulder = 0;
-        double elbow = 0;
-        if(x >= 0) {
-            double l = x;
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            shoulder = phi + theta;
-            elbow = (phi - theta);
-        }
-        else{
-            double l = -x;
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            shoulder = 180 - (phi + theta);
-            elbow = 180 - (phi - theta);
-        }
-        arm.setElbowAngle(elbow);
-        arm.setShoulderAngle(shoulder);
+        arm.calcAngles(x, z);
     }
 
     @Override
     public boolean isFinished() {
-        return false; 
+        return true; 
     }
 
     @Override

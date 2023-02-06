@@ -26,12 +26,12 @@
       "buttonCount": 12,
       "buttonKeys": [
         90,
-        88,
+        49,
         67,
         79,
         80,
         -1,
-        -1,
+        50,
         -1,
         75,
         76,
@@ -102,10 +102,10 @@
   ],
   "robotJoysticks": [
     {
-      "guid": "Keyboard0"
+      "guid": "78696e70757401000000000000000000",
+      "useGamepad": true
     },
     {
-      "guid": "78696e70757401000000000000000000",
       "useGamepad": true
     }
   ]
