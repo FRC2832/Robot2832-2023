@@ -3,11 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,6 +18,7 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,9 +42,12 @@ public class Robot extends TimedRobot {
     private PneumaticHub pneumatics;
     private Arm arm;
 
+
     private final PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
     private NetworkTable table;
-
+    
+    // Auton starting position
+    public Pose2d startPosition;
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -55,12 +60,45 @@ public class Robot extends TimedRobot {
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
         new LoopTimeLogger(this);
-
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
+        double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
+            if(){
+                
+            }
+            else if(){
+                
+            }
+            else if (){
+
+            }
+            else (){
+            
+            }
+        }
+        else if(DriverStation.getAlliance() == DriverStation.Alliance.Red){
+            if(){
+                
+            }
+            else if(){
+
+            }
+            else if(){
+            
+            }
+            else{
+                
+            }
+
+        }
+        else{
+            SmartDashboard.putString("Error", "No Team");
+        };
 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
@@ -75,7 +113,7 @@ public class Robot extends TimedRobot {
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
-        odometry.resetPose(Constants.START_POS);
+        odometry.resetPose(Constants.START_RED_LEFT);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
@@ -114,7 +152,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         //set out position to the auto starting position
-        odometry.resetPose(Constants.START_POS);
+        odometry.resetPose(Constants.START_RED_LEFT);
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
@@ -130,7 +168,7 @@ public class Robot extends TimedRobot {
         //schedule.schedule(commands);
         
         //test auto to try driving to spots
-        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_POS);
+        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_RED_LEFT);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
     }
