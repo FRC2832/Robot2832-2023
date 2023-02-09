@@ -45,4 +45,9 @@ public  interface ISwerveDriveIo {
     void setDriveCommand(int wheel, ControlMode mode, double output);
 
     void setTurnCommand(int wheel, ControlMode mode, double output);
+
+    double getTurnMotorCurrent(int wheel);
+    double getDriveMotorCurrent(int wheel);
+    double getTurnMotorTemperature(int wheel);
+    double getDriveMotorTemperature(int wheel);
 }

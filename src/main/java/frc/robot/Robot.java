@@ -44,9 +44,29 @@ public class Robot extends TimedRobot {
 
     private final PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
     private NetworkTable table;
-    
-    // Auton starting position
+
     public Pose2d startPosition;
+    private String[] pdpChannelNames;
+
+    private String[] pdpPracticeChannelNames = {
+        "RR Drive",
+        "RR Turn",
+        "FR Turn",
+        "FR Drive",
+        "4",
+        "5",
+        "6",
+        "7",
+        "Pneumatics",
+        "9",
+        "10",
+        "11",
+        "FL Drive",
+        "FL Turn",
+        "RL Drive",
+        "RL Turn"
+      };
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -58,6 +78,7 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
+        pdpChannelNames = pdpPracticeChannelNames;
         new LoopTimeLogger(this);
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
@@ -227,46 +248,26 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
     }
 
-      //TODO: Fill in channel names with actual function names
-  public String[] pdpChannelNames = {
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15"
-  };
+    public void loggingPeriodic() {
+        for(int i=0; i<pdpChannelNames.length; i++) {
+            table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
+        }
+        table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
+        table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
+        table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
+    
+        var canStatus = RobotController.getCANStatus();
+        table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
+        table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
+        table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
+        table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
+        table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
 
-  public void loggingPeriodic() {
-    for(int i=0; i<pdpChannelNames.length; i++) {
-      table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
+        table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
+        table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
+        table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
+        table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
+        table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
+        table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
     }
-    table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
-    table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
-    table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
-  
-    var canStatus = RobotController.getCANStatus();
-    table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
-    table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
-    table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
-    table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
-    table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
-
-    table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
-    table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
-    table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
-    table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
-    table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
-    table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
-  }
 }
