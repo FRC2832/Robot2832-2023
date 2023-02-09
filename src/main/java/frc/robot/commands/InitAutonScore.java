@@ -23,11 +23,11 @@ public class InitAutonScore extends CommandBase {
     @Override
     public void execute() {
         if(this.location == 0) { //Score to top
-            new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+            new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
         } else if(this.location == 1) { //Score to middle
-            new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z)
+            new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z);
         } else { //Score to low
-            new ArmAutonPoint(this.arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z)
+            new ArmAutonPoint(this.arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z);
         }
 
         //TODO: Release cone
@@ -38,7 +38,7 @@ public class InitAutonScore extends CommandBase {
 
     @Override
     public boolean isFinished() {
-
+            return false;
     }
 
     @Override
