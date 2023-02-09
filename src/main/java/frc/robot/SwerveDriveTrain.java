@@ -8,6 +8,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
@@ -22,9 +24,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private double swerveOffsets[];
     private double turnOffsets[];
     private InterpolatingTreeMap<Double, Double> speedReduction;
-
+    private NetworkTable currentTable;
+    private NetworkTable tempTable;
+    
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
+
+        currentTable = NetworkTableInstance.getDefault().getTable("/motor_currents");
+        tempTable = NetworkTableInstance.getDefault().getTable("/motor_temps");
 
         //initialize the corner locations
         kinematics = new SwerveDriveKinematics(
@@ -97,6 +104,11 @@ public class SwerveDriveTrain implements ISwerveDrive {
             
             SmartDashboard.putNumber(moduleNames[wheel] + "ABS Offset", swerveOffsets[wheel]);
             SmartDashboard.putNumber(moduleNames[wheel] + "Turn Offset", turnOffsets[wheel]);
+
+            tempTable.getEntry(moduleNames[wheel] + "Drive").setDouble(hardware.getDriveMotorTemperature(wheel));
+            tempTable.getEntry(moduleNames[wheel] + "Turn").setDouble(hardware.getTurnMotorTemperature(wheel));
+            currentTable.getEntry(moduleNames[wheel] + "Drive").setDouble(hardware.getDriveMotorCurrent(wheel));
+            currentTable.getEntry(moduleNames[wheel] + "Turn").setDouble(hardware.getTurnMotorCurrent(wheel));
         }
     }
 
@@ -125,7 +137,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             if (Math.abs(requestStates[i].speedMetersPerSecond) < Constants.MIN_DRIVER_SPEED) {
                 //stop the requests if there is no movement
                 hardware.setDriveCommand(i, ControlMode.Disabled, 0);
-                hardware.setTurnCommand(i, ControlMode.Disabled, 0);
+                hardware.setTurnCommand(i, ControlMode.Disabled, 0.0);
             }
             else {
                 requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);

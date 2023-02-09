@@ -216,5 +216,25 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public double getCornerDistance(int wheel) {
         return driveWheelDistance[wheel];
     }
+
+    @Override
+    public double getTurnMotorCurrent(int wheel) {
+        return turnMotor[wheel].getStatorCurrent();
+    }
+
+    @Override
+    public double getDriveMotorCurrent(int wheel) {
+        return driveMotor[wheel].getStatorCurrent();
+    }
+
+    @Override
+    public double getTurnMotorTemperature(int wheel) {
+        return turnMotor[wheel].getTemperature();
+    }
+
+    @Override
+    public double getDriveMotorTemperature(int wheel) {
+        return driveMotor[wheel].getTemperature();
+    }
     
 }

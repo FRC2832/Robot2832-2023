@@ -209,5 +209,29 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         // TODO Auto-generated method stub
         return 0;
     }
+
+    @Override
+    public double getTurnMotorCurrent(int wheel) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getDriveMotorCurrent(int wheel) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getTurnMotorTemperature(int wheel) {
+        // TODO Auto-generated method stub
+        return 23;
+    }
+
+    @Override
+    public double getDriveMotorTemperature(int wheel) {
+        // TODO Auto-generated method stub
+        return 23;
+    }
     
 }
