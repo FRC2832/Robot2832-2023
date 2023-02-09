@@ -50,8 +50,13 @@ public final class Constants {
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
-    public static final Pose2d START_POS = new Pose2d(3.186,6.072,Rotation2d.fromDegrees(-135));  //where does the robot start at?
-
+    public static final Pose2d START_BLUE_LEFT = new Pose2d(2.5,4.75,Rotation2d.fromDegrees(0));  //starting positions for Auton
+    public static final Pose2d START_BLUE_MIDDLE = new Pose2d(2.5,2.75,Rotation2d.fromDegrees(0)); 
+    public static final Pose2d START_BLUE_RIGHT = new Pose2d(2.5,1.15,Rotation2d.fromDegrees(0)); 
+    public static final Pose2d START_RED_LEFT = new Pose2d(13.5,4.75,Rotation2d.fromDegrees(180)); 
+    public static final Pose2d START_RED_MIDDLE = new Pose2d(13.5,2.75,Rotation2d.fromDegrees(180)); 
+    public static final Pose2d START_RED_RIGHT = new Pose2d(13.5,1.15,Rotation2d.fromDegrees(180)); 
+    
     public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
     public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
 
