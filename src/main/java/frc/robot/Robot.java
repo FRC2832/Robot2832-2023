@@ -65,41 +65,7 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
-
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
-            if(){
-                
-            }
-            else if(){
-                
-            }
-            else if (){
-
-            }
-            else (){
-            
-            }
-        }
-        else if(DriverStation.getAlliance() == DriverStation.Alliance.Red){
-            if(){
-                
-            }
-            else if(){
-
-            }
-            else if(){
-            
-            }
-            else{
-                
-            }
-
-        }
-        else{
-            SmartDashboard.putString("Error", "No Team");
-        };
-
+        
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
@@ -113,7 +79,7 @@ public class Robot extends TimedRobot {
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
-        odometry.resetPose(Constants.START_RED_LEFT);
+        odometry.resetPose(Constants.START_BLUE_LEFT);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
@@ -134,6 +100,7 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
+        SmartDashboard.putNumber("AutonomousStartPosition", 0);
     }
 
     /**
@@ -151,8 +118,43 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+
+        double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
+            if(AutonomousStartPosition == 0){
+                startPosition = Constants.START_BLUE_LEFT;
+            }
+            else if(AutonomousStartPosition == 1){
+                startPosition = Constants.START_BLUE_MIDDLE;
+            }
+            else if(AutonomousStartPosition == 2){
+                startPosition = Constants.START_BLUE_RIGHT;
+            }
+            else{
+                SmartDashboard.putString("Error", "No Position");
+            }
+        }
+        else if(DriverStation.getAlliance() == DriverStation.Alliance.Red){
+            if(AutonomousStartPosition == 0){
+                startPosition = Constants.START_RED_LEFT;
+            }
+            else if(AutonomousStartPosition == 1){
+                startPosition = Constants.START_RED_MIDDLE;
+            }
+            else if(AutonomousStartPosition == 2){
+                startPosition = Constants.START_RED_RIGHT;
+            }
+            else{
+                SmartDashboard.putString("Error", "No Position"); 
+            }
+
+        }
+        else{
+            SmartDashboard.putString("Error", "No Team");
+        };
         //set out position to the auto starting position
-        odometry.resetPose(Constants.START_RED_LEFT);
+        odometry.resetPose(startPosition);
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
@@ -168,7 +170,7 @@ public class Robot extends TimedRobot {
         //schedule.schedule(commands);
         
         //test auto to try driving to spots
-        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_RED_LEFT);
+        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
     }
