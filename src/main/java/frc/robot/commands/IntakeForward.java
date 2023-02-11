@@ -10,10 +10,9 @@ public class IntakeForward extends CommandBase{
     
     private GrabberIntake intake;
 
-    //need to include the pneumatic code and the methods for that
     public IntakeForward(GrabberIntake intake) { 
         this.intake = intake;
-        addRequirements();
+        addRequirements(intake);
     }
 
     @Override
@@ -32,6 +31,8 @@ public class IntakeForward extends CommandBase{
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        intake.intakeOff();
+    }
 
 }
