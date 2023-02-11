@@ -86,4 +86,10 @@ public class ArmSim implements IArmControl {
     public double getShoulderAngle() {
         return shoulderDeg;
     }
+
+    @Override
+    public void checkBrake() {
+        // TODO Auto-generated method stub
+        
+    }
 }
