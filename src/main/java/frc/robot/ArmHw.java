@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,15 +94,14 @@ public class ArmHw implements IArmControl {
         //Frac is 0 at lowest point, 1 at max extension
         var rawDC = shoulderEncoder.getOutput();
         SmartDashboard.putNumber("Shoulder Raw", rawDC);
-        var dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
-        shoulderAngle = SHOULDER_MIN_ANGLE + dcFrac * (SHOULDER_MAX_ANGLE - SHOULDER_MIN_ANGLE);
+        //make shoulder between -90 to 270 to "ignore" the rollover point at vertical on the arm
+        shoulderAngle = MathUtil.inputModulus((rawDC * 360) - 287,-90,270);
 
         shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
 
         rawDC = elbowEncoder.getOutput();
         SmartDashboard.putNumber("Elbow Raw", rawDC);
-        dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
-        elbowAngle = ELBOW_MIN_ANGLE + dcFrac * (ELBOW_MAX_ANGLE - ELBOW_MIN_ANGLE);
+        elbowAngle =  MathUtil.inputModulus((rawDC * 360)-135,-180,180);
 
         elbowMotor.setSelectedSensorPosition(elbowAngle * COUNTS_PER_DEGREE_ELBOW);
 
