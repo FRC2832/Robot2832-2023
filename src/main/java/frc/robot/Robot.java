@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
         // initialize robot parts and locations where they are
         controls = new DriveControls();
         
-        camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+        camera = new PhotonCamera("JeVois-A33_Video_Camera");
         
         
         // initialize robot features
