@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         // Starts recording to data log
-        /*DataLogManager.start();
+        DataLogManager.start();
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
@@ -86,12 +86,13 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        */
-        camera : new PhotonCamera("Microsoft_LifeCam_Hd-3000");
-        /* 
+        
+        camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+        
+        
         // initialize robot features
         schedule = CommandScheduler.getInstance();
-        if(isReal()) {
+        if(false) {
             drive = new SwerveDriveTrain(new SwerveDriveHw());
             arm = new Arm(new ArmHw());
         } else {
@@ -124,7 +125,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
-        */
+        
     }
 
     /**
@@ -137,6 +138,7 @@ public class Robot extends TimedRobot {
         //run the command schedule no matter what mode we are in
         schedule.run();
         loggingPeriodic();
+        SmartDashboard.putNumber("Camera Lag", camera.getLatestResult().getLatencyMillis());
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -195,10 +197,10 @@ public class Robot extends TimedRobot {
         
         //test auto to try driving to spots
 
-        /*DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
+        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
-        */
+        
     }
 
     /** This function is called periodically during autonomous. */
@@ -213,9 +215,9 @@ public class Robot extends TimedRobot {
         //the default commands should take over
         schedule.cancelAll();
         //odometry.resetHeading();
-        /*drive.setDriveMotorBrakeMode(true);
+        drive.setDriveMotorBrakeMode(true);
         drive.setTurnMotorBrakeMode(true);
-        */
+        
     }
 
     /** This function is called periodically during operator control. */
