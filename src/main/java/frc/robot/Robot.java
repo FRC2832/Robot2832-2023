@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
 package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -15,8 +16,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
+import frc.robot.interfaces.ITailControl;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+
+
 
 
 /**
@@ -28,24 +32,30 @@ import frc.robot.simulation.SwerveDriveSim;
  */
 public class Robot extends TimedRobot {
 
+
     // robot parts
     private CommandScheduler schedule;
+
 
     // robot features
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
 
-    private GrabberIntake intake;
+    private Tail tail;
+
 
     private PneumaticHub pneumatics;
     private Arm arm;
 
+
     private PowerDistribution pdp;
     private NetworkTable table;
 
+
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -65,6 +75,7 @@ public class Robot extends TimedRobot {
         "RL Drive",
         "RL Turn"
       };
+
 
       private String[] pdhRealChannelNames = {
         "RFTurn",
@@ -93,6 +104,7 @@ public class Robot extends TimedRobot {
         "23",
       };
 
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -110,9 +122,10 @@ public class Robot extends TimedRobot {
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
 
+
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        
+       
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
@@ -122,17 +135,19 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
         }
-        intake = new GrabberIntake();
-        
+        //intake = new GrabberIntake();
+        tail = new Tail(new TailHw());
+
+
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
+
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        controls.CubeGrabOpenRequested().whileTrue(new OpenCube(intake));
-        controls.CubeGrabCloseRequested().whileTrue(new CloseCube(intake));
-        
+       
+       
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
@@ -146,9 +161,15 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
+
+        controls.TailUpRequested().whileTrue(new TailMovement(controls));
+        controls.TailDownRequested().whileTrue(new TailMovement(controls));
+
+
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
     }
+
 
     /**
      * This function is called every robot packet, no matter the mode. Use this for
@@ -162,11 +183,14 @@ public class Robot extends TimedRobot {
         loggingPeriodic();
     }
 
+
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
 
+
         double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
+
 
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
             if(AutonomousStartPosition == 0){
@@ -193,8 +217,9 @@ public class Robot extends TimedRobot {
                 startPosition = Constants.START_RED_RIGHT;
             }
             else{
-                SmartDashboard.putString("Error", "No Position"); 
+                SmartDashboard.putString("Error", "No Position");
             }
+
 
         }
         else{
@@ -203,8 +228,10 @@ public class Robot extends TimedRobot {
         //set out position to the auto starting position
         odometry.resetPose(startPosition);
 
+
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
+
 
         new SequentialCommandGroup(
             //drive forward 2 sec, turn right, forward 2 sec, left, drive 1 sec
@@ -213,19 +240,22 @@ public class Robot extends TimedRobot {
             new DriveTimed(drive, 2)
         );
 
+
         //schedule this command for our autonomous
         //schedule.schedule(commands);
-        
+       
         //test auto to try driving to spots
         DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
     }
 
+
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
     }
+
 
     /** This function is called once when teleop is enabled. */
     @Override
@@ -238,10 +268,12 @@ public class Robot extends TimedRobot {
         drive.setTurnMotorBrakeMode(true);
     }
 
+
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
     }
+
 
     /** This function is called once when the robot is disabled. */
     @Override
@@ -250,30 +282,36 @@ public class Robot extends TimedRobot {
         drive.setTurnMotorBrakeMode(false);
     }
 
+
     /** This function is called periodically when disabled. */
     @Override
     public void disabledPeriodic() {
     }
+
 
     /** This function is called once when test mode is enabled. */
     @Override
     public void testInit() {
     }
 
+
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
     }
+
 
     /* Where to initialize simulation objects */
     @Override
     public void simulationInit() {
     }
 
+
     /* where to map simulation physics, like drive commands to encoder counts */
     @Override
     public void simulationPeriodic() {
     }
+
 
     public void loggingPeriodic() {
         for(int i=0; i<pdpChannelNames.length; i++) {
@@ -282,13 +320,14 @@ public class Robot extends TimedRobot {
         table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
         table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
         table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
-    
+   
         var canStatus = RobotController.getCANStatus();
         table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
         table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
         table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
         table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
         table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
+
 
         table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
         table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
