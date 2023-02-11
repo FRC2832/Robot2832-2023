@@ -24,7 +24,7 @@ public class IntakeHw implements IIntakeControl{
     public IntakeHw(){
         intakeMotor = new TalonSRX(0); //TODO: Find out the real device numbers
         pivotMotor = new TalonSRX(1);
-        intakeEncoder = new DutyCycle(new DigitalInput(3)); //channel is currently 3 on PDP schematic
+        intakeEncoder = new DutyCycle(new DigitalInput(4)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there
     }
     
     public void setIntakeAngle(double angleDeg){
