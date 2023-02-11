@@ -8,7 +8,7 @@ public class GrabberIntake implements Subsystem {
     private DoubleSolenoid grabber;
 
     public GrabberIntake(){
-        grabber = new DoubleSolenoid(PneumaticsModuleType.REVPH,0,1);
+        grabber = new DoubleSolenoid(PneumaticsModuleType.REVPH,10,11);
     }
 
     public void Grab(boolean grabbing) {

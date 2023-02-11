@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IArmControl;
 
 public class ArmHw implements IArmControl {
@@ -70,19 +71,19 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void checkBrake(){
-        double elbow = elbowMotor.getMotorOutputPercent();
-        double shoulder = shoulderMotor.getMotorOutputPercent();
-        if(elbow < 3){
-            brakes.Brake(true, 1);
-        }
-        else {
+        double elbow = Math.abs(elbowMotor.getMotorOutputPercent());
+        double shoulder = Math.abs(shoulderMotor.getMotorOutputPercent());
+        if(elbow < 0.03){
             brakes.Brake(false, 1);
         }
-        if(shoulder < 3){
-            brakes.Brake(true, 0);
+        else {
+            brakes.Brake(true, 1);
+        }
+        if(shoulder < 0.03){
+            brakes.Brake(false, 0);
         }
         else {
-            brakes.Brake(false, 0);
+            brakes.Brake(true, 0);
         }
     }
 
@@ -91,12 +92,14 @@ public class ArmHw implements IArmControl {
         
         //Frac is 0 at lowest point, 1 at max extension
         var rawDC = shoulderEncoder.getOutput();
+        SmartDashboard.putNumber("Shoulder Raw", rawDC);
         var dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
         shoulderAngle = SHOULDER_MIN_ANGLE + dcFrac * (SHOULDER_MAX_ANGLE - SHOULDER_MIN_ANGLE);
 
         shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
 
         rawDC = elbowEncoder.getOutput();
+        SmartDashboard.putNumber("Elbow Raw", rawDC);
         dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
         elbowAngle = ELBOW_MIN_ANGLE + dcFrac * (ELBOW_MAX_ANGLE - ELBOW_MIN_ANGLE);
 
