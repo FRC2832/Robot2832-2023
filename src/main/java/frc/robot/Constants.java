@@ -29,17 +29,18 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_RIGHT_ENCODER_PORT = 43;
 
     //CanCoder zero locations
-    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 310.7;
-    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 318.0;
-    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 179.2;
-    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 19.33;
+    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 142.2;
+    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 10.8;
+    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 90.5;
+    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 120.4;
 
     //Swerve corner locations for kinematics
-    //24 3/8" for the distance between 2 wheels + 2 1.5" wheel widths = 11.4375" off the center point of the robot
-    public static final Translation2d SWERVE_FRONT_LEFT_LOCATION = new Translation2d(0.291, 0.291);
-    public static final Translation2d SWERVE_FRONT_RIGHT_LOCATION = new Translation2d(0.291, -0.291);
-    public static final Translation2d SWERVE_BACK_LEFT_LOCATION = new Translation2d(-0.291, 0.291);
-    public static final Translation2d SWERVE_BACK_RIGHT_LOCATION = new Translation2d(-0.291, -0.291);
+    //22.25 -1.5" width 10.375"
+    //26.75" for the distance , 13.375"
+    public static final Translation2d SWERVE_FRONT_LEFT_LOCATION = new Translation2d(0.264, 0.340);
+    public static final Translation2d SWERVE_FRONT_RIGHT_LOCATION = new Translation2d(0.264, -0.340);
+    public static final Translation2d SWERVE_BACK_LEFT_LOCATION = new Translation2d(-0.264, 0.340);
+    public static final Translation2d SWERVE_BACK_RIGHT_LOCATION = new Translation2d(-0.264, -0.340);
 
     public static final double MAX_DRIVETRAIN_SPEED = 4.96;         //max meters per second the swerve modules can go
     public static final double MAX_DRIVETRAIN_OMEGA = 3 * Math.PI;  //max Radians per Second the robot can spin

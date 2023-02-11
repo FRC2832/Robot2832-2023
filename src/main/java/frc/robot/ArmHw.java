@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,10 +27,12 @@ public class ArmHw implements IArmControl {
     final double COUNTS_PER_DEGREE_ELBOW =  426.667;
 
     public ArmHw() {
-        shoulderMotor = new TalonFX(60);
-        elbowMotor = new TalonFX(61);
-        shoulderEncoder = new DutyCycle(new DigitalInput(2));
-        elbowEncoder = new DutyCycle(new DigitalInput(3));
+        shoulderMotor = new TalonFX(46);
+        shoulderMotor.setNeutralMode(NeutralMode.Brake);
+        elbowMotor = new TalonFX(45);
+        elbowMotor.setNeutralMode(NeutralMode.Brake);
+        shoulderEncoder = new DutyCycle(new DigitalInput(0));
+        elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
     }
 

@@ -41,8 +41,7 @@ public class Robot extends TimedRobot {
     private PneumaticHub pneumatics;
     private Arm arm;
 
-
-    private final PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
+    private PowerDistribution pdp;
     private NetworkTable table;
 
     public Pose2d startPosition;
@@ -67,6 +66,33 @@ public class Robot extends TimedRobot {
         "RL Turn"
       };
 
+      private String[] pdhRealChannelNames = {
+        "RFTurn",
+        "RF Drive",
+        "LF Turn",
+        "LF Drive",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "Front MPM",
+        "10",
+        "11",
+        "12",
+        "Back MPM",
+        "14",
+        "15",
+        "RLTurn",
+        "RLDrive",
+        "RRDrive",
+        "RRTurn",
+        "Radio Power",
+        "Pneumatics",
+        "RoboRio",
+        "23",
+      };
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -78,7 +104,8 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
-        pdpChannelNames = pdpPracticeChannelNames;
+        pdp = new PowerDistribution(1,ModuleType.kRev);
+        pdpChannelNames = pdhRealChannelNames;
         new LoopTimeLogger(this);
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
