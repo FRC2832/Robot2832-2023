@@ -15,6 +15,7 @@ public class ArmHw implements IArmControl {
     double shoulderAngle;
     DutyCycle elbowEncoder;
     double elbowAngle;
+    ArmBrakes brakes;
 
     final double MIN_DUTY_CYCLE = 0.998;
     final double MAX_DUTY_CYCLE = 0.167;
@@ -32,6 +33,7 @@ public class ArmHw implements IArmControl {
         elbowMotor.setNeutralMode(NeutralMode.Brake);
         shoulderEncoder = new DutyCycle(new DigitalInput(0));
         elbowEncoder = new DutyCycle(new DigitalInput(1));
+        brakes = new ArmBrakes();
     }
 
     @Override
@@ -53,8 +55,7 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void setElbowMotorVolts(double volts) {
-       elbowMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
-        
+        elbowMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
     }
 
     @Override
@@ -65,6 +66,24 @@ public class ArmHw implements IArmControl {
     @Override
     public double getShoulderAngle() {
         return shoulderAngle;
+    }
+
+    @Override
+    public void checkBrake(){
+        double elbow = elbowMotor.getMotorOutputPercent();
+        double shoulder = shoulderMotor.getMotorOutputPercent();
+        if(elbow < 3){
+            brakes.Brake(true, 1);
+        }
+        else {
+            brakes.Brake(false, 1);
+        }
+        if(shoulder < 3){
+            brakes.Brake(true, 0);
+        }
+        else {
+            brakes.Brake(false, 0);
+        }
     }
 
     @Override
