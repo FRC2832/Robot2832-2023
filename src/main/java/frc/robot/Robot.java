@@ -17,6 +17,7 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+import org.photonvision.PhotonCamera;
 
 
 /**
@@ -35,7 +36,7 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
-
+    private PhotonCamera camera;
     private GrabberIntake intake;
 
     private PneumaticHub pneumatics;
@@ -74,7 +75,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         // Starts recording to data log
-        DataLogManager.start();
+        /*DataLogManager.start();
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
@@ -85,7 +86,9 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        
+        */
+        camera : new PhotonCamera("Microsoft_LifeCam_Hd-3000");
+        /* 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
@@ -121,6 +124,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
+        */
     }
 
     /**
@@ -140,7 +144,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
 
         double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
-
+        
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
             if(AutonomousStartPosition == 0){
                 startPosition = Constants.START_BLUE_LEFT;
@@ -190,9 +194,11 @@ public class Robot extends TimedRobot {
         //schedule.schedule(commands);
         
         //test auto to try driving to spots
-        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
+
+        /*DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
+        */
     }
 
     /** This function is called periodically during autonomous. */
@@ -207,8 +213,9 @@ public class Robot extends TimedRobot {
         //the default commands should take over
         schedule.cancelAll();
         //odometry.resetHeading();
-        drive.setDriveMotorBrakeMode(true);
+        /*drive.setDriveMotorBrakeMode(true);
         drive.setTurnMotorBrakeMode(true);
+        */
     }
 
     /** This function is called periodically during operator control. */
