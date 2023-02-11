@@ -18,6 +18,7 @@ public class Arm implements Subsystem{
         hardware.updateInputs();
         SmartDashboard.putNumber("Shoulder Angle", getShoulderAngle());
         SmartDashboard.putNumber("Elbow Angle", getElbowAngle());
+        hardware.checkBrake();
     }
 
     public void setShoulderAngle(double angleDeg) {
