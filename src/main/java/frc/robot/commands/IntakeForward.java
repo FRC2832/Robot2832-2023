@@ -1,15 +1,17 @@
 package frc.robot.commands;
 
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.GrabberIntake;
 
 
 
-public class CloseCube extends CommandBase{
+public class IntakeForward extends CommandBase{
+    
     private GrabberIntake intake;
 
     //need to include the pneumatic code and the methods for that
-    public CloseCube(GrabberIntake intake) { 
+    public IntakeForward(GrabberIntake intake) { 
         this.intake = intake;
         addRequirements();
     }

@@ -77,22 +77,12 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public boolean IntakeConeRequested() {
-        return armCont.getYellowTopLeftButton();
-    }
-
-    @Override
-    public boolean OuttakeConeRequested() {
-        return armCont.getYellowTopMiddleButton();
-    }
-
-    @Override
-    public JoystickButton CubeGrabCloseRequested() {
+    public JoystickButton intakeInRequested() {
         return new JoystickButton(armCont, Saitek.Button.pinkTopLeft.value);
     }
 
     @Override
-    public JoystickButton CubeGrabOpenRequested() {
+    public JoystickButton intakeOutRequested() {
         return new JoystickButton(armCont, Saitek.Button.pinkTopMiddle.value);
     }
 

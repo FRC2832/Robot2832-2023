@@ -10,10 +10,8 @@ public interface IDriveControls {
     double GetArmElbowPct();
     double GetArmKinXCommand();
     double GetArmKinZCommand();
-    boolean IntakeConeRequested();
-    boolean OuttakeConeRequested();
-    JoystickButton CubeGrabCloseRequested(); 
-    JoystickButton CubeGrabOpenRequested();
+    JoystickButton intakeInRequested(); 
+    JoystickButton intakeOutRequested();
     boolean BoostTriggerRequested();
     boolean PrecisionTriggerRequested();
     boolean IsFieldOrientedResetRequested();
