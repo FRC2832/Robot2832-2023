@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -28,7 +28,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private TalonFX turnMotor[];
     private TalonFX driveMotor[];
     private CANCoder absSensor[];
-    private PigeonIMU pigeon;
+    private Pigeon2 pigeon;
     
     //sensor value buffers
     private double ypr_deg[];
@@ -59,7 +59,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         absSensor[ISwerveDrive.RL] = new CANCoder(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT);
         absSensor[ISwerveDrive.RR] = new CANCoder(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT);
 
-        pigeon = new PigeonIMU(Constants.PIGEON_IMU_ID);
+        pigeon = new Pigeon2(Constants.PIGEON_IMU_ID);
 
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
 
@@ -109,7 +109,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public void updateInputs() {
         pigeon.getYawPitchRoll(ypr_deg);
-        
+
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
             absSensorValue[i] = absSensor[i].getAbsolutePosition();
             driveWheelVelocity[i] = driveMotor[i].getSelectedSensorVelocity() / COUNTS_PER_METER;
@@ -130,7 +130,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
 
     @Override
     public double getRoll() {
-        
         return ypr_deg[2];
     }
 
