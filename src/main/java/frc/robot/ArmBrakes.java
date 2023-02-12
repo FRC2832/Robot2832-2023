@@ -13,9 +13,9 @@ public class ArmBrakes {
         elbowBrake = new Solenoid(PneumaticsModuleType.REVPH,1);
     }
 
-    public void Brake(boolean braking, int channel) {
+    public void Brake(boolean release, int channel) {
         if (channel == 0) {
-            if (braking) {
+            if (release) {
                 shoulderBrake.set(true);
             }
             else {
@@ -23,7 +23,7 @@ public class ArmBrakes {
             }
         }
         else if (channel == 1) {
-            if (braking) {
+            if (release) {
                 elbowBrake.set(true);
             }
             else {

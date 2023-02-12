@@ -68,9 +68,9 @@ public class DriveControls implements IDriveControls {
     @Override
     public double GetArmElbowPct() {
         if(armCont.getOrangeTopRightButton()) {
-            return 0.3;
-        } else if (armCont.getOrangeBottomRightButton()) {
             return -0.3;
+        } else if (armCont.getOrangeBottomRightButton()) {
+            return 0.3;
         } else {
             return 0;
         }
