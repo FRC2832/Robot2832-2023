@@ -13,6 +13,8 @@ public interface IArmControl {
 
     double getShoulderAngle();
 
+    void checkBrake();
+
     void updateInputs();
 
 }

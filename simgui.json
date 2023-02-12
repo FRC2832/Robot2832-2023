@@ -4,14 +4,10 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
       "/SmartDashboard/DriveToPoint": "Command",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/MoveWheelsStraight": "Command"
     },
     "windows": {
-      "/SmartDashboard/Arm Sim": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "image": "2023-field.png",
         "window": {
