@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
     private Odometry odometry;
     private IDriveControls controls;
 
+    private GrabberIntake intake;
 
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -121,6 +122,7 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
         }
+        intake = new GrabberIntake();
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
@@ -128,6 +130,8 @@ public class Robot extends TimedRobot {
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
+        controls.CubeGrabOpenRequested().whileTrue(new OpenCube(intake));
+        controls.CubeGrabCloseRequested().whileTrue(new CloseCube(intake));
         
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
