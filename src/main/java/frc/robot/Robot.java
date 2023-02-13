@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
@@ -17,6 +17,7 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,8 +41,57 @@ public class Robot extends TimedRobot {
     private PneumaticHub pneumatics;
     private Arm arm;
 
-    private final PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
+    private PowerDistribution pdp;
     private NetworkTable table;
+
+    public Pose2d startPosition;
+    private String[] pdpChannelNames;
+
+    private String[] pdpPracticeChannelNames = {
+        "RR Drive",
+        "RR Turn",
+        "FR Turn",
+        "FR Drive",
+        "4",
+        "5",
+        "6",
+        "7",
+        "Pneumatics",
+        "9",
+        "10",
+        "11",
+        "FL Drive",
+        "FL Turn",
+        "RL Drive",
+        "RL Turn"
+      };
+
+      private String[] pdhRealChannelNames = {
+        "RFTurn",
+        "RF Drive",
+        "LF Turn",
+        "LF Drive",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "Front MPM",
+        "10",
+        "11",
+        "12",
+        "Back MPM",
+        "14",
+        "15",
+        "RLTurn",
+        "RLDrive",
+        "RRDrive",
+        "RRTurn",
+        "Radio Power",
+        "Pneumatics",
+        "RoboRio",
+        "23",
+      };
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -54,14 +104,15 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
+        pdp = new PowerDistribution(1,ModuleType.kRev);
+        pdpChannelNames = pdhRealChannelNames;
         new LoopTimeLogger(this);
-
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-
+        
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
@@ -75,12 +126,12 @@ public class Robot extends TimedRobot {
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
-        odometry.resetPose(Constants.START_POS);
+        odometry.resetPose(Constants.START_BLUE_LEFT);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        controls.intakeInRequested().whileTrue(new IntakeBackward(intake));
-        controls.intakeOutRequested().whileTrue(new IntakeForward(intake));
+        controls.CubeGrabOpenRequested().whileTrue(new OpenCube(intake));
+        controls.CubeGrabCloseRequested().whileTrue(new CloseCube(intake));
         
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
@@ -96,6 +147,7 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
+        SmartDashboard.putNumber("AutonomousStartPosition", 0);
     }
 
     /**
@@ -113,8 +165,43 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+
+        double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
+            if(AutonomousStartPosition == 0){
+                startPosition = Constants.START_BLUE_LEFT;
+            }
+            else if(AutonomousStartPosition == 1){
+                startPosition = Constants.START_BLUE_MIDDLE;
+            }
+            else if(AutonomousStartPosition == 2){
+                startPosition = Constants.START_BLUE_RIGHT;
+            }
+            else{
+                SmartDashboard.putString("Error", "No Position");
+            }
+        }
+        else if(DriverStation.getAlliance() == DriverStation.Alliance.Red){
+            if(AutonomousStartPosition == 0){
+                startPosition = Constants.START_RED_LEFT;
+            }
+            else if(AutonomousStartPosition == 1){
+                startPosition = Constants.START_RED_MIDDLE;
+            }
+            else if(AutonomousStartPosition == 2){
+                startPosition = Constants.START_RED_RIGHT;
+            }
+            else{
+                SmartDashboard.putString("Error", "No Position"); 
+            }
+
+        }
+        else{
+            SmartDashboard.putString("Error", "No Team");
+        };
         //set out position to the auto starting position
-        odometry.resetPose(Constants.START_POS);
+        odometry.resetPose(startPosition);
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
@@ -130,7 +217,7 @@ public class Robot extends TimedRobot {
         //schedule.schedule(commands);
         
         //test auto to try driving to spots
-        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_POS);
+        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
     }
@@ -188,46 +275,26 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
     }
 
-      //TODO: Fill in channel names with actual function names
-  public String[] pdpChannelNames = {
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15"
-  };
+    public void loggingPeriodic() {
+        for(int i=0; i<pdpChannelNames.length; i++) {
+            table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
+        }
+        table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
+        table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
+        table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
+    
+        var canStatus = RobotController.getCANStatus();
+        table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
+        table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
+        table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
+        table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
+        table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
 
-  public void loggingPeriodic() {
-    for(int i=0; i<pdpChannelNames.length; i++) {
-      table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
+        table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
+        table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
+        table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
+        table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
+        table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
+        table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
     }
-    table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
-    table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
-    table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
-  
-    var canStatus = RobotController.getCANStatus();
-    table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
-    table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
-    table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
-    table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
-    table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
-
-    table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
-    table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
-    table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
-    table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
-    table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
-    table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
-  }
 }
