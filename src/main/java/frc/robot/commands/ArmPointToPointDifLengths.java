@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
+import frc.robot.Constants;
 import frc.robot.interfaces.IDriveControls;
 
 
@@ -32,20 +33,18 @@ public class ArmPointToPointDifLengths extends CommandBase{
         var x = xPos;
         var z = zPos;
 
-        double bicepLen = 36;
-        double forearmLen = 28;
         double shoulder = 0;
         //elbow sometimes shows NaN, sometimes shows 0.0, not anything that i hard code it to
         double elbow = 0;
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
         if(x >= 0) {
-            elbow = 3.14159 - Math.acos(bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z);
+            elbow = 3.14159 - Math.acos((Constants.BICEP_LENGTH*Constants.BICEP_LENGTH + Constants.FOREARM_LENGTH*Constants.FOREARM_LENGTH - x*x - z*z)/(2*Constants.BICEP_LENGTH*Constants.FOREARM_LENGTH));
         }
         else{
-            elbow = Math.acos(x*x + z*z - bicepLen*bicepLen - forearmLen*forearmLen);
+            elbow = Math.acos((x*x + z*z - Constants.BICEP_LENGTH*Constants.BICEP_LENGTH - Constants.FOREARM_LENGTH*Constants.FOREARM_LENGTH)/(2*Constants.BICEP_LENGTH*Constants.FOREARM_LENGTH));
         }
         // finds shoulder angle in radians
-        shoulder = Math.atan(x/z) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + bicepLen*Math.cos(elbow)));
+        shoulder = Math.atan(z/x) - Math.atan((Constants.FOREARM_LENGTH*Math.sin(elbow))/(Constants.BICEP_LENGTH + Constants.FOREARM_LENGTH*Math.cos(elbow)));
         elbow = Math.toDegrees(elbow);
         shoulder = Math.toDegrees(shoulder);
 
