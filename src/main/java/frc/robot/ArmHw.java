@@ -30,9 +30,9 @@ public class ArmHw implements IArmControl {
 
     public ArmHw() {
         shoulderMotor = new TalonFX(46);
-        shoulderMotor.setNeutralMode(NeutralMode.Brake);
+        shoulderMotor.setNeutralMode(NeutralMode.Coast);
         elbowMotor = new TalonFX(45);
-        elbowMotor.setNeutralMode(NeutralMode.Brake);
+        elbowMotor.setNeutralMode(NeutralMode.Coast);
         shoulderEncoder = new DutyCycle(new DigitalInput(0));
         elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
@@ -41,13 +41,15 @@ public class ArmHw implements IArmControl {
     @Override
     public void setShoulderAngle(double angleDeg) {
         // TODO Implement ARM PID
-        shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
+        //shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
+        SmartDashboard.putNumber("Commanded Shoulder Angle", angleDeg);
     }
 
     @Override
     public void setElbowAngle(double angleDeg) {
         // TODO Implement ARM PID
-        elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
+        //elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
+        SmartDashboard.putNumber("Commanded Elbow Angle", angleDeg);
     }
 
     @Override
