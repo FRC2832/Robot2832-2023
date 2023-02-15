@@ -141,4 +141,34 @@ public class DriveControls implements IDriveControls {
         return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
     }
 
+    @Override
+    public JoystickButton TailUpRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+    }
+
+    @Override
+    public JoystickButton TailDownRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+    }
+
+    @Override
+    public JoystickButton GrabberUpRequested() {
+        return new JoystickButton(armCont, 17);
+    }
+
+    @Override
+    public JoystickButton GrabberDownRequested() {
+        return new JoystickButton(armCont, 19);
+    }
+
+    @Override
+    public JoystickButton GrabberSuckRequested() {
+        return new JoystickButton(armCont, 18);
+    }
+
+    @Override
+    public JoystickButton GrabberSpitRequested() {
+        return new JoystickButton(armCont, 20);
+    }
+
 }

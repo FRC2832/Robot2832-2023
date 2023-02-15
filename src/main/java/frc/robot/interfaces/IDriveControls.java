@@ -26,5 +26,10 @@ public interface IDriveControls {
     JoystickButton ArmToScoreLow();
     JoystickButton ArmToScoreMiddle();
     JoystickButton ArmToScoreTop();
-    
+    JoystickButton TailUpRequested();
+    JoystickButton TailDownRequested();
+    JoystickButton GrabberUpRequested();
+    JoystickButton GrabberDownRequested();
+    JoystickButton GrabberSuckRequested();
+    JoystickButton GrabberSpitRequested();
 }

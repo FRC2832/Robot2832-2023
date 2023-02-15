@@ -10,8 +10,8 @@ public class TailMovement extends CommandBase{
     private IDriveControls controls;
 
 
-    public TailMovement(IDriveControls controls){
-        this.tail = new Tail(new TailHw());
+    public TailMovement(IDriveControls controls, Tail tail){
+        this.tail = tail;
         this.controls = controls;
         addRequirements(tail);
     }
@@ -24,10 +24,10 @@ public class TailMovement extends CommandBase{
     @Override
     public void execute() {  
         if(controls.TailUpRequested().getAsBoolean()){
-            tail.setTailAngle(180); // TODO: Determine angle of "UP" position
+            tail.setTailVoltage(6); // TODO: Determine angle of "UP" position
         }  
         if(controls.TailDownRequested().getAsBoolean()){
-            tail.setTailAngle(0); // TODO: Determine angle of "DOWN" position
+            tail.setTailVoltage(-6); // TODO: Determine angle of "DOWN" position
         }  
     }
 
@@ -39,5 +39,7 @@ public class TailMovement extends CommandBase{
 
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        tail.setTailVoltage(0);
+    }
 }
