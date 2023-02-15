@@ -2,11 +2,11 @@ package frc.robot.interfaces;
 
 public interface IIntakeControl {
     
-    void setIntakeAngle(double angleDeg);
+    void setPivotAngle(double angleDeg);
 
-    void setIntakeMotorVolts(double volts);
+    void setPivotMotorVolts(double volts);
 
-    double getIntakeAngle();
+    double getPivotAngle();
 
     void updateInputs();
 

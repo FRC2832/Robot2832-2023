@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
+    private GrabberIntake grabber;
+    private Intake intake;
     private Tail tail;
 
     private PneumaticHub pneumatics;
@@ -120,7 +122,8 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
         }
-        intake = new GrabberIntake();
+        grabber = new GrabberIntake();
+        intake = new Intake(new IntakeHw());
         tail = new Tail(new TailHw());
 
         //subsystems that we don't need to save the reference to, calling new schedules them
@@ -143,8 +146,14 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
-        controls.TailUpRequested().whileTrue(new TailMovement(controls));
-        controls.TailDownRequested().whileTrue(new TailMovement(controls));
+        controls.TailUpRequested().whileTrue(new TailMovement(controls, tail));
+        controls.TailDownRequested().whileTrue(new TailMovement(controls, tail));
+
+        controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
+        controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
+
+        controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
+        controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);

@@ -15,19 +15,19 @@ public class Intake implements Subsystem {
     @Override
     public void periodic() {
         hardware.updateInputs();
-        SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
+        SmartDashboard.putNumber("Intake Angle", getPivotAngle());
     }
 
-    void setIntakeAngle(double angleDeg){
-        hardware.setIntakeAngle(angleDeg);
+    public void setPivotAngle(double angleDeg){
+        hardware.setPivotAngle(angleDeg);
     }
 
-    void setIntakeMotorVolts(double volts){
-        hardware.setIntakeMotorVolts(volts);
+    public void setPivotMotorVolts(double volts){
+        hardware.setPivotMotorVolts(volts);
     }
 
-    double getIntakeAngle(){
-        intakeAng = hardware.getIntakeAngle();
+    double getPivotAngle(){
+        intakeAng = hardware.getPivotAngle();
         return intakeAng;
     }
 }

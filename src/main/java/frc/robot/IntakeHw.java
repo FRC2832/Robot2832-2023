@@ -3,15 +3,15 @@ package frc.robot;
 import frc.robot.interfaces.IIntakeControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 
 public class IntakeHw implements IIntakeControl{
-    TalonSRX intakeMotor;
     TalonSRX pivotMotor;
-    DutyCycle intakeEncoder;
+    DutyCycle pivotEncoder;
     double currentIntakeDeg;
 
     final double MIN_DUTY_CYCLE = 0.998;
@@ -22,32 +22,32 @@ public class IntakeHw implements IIntakeControl{
     
 
     public IntakeHw(){
-        intakeMotor = new TalonSRX(0); //TODO: Find out the real device numbers
-        pivotMotor = new TalonSRX(1);
-        intakeEncoder = new DutyCycle(new DigitalInput(4)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there
+        pivotMotor = new TalonSRX(47);
+        pivotMotor.setNeutralMode(NeutralMode.Brake);
+        pivotEncoder = new DutyCycle(new DigitalInput(2)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there
     }
     
-    public void setIntakeAngle(double angleDeg){
+    public void setPivotAngle(double angleDeg){
         if(INTAKE_MIN_ANGLE < angleDeg && INTAKE_MAX_ANGLE > angleDeg){
             pivotMotor.set(ControlMode.Position, angleDeg);
             currentIntakeDeg = angleDeg;
         }
     }
 
-    public void setIntakeMotorVolts(double volts){
-        intakeMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
+    public void setPivotMotorVolts(double volts){
+        pivotMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
     }
 
-    public double getIntakeAngle(){
+    public double getPivotAngle(){
         return currentIntakeDeg;
     }
 
     public void updateInputs(){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
         //Frac is 0 at lowest point, 1 at max extension
-        var rawDC = intakeEncoder.getOutput();
+        var rawDC = pivotEncoder.getOutput();
         var dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
         currentIntakeDeg = INTAKE_MIN_ANGLE + dcFrac * (INTAKE_MAX_ANGLE - INTAKE_MIN_ANGLE);
 
-        intakeMotor.setSelectedSensorPosition(currentIntakeDeg);
+        pivotMotor.setSelectedSensorPosition(currentIntakeDeg);
     }
 }

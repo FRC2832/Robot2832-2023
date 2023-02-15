@@ -41,13 +41,15 @@ public class ArmHw implements IArmControl {
     @Override
     public void setShoulderAngle(double angleDeg) {
         // TODO Implement ARM PID
-        shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
+        //shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
+        SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
     }
 
     @Override
     public void setElbowAngle(double angleDeg) {
         // TODO Implement ARM PID
-        elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
+        //elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
+        SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
     }
 
     @Override
