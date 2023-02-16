@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.Timer;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -14,15 +15,19 @@ public class GrabberIntake implements Subsystem {
     private boolean done;
 
     public GrabberIntake(){
-        
         intakeMotor = new CANSparkMax(48,MotorType.kBrushless);
         intakeMotor.setInverted(true);
+        intakeMotor.setIdleMode(IdleMode.kBrake);
         timer = new Timer();
         done = false;
     }
+
     public void periodic() {
         SmartDashboard.putNumber("Intake Speed%", intakeMotor.get());
+    }
 
+    public void setIntakeVolts(double volts) {
+        intakeMotor.setVoltage(volts);
     }
 
     public void Grab(boolean forward) {
@@ -58,6 +63,7 @@ public class GrabberIntake implements Subsystem {
 
     public void intakeOff(){
         intakeMotor.setVoltage(0.0);
+        done = false;
     }
 
 }

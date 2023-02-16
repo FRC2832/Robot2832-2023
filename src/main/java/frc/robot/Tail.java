@@ -19,6 +19,9 @@ public class Tail implements Subsystem{
         SmartDashboard.putNumber("Tail Angle", getTailAngle());
     }
 
+    public void setTailVoltage(double volts) {
+        hardware.setTailVoltage(volts);
+    }
 
     private double getTailAngle() {
         tailAngle = hardware.getTailAngle();
