@@ -35,7 +35,7 @@ public class InitAutonScore extends CommandBase {
         }
 
         //Release cone
-        intake.Grab(false)
+        intake.Grab(false); 
 
         //Reset arm position
         new ArmAutonPoint(this.arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z);
