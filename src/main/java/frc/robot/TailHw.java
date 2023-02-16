@@ -29,6 +29,10 @@ public class TailHw implements ITailControl{
         tailEncoder = new DutyCycle(new DigitalInput(3)); // TODO: Verify channel number
     }
 
+    @Override
+    public void setTailVoltage(double volts) {
+        tailMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
+    }
 
     @Override
     public void setTailAngle(double angleDeg) {

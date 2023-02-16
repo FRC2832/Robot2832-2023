@@ -85,6 +85,6 @@ public final class Constants {
     public static final double ArmToScoreTop_X = -43;
     public static final double ArmToScoreTop_Z = 30;
 
-    public static final double IntakeVoltage = 12;
+    public static final double IntakeVoltage = 3;
     
 }
