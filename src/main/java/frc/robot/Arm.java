@@ -55,14 +55,16 @@ public class Arm implements Subsystem{
         // from https://www.youtube.com/watch?v=Q-UeYEpwXXU
         double shoulder = 0;
         double elbow = 0;
+        double forearmLen = Constants.FOREARM_LENGTH;
+        double bicepLen = Constants.BICEP_LENGTH;
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
         if(x > 0) {
-            elbow =  Math.acos((Constants.BICEP_LENGTH*Constants.BICEP_LENGTH + Constants.FOREARM_LENGTH*Constants.FOREARM_LENGTH - x*x - z*z)/(2*Constants.BICEP_LENGTH*Constants.FOREARM_LENGTH)) - 3.14159;
-            shoulder = Math.atan(z/x) - Math.atan((Constants.FOREARM_LENGTH*Math.sin(elbow))/(Constants.BICEP_LENGTH + Constants.FOREARM_LENGTH*Math.cos(elbow)));
+            elbow =  Math.acos((bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z)/(2*bicepLen*forearmLen)) - 3.14159;
+            shoulder = Math.atan(z/x) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
         else if(x < 0){
-            elbow = Math.acos((x*x + z*z - Constants.BICEP_LENGTH*Constants.BICEP_LENGTH - Constants.FOREARM_LENGTH*Constants.FOREARM_LENGTH)/(2*Constants.BICEP_LENGTH*Constants.FOREARM_LENGTH));
-            shoulder = 3.14159 - Math.atan(z/x) - Math.atan((Constants.FOREARM_LENGTH*Math.sin(elbow))/(Constants.BICEP_LENGTH + Constants.FOREARM_LENGTH*Math.cos(elbow)));
+            elbow = Math.acos((x*x + z*z - bicepLen*bicepLen - forearmLen*forearmLen)/(2*bicepLen*forearmLen));
+            shoulder = 3.14159 - Math.atan(z/Math.abs(x)) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
         else {
             return;
