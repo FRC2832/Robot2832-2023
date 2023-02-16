@@ -30,9 +30,9 @@ public class ArmHw implements IArmControl {
 
     public ArmHw() {
         shoulderMotor = new TalonFX(46);
-        shoulderMotor.setNeutralMode(NeutralMode.Coast);
+        shoulderMotor.setNeutralMode(NeutralMode.Brake);
         elbowMotor = new TalonFX(45);
-        elbowMotor.setNeutralMode(NeutralMode.Coast);
+        elbowMotor.setNeutralMode(NeutralMode.Brake);
         shoulderEncoder = new DutyCycle(new DigitalInput(0));
         elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
