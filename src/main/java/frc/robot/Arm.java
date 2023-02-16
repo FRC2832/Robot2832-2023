@@ -56,12 +56,18 @@ public class Arm implements Subsystem{
         double elbow = 0;
         double forearmLen = Constants.FOREARM_LENGTH;
         double bicepLen = Constants.BICEP_LENGTH;
+
+        boolean sideLimit = x < 77.5 && x > -48;
+        boolean heightLimit = z < 59 && z > -14;
+        boolean robotHeightLimit = (-5 < x && x < 30) && (z < 0);
+        boolean armLengthLimit = Math.sqrt(x*x + z*z) < forearmLen + bicepLen;
+
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
-        if(x > 0) {
+        if(x > 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit) {
             elbow =  Math.acos((bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z)/(2*bicepLen*forearmLen)) - 3.14159;
             shoulder = Math.atan(z/x) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
-        else if(x < 0){
+        else if(x < 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit){
             elbow = Math.acos((x*x + z*z - bicepLen*bicepLen - forearmLen*forearmLen)/(2*bicepLen*forearmLen));
             shoulder = 3.14159 - Math.atan(z/Math.abs(x)) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
