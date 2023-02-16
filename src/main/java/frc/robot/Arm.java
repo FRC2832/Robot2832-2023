@@ -18,8 +18,7 @@ public class Arm implements Subsystem{
         hardware.updateInputs();
         SmartDashboard.putNumber("Shoulder Angle", getShoulderAngle());
         SmartDashboard.putNumber("Elbow Angle", getElbowAngle());
-        SmartDashboard.putNumber("Arm X Position", getArmXPosition());
-        SmartDashboard.putNumber("Arm Z Position", getArmZPosition());
+        
         hardware.checkBrake();
     }
 
