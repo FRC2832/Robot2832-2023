@@ -7,7 +7,7 @@ public interface ITailControl {
     
 
     double getTailAngle();
-
+    double getDistSensor();
 
     void updateInputs();
 }
