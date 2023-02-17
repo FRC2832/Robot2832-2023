@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
-public class SwerveDriveHw implements ISwerveDriveIo {
+public class SwerveDriveHwPractice implements ISwerveDriveIo {
     //measuring the robot, we got 11114 counts/90*, the theoretical amount is 10971.428/90* (150/7:1 gear ratio, 2048 counts/rev)
     private final double COUNTS_PER_DEGREE = 121.9; //using theoretical amount
 
@@ -29,7 +30,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private TalonFX turnMotor[];
     private TalonFX driveMotor[];
     private CANCoder absSensor[];
-    private Pigeon2 pigeon;
+    private PigeonIMU pigeon;
     
     //sensor value buffers
     private double ypr_deg[];
@@ -39,13 +40,13 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private double turnMotorAngle[];
 
     private Translation2d[] swervePositions = {
-        Constants.SWERVE_FRONT_LEFT_LOCATION,
-        Constants.SWERVE_FRONT_RIGHT_LOCATION,
-        Constants.SWERVE_BACK_LEFT_LOCATION,
-        Constants.SWERVE_BACK_RIGHT_LOCATION
+        new Translation2d(0.291, 0.291),
+        new Translation2d(0.291, -0.291),
+        new Translation2d(-0.291, 0.291),
+        new Translation2d(-0.291, -0.291),
     };
 
-    public SwerveDriveHw() {
+    public SwerveDriveHwPractice() {
         //initialize array sizes
         turnMotor = new TalonFX[Constants.NUM_WHEELS];
         driveMotor = new TalonFX[Constants.NUM_WHEELS];
@@ -67,7 +68,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         absSensor[ISwerveDrive.RL] = new CANCoder(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT);
         absSensor[ISwerveDrive.RR] = new CANCoder(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT);
 
-        pigeon = new Pigeon2(Constants.PIGEON_IMU_ID);
+        pigeon = new PigeonIMU(Constants.PIGEON_IMU_ID);
 
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
 
@@ -86,7 +87,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             motor.configFactoryDefault(100);
             var error = motor.getAllConfigs(allConfigs,100);
             System.out.println("Turn Read config: " + error.name());
-            allConfigs.slot1.kP = 0.4;
+            allConfigs.slot1.kP = 0.2;
             allConfigs.slot1.kI = 0.0005;
             allConfigs.slot1.kD = 40;
             allConfigs.slot1.kF = 0;
@@ -248,5 +249,4 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public Translation2d[] getCornerLocations() {
         return swervePositions;
     }
-    
 }

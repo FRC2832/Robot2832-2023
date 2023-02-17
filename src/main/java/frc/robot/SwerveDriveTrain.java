@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -34,11 +35,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         tempTable = NetworkTableInstance.getDefault().getTable("/motor_temps");
 
         //initialize the corner locations
-        kinematics = new SwerveDriveKinematics(
-            Constants.SWERVE_FRONT_LEFT_LOCATION,
-            Constants.SWERVE_FRONT_RIGHT_LOCATION,
-            Constants.SWERVE_BACK_LEFT_LOCATION,
-            Constants.SWERVE_BACK_RIGHT_LOCATION);
+        kinematics = new SwerveDriveKinematics(hSwerveDriveIo.getCornerLocations());
         hardware.setKinematics(kinematics);
         
         //initialize the swerve states
@@ -76,8 +73,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //input is angle off desired, output is percent reduction
         speedReduction = new InterpolatingTreeMap<Double, Double>();
         speedReduction.put(0., 1.);
-        speedReduction.put(45., 0.3);
-        speedReduction.put(90., 0.);
+        speedReduction.put(45., 1.);
+        speedReduction.put(90., 1.0);
     }
     
     @Override
@@ -196,5 +193,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public void setDriveMotorBrakeMode(boolean brakeOn) {
         hardware.setDriveMotorBrakeMode(brakeOn);
+    }
+
+    @Override
+    public Translation2d[] getCornerLocations() {
+        return hardware.getCornerLocations();
     }
 }

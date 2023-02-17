@@ -18,6 +18,7 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ITailControl;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+import frc.robot.simulation.TailSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -105,8 +106,7 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
-        pdp = new PowerDistribution(1,ModuleType.kRev);
-        pdpChannelNames = pdhRealChannelNames;
+        
         new LoopTimeLogger(this);
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
@@ -115,17 +115,29 @@ public class Robot extends TimedRobot {
         controls = new DriveControls();
        
         // initialize robot features
+        var practice = true;
         schedule = CommandScheduler.getInstance();
-        if(isReal()) {
+        if (practice) { 
+            drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
+            arm = new Arm(new ArmSim());
+            tail = new Tail(new TailSim());
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);
+            pdpChannelNames = pdpPracticeChannelNames;
+        } else if(isReal()) {
             drive = new SwerveDriveTrain(new SwerveDriveHw());
             arm = new Arm(new ArmHw());
-        } else {
+            tail = new Tail(new TailHw());
+            pdp = new PowerDistribution(1,ModuleType.kRev);
+            pdpChannelNames = pdhRealChannelNames;
+        }   else {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
+            tail = new Tail(new TailSim());
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);`
+            pdpChannelNames = pdpPracticeChannelNames;
         }
         grabber = new GrabberIntake();
         intake = new Intake(new IntakeHw());
-        tail = new Tail(new TailHw());
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);

@@ -3,6 +3,7 @@ package frc.robot.interfaces;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -11,6 +12,7 @@ public  interface ISwerveDriveIo {
     Rotation2d getHeading();
     double getPitch();
     double getRoll();
+    Translation2d[] getCornerLocations();
     void setKinematics(SwerveDriveKinematics kinematics);
     void setTurnMotorBrakeMode(boolean brakeOn);
     void setDriveMotorBrakeMode(boolean brakeOn);

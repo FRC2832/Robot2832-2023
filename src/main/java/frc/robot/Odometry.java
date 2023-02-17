@@ -18,18 +18,14 @@ public class Odometry extends SubsystemBase {
     IDriveControls controls;
     Pose2d robotPose = new Pose2d();
     private final Field2d field = new Field2d();
-    private Translation2d[] swervePositions = {
-        Constants.SWERVE_FRONT_LEFT_LOCATION,
-        Constants.SWERVE_FRONT_RIGHT_LOCATION,
-        Constants.SWERVE_BACK_LEFT_LOCATION,
-        Constants.SWERVE_BACK_RIGHT_LOCATION
-    };
+    private Translation2d[] swervePositions;
 
     public Odometry(ISwerveDrive drive, IDriveControls controls) {
         super();
         this.drive = drive;
         this.controls = controls;
 
+        swervePositions = drive.getCornerLocations();
         odometry = new SwerveDriveOdometry(drive.getKinematics(), drive.getHeading(), drive.getSwerveStates());
         SmartDashboard.putData("Field", field);
     }
