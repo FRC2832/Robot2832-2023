@@ -27,6 +27,7 @@ import frc.robot.simulation.SwerveDriveSim;
  * project.
  */
 public class Robot extends TimedRobot {
+    private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
 
@@ -71,15 +72,15 @@ public class Robot extends TimedRobot {
         "RF Drive",
         "LF Turn",
         "LF Drive",
-        "4",
-        "5",
+        "Elbow",
+        "Shoulder",
         "6",
         "7",
-        "8",
+        "Intake",
         "Front MPM",
         "10",
-        "11",
-        "12",
+        "Tail",
+        "Wrist",
         "Back MPM",
         "14",
         "15",
@@ -132,8 +133,9 @@ public class Robot extends TimedRobot {
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-      
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        tail.setDefaultCommand(new TailMovement(controls, tail));
+
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
@@ -145,9 +147,6 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-
-        controls.TailUpRequested().whileTrue(new TailMovement(controls, tail));
-        controls.TailDownRequested().whileTrue(new TailMovement(controls, tail));
 
         controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
         controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
@@ -168,9 +167,13 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        loggingPeriodic();
+        if(count % 2 == 0) {
+            loggingPeriodic();
+        }
+        count++;
     }
-
+    int count = 0;
+    
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
@@ -284,6 +287,8 @@ public class Robot extends TimedRobot {
     }
 
     public void loggingPeriodic() {
+        SmartDashboard.putNumber("Pressure Sensor", (pneumatics.getAnalogVoltage(0) - 0.5) / VOLTS_PER_PSI);
+        SmartDashboard.putNumber("Pressure Sensor Voltage", pneumatics.getAnalogVoltage(0));
         for(int i=0; i<pdpChannelNames.length; i++) {
             table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
         }
