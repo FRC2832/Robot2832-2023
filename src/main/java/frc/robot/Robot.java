@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);`
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);
             pdpChannelNames = pdpPracticeChannelNames;
         }
         grabber = new GrabberIntake();
