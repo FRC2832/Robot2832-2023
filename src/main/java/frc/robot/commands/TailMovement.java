@@ -24,11 +24,20 @@ public class TailMovement extends CommandBase{
     @Override
     public void execute() {  
         if(controls.TailUpRequested().getAsBoolean()){
-            tail.setTailVoltage(6); // TODO: Determine angle of "UP" position
-        }  
-        if(controls.TailDownRequested().getAsBoolean()){
-            tail.setTailVoltage(-6); // TODO: Determine angle of "DOWN" position
-        }  
+            if (tail.getTailAngle() < 150) {
+                tail.setTailVoltage(6);
+            } else{
+                tail.setTailVoltage(0);
+            }
+        } else if(controls.TailDownRequested().getAsBoolean()){
+            if (tail.getTailAngle() > -8) {
+                tail.setTailVoltage(-6);
+            } else{
+                tail.setTailVoltage(0);
+            }
+        }  else {
+            tail.setTailVoltage(0);
+        }
     }
 
 
@@ -40,6 +49,5 @@ public class TailMovement extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        tail.setTailVoltage(0);
     }
 }

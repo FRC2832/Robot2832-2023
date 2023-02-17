@@ -17,13 +17,15 @@ public class Tail implements Subsystem{
     public void periodic() {
         hardware.updateInputs();
         SmartDashboard.putNumber("Tail Angle", getTailAngle());
+        //TODO: To measure cone, value must be >0" and <5.3" to be considered a cone
+        SmartDashboard.putNumber("Tail Distance",hardware.getDistSensor());
     }
 
     public void setTailVoltage(double volts) {
         hardware.setTailVoltage(volts);
     }
 
-    private double getTailAngle() {
+    public double getTailAngle() {
         tailAngle = hardware.getTailAngle();
         return tailAngle;
     }

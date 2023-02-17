@@ -4,6 +4,11 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import frc.robot.interfaces.ITailControl;
@@ -12,21 +17,22 @@ import frc.robot.interfaces.ITailControl;
 public class TailHw implements ITailControl{
     TalonSRX tailMotor;
     DutyCycle tailEncoder;
+    Rev2mDistanceSensor distSensor;
+
     double tailAngle;
+    double distValue;
 
-
-    // TODO: Find following values
-    final double MIN_DUTY_CYCLE = 0;
-    final double MAX_DUTY_CYCLE = 0;
-    final double TAIL_MIN_ANGLE = 0;
-    final double TAIL_MAX_ANGLE = 0;
-    final double COUNTS_PER_DEGREE_TAIL = 1;
-
+    final double TAIL_ZERO_OFFSET = -340+12;
+    final double COUNTS_PER_DEGREE_TAIL = 101;
 
     public TailHw(){
         tailMotor = new TalonSRX(49);
         tailMotor.setNeutralMode(NeutralMode.Brake);
         tailEncoder = new DutyCycle(new DigitalInput(3)); // TODO: Verify channel number
+        
+        distSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        distSensor.setAutomaticMode(true);
+        distSensor.setMeasurementPeriod(0.018);
     }
 
     @Override
@@ -40,23 +46,23 @@ public class TailHw implements ITailControl{
         tailMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_TAIL);
     }
 
-
     @Override
     public double getTailAngle() {
         return tailAngle;
     }
 
+    
 
     @Override
     public void updateInputs() {
-        //Frac is 0 at lowest point, 1 at max extension
-        var rawDC = tailEncoder.getOutput();
-        var dcFrac = (rawDC - MIN_DUTY_CYCLE) / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE);
-        tailAngle = TAIL_MIN_ANGLE + dcFrac * (TAIL_MAX_ANGLE - TAIL_MIN_ANGLE);
-
-
+        tailAngle = TAIL_ZERO_OFFSET + tailEncoder.getOutput() * 360;
+        tailAngle = MathUtil.inputModulus(tailAngle, -180, 180);
+        distValue = distSensor.getRange(Unit.kInches);
         tailMotor.setSelectedSensorPosition(tailAngle * COUNTS_PER_DEGREE_TAIL);
+    }
 
-
+    @Override
+    public double getDistSensor() {
+        return distValue;
     }
 }
