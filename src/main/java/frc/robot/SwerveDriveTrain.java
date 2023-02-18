@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,7 +28,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private InterpolatingTreeMap<Double, Double> speedReduction;
     private NetworkTable currentTable;
     private NetworkTable tempTable;
-    
+    private double gyroOffset = 0;
+    private PIDController pidZero = new PIDController(0.1, 0.001, 0);
+
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
 
@@ -62,6 +65,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             }
             turnOffsets[i] = offset + hardware.getCornerAngle(i);
         }
+        gyroOffset = getHeading().getDegrees();
 
         //initialize module names
         moduleNames = new String[Constants.NUM_WHEELS];
@@ -113,6 +117,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
     public void SwerveDrive(double xSpeed, double ySpeed, double turn, boolean fieldOriented) {
         // ask the kinematics to determine our swerve command
         ChassisSpeeds speeds;
+
+        double currentHeading = getHeading().getDegrees();
+        if (Math.abs(turn) > 0.1) {
+            //if a turn is requested, reset the zero for the drivetrain
+            gyroOffset = currentHeading;
+            pidZero.reset();
+        } else {
+            //straighten the robot
+            turn = pidZero.calculate(currentHeading,gyroOffset);
+        }
 
         if (fieldOriented) {
             var angle = robotPose.getRotation();

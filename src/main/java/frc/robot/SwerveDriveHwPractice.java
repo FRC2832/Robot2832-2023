@@ -88,8 +88,8 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
             var error = motor.getAllConfigs(allConfigs,100);
             System.out.println("Turn Read config: " + error.name());
             allConfigs.slot1.kP = 0.2;
-            allConfigs.slot1.kI = 0.0005;
-            allConfigs.slot1.kD = 40;
+            allConfigs.slot1.kI = 0.00007;
+            allConfigs.slot1.kD = 0.1;
             allConfigs.slot1.kF = 0;
             allConfigs.slot1.integralZone = 0;
             allConfigs.slot1.allowableClosedloopError = 300;
