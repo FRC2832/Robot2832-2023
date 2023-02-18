@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
+    private Logger logger;
 
     // robot features
     private ISwerveDrive drive;
@@ -104,6 +105,9 @@ public class Robot extends TimedRobot {
         DataLogManager.start();
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
+        logger = new Logger();
+        addPeriodic(()->logger.periodic(), kDefaultPeriod);
+
         table = NetworkTableInstance.getDefault().getTable("/status");
         pdp = new PowerDistribution(1,ModuleType.kRev);
         pdpChannelNames = pdhRealChannelNames;

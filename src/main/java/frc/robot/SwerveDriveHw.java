@@ -104,6 +104,35 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         turnMotorAngle = new double[Constants.NUM_WHEELS];
 
         SmartDashboard.putNumber("Angle", 0);
+
+        Logger.RegisterTalon("FL Turn", turnMotor[ISwerveDrive.FL]);
+        Logger.RegisterTalon("FR Turn", turnMotor[ISwerveDrive.FR]);
+        Logger.RegisterTalon("RL Turn", turnMotor[ISwerveDrive.RL]);
+        Logger.RegisterTalon("RR Turn", turnMotor[ISwerveDrive.RR]);
+
+        Logger.RegisterTalon("FL Drive", driveMotor[ISwerveDrive.FL]);
+        Logger.RegisterTalon("FR Drive", driveMotor[ISwerveDrive.FR]);
+        Logger.RegisterTalon("RL Drive", driveMotor[ISwerveDrive.RL]);
+        Logger.RegisterTalon("RR Drive", driveMotor[ISwerveDrive.RR]);
+
+        Logger.RegisterSensor("FL Abs", () -> getCornerAbsAngle(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Abs", () -> getCornerAbsAngle(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Abs", () -> getCornerAbsAngle(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Abs", () -> getCornerAbsAngle(ISwerveDrive.RR));
+
+        Logger.RegisterSensor("FL Speed", () -> getCornerSpeed(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Speed", () -> getCornerSpeed(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Speed", () -> getCornerSpeed(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Speed", () -> getCornerSpeed(ISwerveDrive.RR));
+
+        Logger.RegisterSensor("FL Turn Pos", () -> getCornerAngle(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Turn Pos", () -> getCornerAngle(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Turn Pos", () -> getCornerAngle(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Turn Pos", () -> getCornerAngle(ISwerveDrive.RR));
+
+        Logger.RegisterSensor("Pigeon Yaw", () -> getHeading().getDegrees());
+        Logger.RegisterSensor("Pigeon Pitch", () -> getPitch());
+        Logger.RegisterSensor("Pigeon Roll", () -> getRoll());
     }
 
     @Override
@@ -215,25 +244,5 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public double getCornerDistance(int wheel) {
         return driveWheelDistance[wheel];
     }
-
-    @Override
-    public double getTurnMotorCurrent(int wheel) {
-        return turnMotor[wheel].getStatorCurrent();
-    }
-
-    @Override
-    public double getDriveMotorCurrent(int wheel) {
-        return driveMotor[wheel].getStatorCurrent();
-    }
-
-    @Override
-    public double getTurnMotorTemperature(int wheel) {
-        return turnMotor[wheel].getTemperature();
-    }
-
-    @Override
-    public double getDriveMotorTemperature(int wheel) {
-        return driveMotor[wheel].getTemperature();
-    }
-    
+   
 }

@@ -24,14 +24,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private double swerveOffsets[];
     private double turnOffsets[];
     private InterpolatingTreeMap<Double, Double> speedReduction;
-    private NetworkTable currentTable;
-    private NetworkTable tempTable;
     
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
-
-        currentTable = NetworkTableInstance.getDefault().getTable("/motor_currents");
-        tempTable = NetworkTableInstance.getDefault().getTable("/motor_temps");
 
         //initialize the corner locations
         kinematics = new SwerveDriveKinematics(
@@ -97,18 +92,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         SmartDashboard.putNumber("Pitch", hardware.getPitch());
         SmartDashboard.putNumber("Roll", hardware.getRoll());
         for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
-            SmartDashboard.putNumber(moduleNames[wheel] + "Abs Sensor", hardware.getCornerAbsAngle(wheel));
-            SmartDashboard.putNumber(moduleNames[wheel] + "Turn Sensor", hardware.getCornerAngle(wheel));
-            SmartDashboard.putNumber(moduleNames[wheel] + "Drive Speed Sensor", hardware.getCornerSpeed(wheel));
             SmartDashboard.putNumber(moduleNames[wheel] + "Calc Angle", swerveStates[wheel].angle.getDegrees());
-            
-            SmartDashboard.putNumber(moduleNames[wheel] + "ABS Offset", swerveOffsets[wheel]);
-            SmartDashboard.putNumber(moduleNames[wheel] + "Turn Offset", turnOffsets[wheel]);
-
-            tempTable.getEntry(moduleNames[wheel] + "Drive").setDouble(hardware.getDriveMotorTemperature(wheel));
-            tempTable.getEntry(moduleNames[wheel] + "Turn").setDouble(hardware.getTurnMotorTemperature(wheel));
-            currentTable.getEntry(moduleNames[wheel] + "Drive").setDouble(hardware.getDriveMotorCurrent(wheel));
-            currentTable.getEntry(moduleNames[wheel] + "Turn").setDouble(hardware.getTurnMotorCurrent(wheel));
         }
     }
 
