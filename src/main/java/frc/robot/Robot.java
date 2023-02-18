@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,6 +18,9 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+
+import javax.xml.namespace.QName;
+
 import org.photonvision.PhotonCamera;
 
 
@@ -36,7 +40,9 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
-    private PhotonCamera camera;
+    private PhotonCamera camera1;
+    private PhotonCamera camera2;
+    private PhotonCamera camera3;
     private GrabberIntake intake;
 
     private PneumaticHub pneumatics;
@@ -84,10 +90,14 @@ public class Robot extends TimedRobot {
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
 
+
+
         // initialize robot parts and locations where they are
         controls = new DriveControls();
         
-        camera = new PhotonCamera("JeVois-A33_Video_Camera");
+        camera1 = new PhotonCamera("JeVois-A31_Video_Camera");
+        camera2 = new PhotonCamera("JeVois-A32_Video_Camera");
+        camera3 = new PhotonCamera("JeVois-A33_Video_Camera");
         
         
         // initialize robot features
@@ -138,7 +148,8 @@ public class Robot extends TimedRobot {
         //run the command schedule no matter what mode we are in
         schedule.run();
         loggingPeriodic();
-        SmartDashboard.putNumber("Camera Lag", camera.getLatestResult().getLatencyMillis());
+        SmartDashboard.putNumber("Camera Lag", camera1.getLatestResult().getLatencyMillis());
+        
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -217,7 +228,9 @@ public class Robot extends TimedRobot {
         //odometry.resetHeading();
         drive.setDriveMotorBrakeMode(true);
         drive.setTurnMotorBrakeMode(true);
-        
+        camera1.setDriverMode(isAutonomous());
+        camera2.setDriverMode(isAutonomous());
+        camera3.setDriverMode(isAutonomous());
     }
 
     /** This function is called periodically during operator control. */
