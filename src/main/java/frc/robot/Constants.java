@@ -61,6 +61,9 @@ public final class Constants {
     public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
     public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
 
+    public static final double SHOULDER_OFFSET = 347;
+    public static final double ELBOW_OFFSET = 135;
+    
     public static final double ARM_ACCEPT_ERROR = 0.5;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
