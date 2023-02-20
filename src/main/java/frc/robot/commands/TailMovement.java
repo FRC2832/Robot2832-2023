@@ -24,17 +24,22 @@ public class TailMovement extends CommandBase{
     @Override
     public void execute() {  
         if(controls.TailUpRequested().getAsBoolean()){
+            tail.setTailAngle(105);
+            /*
             if (tail.getTailAngle() < 150) {
                 tail.setTailVoltage(6);
             } else{
                 tail.setTailVoltage(0);
-            }
+            }*/
         } else if(controls.TailDownRequested().getAsBoolean()){
+            tail.setTailAngle(-8);
+            /*
             if (tail.getTailAngle() > -8) {
                 tail.setTailVoltage(-6);
             } else{
                 tail.setTailVoltage(0);
             }
+            */
         }  else {
             tail.setTailVoltage(0);
         }
