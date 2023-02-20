@@ -58,6 +58,7 @@ public class GrabberIntake implements Subsystem {
 
     public void intakeOff(){
         intakeMotor.setVoltage(0.0);
+        done = false;
     }
 
 }
