@@ -140,6 +140,7 @@ public class Robot extends TimedRobot {
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
+        
         controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
@@ -147,7 +148,7 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-
+        
         controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
         controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
 
@@ -156,6 +157,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
+        SmartDashboard.putData(schedule);
     }
 
     /**

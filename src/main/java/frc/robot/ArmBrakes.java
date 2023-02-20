@@ -9,12 +9,12 @@ public class ArmBrakes {
     private Solenoid elbowBrake;
 
     public ArmBrakes(){
-        shoulderBrake = new Solenoid(PneumaticsModuleType.REVPH,0);
-        elbowBrake = new Solenoid(PneumaticsModuleType.REVPH,1);
+        shoulderBrake = new Solenoid(PneumaticsModuleType.REVPH,2);
+        elbowBrake = new Solenoid(PneumaticsModuleType.REVPH,3);
     }
 
     public void Brake(boolean release, int channel) {
-        if (channel == 0) {
+        if (channel == 2) {
             if (release) {
                 shoulderBrake.set(true);
             }
@@ -22,7 +22,7 @@ public class ArmBrakes {
                 shoulderBrake.set(false);
             }
         }
-        else if (channel == 1) {
+        else if (channel == 3) {
             if (release) {
                 elbowBrake.set(true);
             }
