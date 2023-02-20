@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.ArmBrakes;
 import frc.robot.interfaces.IArmControl;
 
 public class ArmSim implements IArmControl {
@@ -17,8 +18,10 @@ public class ArmSim implements IArmControl {
     private MechanismLigament2d elbowBar;
     private double elbowDeg;
     private double shoulderDeg;
+    private ArmBrakes brakes;
 
     public ArmSim() {
+        brakes = new ArmBrakes();
         shoulderDeg = 60;
         elbowDeg = -60;
 
