@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,10 @@ public class ArmHw implements IArmControl {
     DutyCycle elbowEncoder;
     double elbowAngle;
     ArmBrakes brakes;
+    PIDController shoulderPid;
+    PIDController elbowPid;
+    boolean shoulderPIDRan;
+    boolean elbowPIDRan;
 
     final double MIN_DUTY_CYCLE = 0.998;
     final double MAX_DUTY_CYCLE = 0.167;
@@ -36,20 +41,55 @@ public class ArmHw implements IArmControl {
         shoulderEncoder = new DutyCycle(new DigitalInput(0));
         elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
+
+        shoulderPid = new PIDController(.3, 0.0, 0);
+        elbowPid = new PIDController(.3, 0.0, 0);
     }
 
     @Override
     public void setShoulderAngle(double angleDeg) {
         // TODO Implement ARM PID
         //shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
+        double volts = shoulderPid.calculate(shoulderAngle, angleDeg);
+        double delta = Math.abs(shoulderAngle - angleDeg);
+        if(delta>4){
+            shoulderPIDRan = true;
+        }
+        if(delta < 2 && shoulderPIDRan){
+            shoulderPIDRan = false;
+        }
+        if(Math.abs(volts) > 3){
+            volts = Math.signum(volts) * 3;
+        }
+        if(!shoulderPIDRan){
+            volts = 0;
+        }
+        setShoulderMotorVolts(volts);
         SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
+        SmartDashboard.putNumber("Shoulder Volts Command", volts);
     }
 
     @Override
     public void setElbowAngle(double angleDeg) {
         // TODO Implement ARM PID
         //elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
+        double volts = -elbowPid.calculate(elbowAngle, angleDeg);
+        double delta = Math.abs(elbowAngle - angleDeg);
+        if(delta>4){
+            elbowPIDRan = true;
+        }
+        if(delta < 2 && elbowPIDRan){
+            elbowPIDRan = false;
+        }
+        if(Math.abs(volts) > 3){
+            volts = Math.signum(volts) * 3;
+        }
+        if(!elbowPIDRan){
+            volts = 0;
+        }
+        setElbowMotorVolts(volts);
         SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
+        SmartDashboard.putNumber("elbow Volts Command", volts);
     }
 
     @Override
@@ -77,16 +117,16 @@ public class ArmHw implements IArmControl {
         double elbow = Math.abs(elbowMotor.getMotorOutputPercent());
         double shoulder = Math.abs(shoulderMotor.getMotorOutputPercent());
         if(elbow < 0.03){
-            brakes.Brake(false, 1);
+            brakes.Brake(false, 2);
         }
         else {
-            brakes.Brake(true, 1);
+            brakes.Brake(true, 2);
         }
         if(shoulder < 0.03){
-            brakes.Brake(false, 0);
+            brakes.Brake(false, 3);
         }
         else {
-            brakes.Brake(true, 0);
+            brakes.Brake(true, 3);
         }
     }
 

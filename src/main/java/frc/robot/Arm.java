@@ -53,6 +53,9 @@ public class Arm implements Subsystem{
     //this one will become not good once we figure out the equation for an arm with two segments of different lengths
     public void calcAngles(double x, double z) { //calculate the angles for each part of the arm to get to the point (x, z)
         // from https://www.youtube.com/watch?v=Q-UeYEpwXXU
+        SmartDashboard.putNumber("Commanded Arm X", x);
+        SmartDashboard.putNumber("Commanded Arm Z", z);
+        
         double shoulder = 0;
         double elbow = 0;
         double forearmLen = Constants.FOREARM_LENGTH;
@@ -65,6 +68,7 @@ public class Arm implements Subsystem{
 
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
         if(x > 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit) {
+            SmartDashboard.putBoolean("testPos", true);
             elbow =  Math.acos((bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z)/(2*bicepLen*forearmLen)) - 3.14159;
             shoulder = Math.atan(z/x) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }

@@ -67,8 +67,8 @@ public final class Constants {
     public static final double ArmToPickupGround_X = 36;
     public static final double ArmToPickupGround_Z = -2;
 
-    public static final double ArmToPickupTail_X = 28;
-    public static final double ArmToPickupTail_Z = 15.5;
+    public static final double ArmToPickupTail_X = 28.8;
+    public static final double ArmToPickupTail_Z = 17.6;
 
     public static final double ArmToPickupHuman_X = 30;
     public static final double ArmToPickupHuman_Z = 20;
@@ -79,11 +79,11 @@ public final class Constants {
     public static final double ArmToScoreLow_X = -29;
     public static final double ArmToScoreLow_Z = 2;
 
-    public static final double ArmToScoreMiddle_X = -20;
-    public static final double ArmToScoreMiddle_Z = 20;
+    public static final double ArmToScoreMiddle_X = -25.5;
+    public static final double ArmToScoreMiddle_Z = 30;
 
-    public static final double ArmToScoreTop_X = -43;
-    public static final double ArmToScoreTop_Z = 30;
+    public static final double ArmToScoreTop_X = -40;
+    public static final double ArmToScoreTop_Z = 42;
 
     public static final double IntakeVoltage = 3;
     
