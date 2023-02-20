@@ -68,7 +68,6 @@ public class Arm implements Subsystem{
 
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
         if(x > 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit) {
-            SmartDashboard.putBoolean("testPos", true);
             elbow =  Math.acos((bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z)/(2*bicepLen*forearmLen)) - 3.14159;
             shoulder = Math.atan(z/x) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
