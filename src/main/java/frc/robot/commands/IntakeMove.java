@@ -24,10 +24,10 @@ public class IntakeMove extends CommandBase{
     @Override
     public void execute() {  
         if(controls.GrabberUpRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(3.5); // TODO: Determine angle of "UP" position
+            intake.setPivotMotorVolts(5); // TODO: Determine angle of "UP" position
         }  
         if(controls.GrabberDownRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(-3.5); // TODO: Determine angle of "DOWN" position
+            intake.setPivotMotorVolts(-5); // TODO: Determine angle of "DOWN" position
         }  
     }
 

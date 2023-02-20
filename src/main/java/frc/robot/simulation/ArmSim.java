@@ -19,8 +19,8 @@ public class ArmSim implements IArmControl {
     private double shoulderDeg;
 
     public ArmSim() {
-        shoulderDeg = 0;
-        elbowDeg = 0;
+        shoulderDeg = 60;
+        elbowDeg = -60;
 
         //all units in inches, 0* angle is straight right
         //ligaments are used a lot because they will be shown in the picture, roots are not
@@ -79,7 +79,7 @@ public class ArmSim implements IArmControl {
 
     @Override
     public double getElbowAngle() {
-        return elbowDeg;
+        return elbowDeg - shoulderDeg;
     }
 
     @Override
