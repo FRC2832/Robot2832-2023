@@ -152,8 +152,8 @@ public class Robot extends TimedRobot {
         controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
         controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
 
-        controls.GrabberSuckRequested().whileTrue(new moveArmToAngles(arm, 60, -20));
-        controls.GrabberSpitRequested().whileTrue(new moveArmToAngles(arm, 50, 10));
+        controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
+        controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
