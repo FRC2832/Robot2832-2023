@@ -67,7 +67,7 @@ public class Saitek extends GenericHID {
   }
   
   public double rotate1() {
-    return getRawAxis(Axis.xAxis1.value);
+    return getRawAxis(Axis.rotate1.value);
   }
   
   public double getxAxis2() {
@@ -79,7 +79,7 @@ public class Saitek extends GenericHID {
   }
   
   public double rotate2() {
-    return getRawAxis(Axis.xAxis2.value);
+    return getRawAxis(Axis.rotate2.value);
   }
 
 //Pink Buttons
