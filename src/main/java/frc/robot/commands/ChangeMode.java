@@ -20,8 +20,8 @@ public class ChangeMode extends CommandBase{
 
     @Override
     public void execute() {
-        currentMode = Robot.pieceMode;
-        Robot.pieceMode = !currentMode;
+        currentMode = Robot.getGamePieceMode();
+        Robot.setGamePieceMode(!currentMode);
         if(currentMode)
             mode = "Cube!";
         else

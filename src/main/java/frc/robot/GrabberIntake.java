@@ -12,15 +12,16 @@ public class GrabberIntake implements Subsystem {
     private Timer timer;
     private boolean done;
 
-    public GrabberIntake(){
-        
+    public GrabberIntake() {
         intakeMotor = new CANSparkMax(48,MotorType.kBrushless);
         intakeMotor.setInverted(true);
         timer = new Timer();
         done = false;
     }
+
     public void periodic() {
         SmartDashboard.putNumber("Intake Speed%", intakeMotor.get());
+    }
 
     public void setIntakeVolts(double volts) {
         intakeMotor.setVoltage(volts);
