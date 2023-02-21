@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
 
     public double optimalIntakeAngle(){
         double value;
-        if(Robot.pieceMode) { //pieceMode true is cube
+        if(Robot.getGamePieceMode()) { //pieceMode true is cube
             value =  arm.getElbowAngle() + arm.getShoulderAngle();
         }
         else { //pieceMode false is cone

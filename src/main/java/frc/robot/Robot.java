@@ -323,6 +323,10 @@ public class Robot extends TimedRobot {
         return pieceMode;
     }
 
+    public static void setGamePieceMode(boolean mode){
+        pieceMode = mode;
+    }
+
     public static double BatteryVoltage() {
         return batVolt;
     }
