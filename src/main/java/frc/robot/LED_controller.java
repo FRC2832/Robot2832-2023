@@ -43,7 +43,7 @@ public boolean send(cmds prefix,Optional<Integer> num){
     case lightning:
         cmd ="l"
         break;
-    }}
+    }
 
     if(num.isPresent() ){
         sp.writeString(cmd+Integer.toString(num)+"/n");
@@ -51,5 +51,6 @@ public boolean send(cmds prefix,Optional<Integer> num){
     else{
     sp.writeString(cmd+"/n");
     }
+    return true;
 }
 }
