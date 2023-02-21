@@ -8,7 +8,6 @@ import frc.robot.GrabberIntake;
 public class IntakeBackward extends CommandBase{
     private GrabberIntake intake;
 
-    //need to include the pneumatic code and the methods for that
     public IntakeBackward(GrabberIntake intake) { 
         this.intake = intake;
         addRequirements(intake);
@@ -16,7 +15,7 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public void initialize() {
-        
+        intake.resetTimer();
     }
 
     @Override

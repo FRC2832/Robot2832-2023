@@ -17,7 +17,7 @@ public class IntakeForward extends CommandBase{
 
     @Override
     public void initialize() {
-        
+        intake.resetTimer();
     }
 
     @Override

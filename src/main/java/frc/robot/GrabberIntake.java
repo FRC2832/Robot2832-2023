@@ -7,10 +7,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 public class GrabberIntake implements Subsystem { 
     private CANSparkMax intakeMotor;
-    private double nomVolt;
+    private double velocity;
     private Timer timer;
     private boolean done;
 
@@ -28,42 +27,48 @@ public class GrabberIntake implements Subsystem {
 
     public void setIntakeVolts(double volts) {
         intakeMotor.setVoltage(volts);
+        SmartDashboard.putNumber("Intake Volts", volts);
     }
-
+    
     public void Grab(boolean forward) {
-        if(forward && done) {
-            intakeOff();
-            return;
-        }
-        else {
-            done = false;
-        }
+        // if(forward && done) {
+        //     intakeOff();
+        //     return;
+        // }
+        // else {
+        //     done = false;
+        // }
 
-        if (forward) {
-            intakeMotor.setVoltage(Constants.IntakeVoltage);
+    
+        velocity = intakeMotor.getEncoder().getVelocity();
+        SmartDashboard.putNumber("Intake Velocity", velocity);
+        
+        //if(Math.abs(velocity) > 0) {
+        timer.start();
+        if(timer.hasElapsed(1.0)) {
+            intakeOff();
+            //done = true;
+            timer.stop();
+            //timer.reset();
         } else {
-            intakeMotor.setVoltage(-1 * Constants.IntakeVoltage);
-        }
-        
-        nomVolt = intakeMotor.getVoltageCompensationNominalVoltage();
-        SmartDashboard.putNumber("Intake Nominal Voltage", nomVolt);
-        
-        if(nomVolt >= 0) {
-            timer.start();
-            if(timer.hasElapsed(2.0)) {
-                intakeOff();
-                done = true;
+            if (forward) {
+                setIntakeVolts(Constants.IntakeVoltage);
+            } else {
+                setIntakeVolts(-1 * Constants.IntakeVoltage);
             }
         }
-        else {
-            timer.stop();
-            timer.reset();
-        }
+        // }
+        // else {
+        //     timer.stop();
+        //     timer.reset();
+        // }
     }
 
     public void intakeOff(){
-        intakeMotor.setVoltage(0.0);
-        done = false;
+        setIntakeVolts(0.0);
     }
 
+    public void resetTimer() {
+        timer.reset();
+    }
 }
