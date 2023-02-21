@@ -4,6 +4,10 @@ import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ArmAutonPoint;
+import frc.robot.commands.ArmManualOverride;
+import frc.robot.commands.GrabberMove;
+import frc.robot.commands.IntakeMove;
 import frc.robot.interfaces.IDriveControls;
 
 
@@ -171,6 +175,25 @@ public class DriveControls implements IDriveControls {
         } else {
             return 0.0;
         }
+    }
+
+    @Override
+    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
+        ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
+        ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
+        ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
+        ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
+        ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+        ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
+        ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+        ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
+        ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
+        GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
+        GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
+        GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
     }
 
 }
