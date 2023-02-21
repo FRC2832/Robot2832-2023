@@ -96,8 +96,7 @@ public class Robot extends TimedRobot {
         controls = new DriveControls();
         
         camera1 = new PhotonCamera("JeVois-A31_Video_Camera");
-        camera2 = new PhotonCamera("JeVois-A32_Video_Camera");
-        camera3 = new PhotonCamera("JeVois-A33_Video_Camera");
+
         
         
         // initialize robot features
@@ -148,7 +147,7 @@ public class Robot extends TimedRobot {
         //run the command schedule no matter what mode we are in
         schedule.run();
         loggingPeriodic();
-        SmartDashboard.putNumber("Camera Lag", camera1.getLatestResult().getLatencyMillis());
+        
         
     }
 
@@ -229,8 +228,7 @@ public class Robot extends TimedRobot {
         drive.setDriveMotorBrakeMode(true);
         drive.setTurnMotorBrakeMode(true);
         camera1.setDriverMode(isAutonomous());
-        camera2.setDriverMode(isAutonomous());
-        camera3.setDriverMode(isAutonomous());
+
     }
 
     /** This function is called periodically during operator control. */
