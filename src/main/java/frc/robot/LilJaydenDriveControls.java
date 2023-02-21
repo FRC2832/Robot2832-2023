@@ -2,48 +2,48 @@ package frc.robot;
 
 import org.livoniawarriors.UtilFunctions;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.interfaces.IDriveControls;
 
 
 public class LilJaydenDriveControls implements IDriveControls {
-    private XboxController driveCont;
+    private T16000M driveContLeft;
+    private T16000M driveContRight;
     private Saitek armCont;
 
     public LilJaydenDriveControls() {
-        driveCont = new XboxController(0);
-        armCont = new Saitek(1);
+        driveContLeft = new T16000M(0);
+        driveContRight = new T16000M(1);
     }
    
     @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
+    public boolean IsFieldOrientedResetRequested() { //driver/operator will use this method
+        return driveContLeft.getMiddlePressed(); //TODO: make sure this is the thumb press down
     }
 
     @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
+    public double GetXDrivePct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
+    public double GetYDrivePct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContLeft.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
+    public double GetTurnPct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContRight.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
+    public boolean BoostTriggerRequested() { //driver/operator will use this method
+        return driveContRight.getTrigger();
     }
 
     @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
+    public boolean PrecisionTriggerRequested() { //driver/operator will use this method
+        return driveContLeft.getTrigger();
     }
 
     public double GetArmKinXCommand() {
@@ -132,13 +132,13 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+    public JoystickButton TailUpRequested() { //driver/operator will use this method
+        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
 
     @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+    public JoystickButton TailDownRequested() {  //driver/operator will use this method
+        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
 
     @Override
@@ -170,5 +170,10 @@ public class LilJaydenDriveControls implements IDriveControls {
         } else {
             return 0.0;
         }
+    }
+
+    @Override
+    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
+        // nothing needed here yet
     }
 }

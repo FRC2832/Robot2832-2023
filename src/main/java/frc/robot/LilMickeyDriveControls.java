@@ -1,60 +1,50 @@
 package frc.robot;
 
-
 import org.livoniawarriors.UtilFunctions;
-
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ArmManualOverride;
 import frc.robot.interfaces.IDriveControls;
-
-
 
 
 public class LilMickeyDriveControls implements IDriveControls {
     private XboxController driveCont;
     private XboxController operCont;
 
-
     public LilMickeyDriveControls(){
-        operCont = new XboxController(1);
+        driveCont = new XboxController(0);
     }
    
     @Override
-    public boolean IsFieldOrientedResetRequested() {
+    public boolean IsFieldOrientedResetRequested() { //driver/operator will use this method
         return driveCont.getLeftStickButtonPressed();
     }
 
-
     @Override
-    public double GetXDrivePct() {
+    public double GetXDrivePct() { //driver/operator will use this method
         return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
     }
 
-
     @Override
-    public double GetYDrivePct() {
+    public double GetYDrivePct() { //driver/operator will use this method
         return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
     }
 
-
     @Override
-    public double GetTurnPct() {
+    public double GetTurnPct() { //driver/operator will use this method
         return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
     }
 
-
     @Override
-    public boolean BoostTriggerRequested() {
+    public boolean BoostTriggerRequested() { //driver/operator will use this method
         return driveCont.getRightTriggerAxis() > .1;
     }
 
-
     @Override
-    public boolean PrecisionTriggerRequested() {
+    public boolean PrecisionTriggerRequested() { //driver/operator will use this method
         return driveCont.getLeftTriggerAxis() > .1;
     }
-
 
     @Override
     public double GetArmKinXCommand() {
@@ -69,7 +59,6 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
     }
 
-
     @Override
     public double GetArmKinZCommand() {
         if(operCont.pov(180, null).getAsBoolean()){
@@ -83,9 +72,9 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
     }
 
-
+    //"Give it to Mickey" -James
     @Override
-    public double GetArmShoulderPct() {
+    public double GetArmShoulderPct() { //driver/operator will use this method
         if(driveCont.pov(0, null).getAsBoolean()) {
             return 0.3;
         } else if (driveCont.pov(180,null).getAsBoolean()) {
@@ -95,9 +84,8 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
     }
 
-
     @Override
-    public double GetArmElbowPct() {
+    public double GetArmElbowPct() { //driver/operator will use this method
         if(driveCont.pov(90, null).getAsBoolean()) {
             return -0.3;
         } else if (driveCont.pov(270,null).getAsBoolean()) {
@@ -107,30 +95,25 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
     }
 
-
     @Override
-    public JoystickButton ShoulderPosRequested() {
+    public JoystickButton ShoulderPosRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, 8);
     }
 
-
     @Override
-    public JoystickButton ShoulderNegRequested() {
+    public JoystickButton ShoulderNegRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, 8);
     }
 
-
     @Override
-    public JoystickButton ElbowPosRequested() {
+    public JoystickButton ElbowPosRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, 8);
     }
 
-
     @Override
-    public JoystickButton ElbowNegRequested() {
+    public JoystickButton ElbowNegRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, 8);
     }
-
 
     @Override
     public JoystickButton ArmToPickupGround(){
@@ -141,7 +124,6 @@ public class LilMickeyDriveControls implements IDriveControls {
     public JoystickButton ArmToPickupTail(){
         return new JoystickButton(operCont, XboxController.Button.kB.value);
     }
-
 
     @Override
     public JoystickButton ArmToPickupHuman(){
@@ -162,36 +144,31 @@ public class LilMickeyDriveControls implements IDriveControls {
     public JoystickButton ArmToScoreMiddle(){
         return new JoystickButton(operCont, XboxController.Button.kX.value);
     }
-   
+
     @Override
     public JoystickButton ArmToScoreTop(){
         return new JoystickButton(operCont, XboxController.Button.kY.value);
     }
 
-
     @Override
-    public JoystickButton TailUpRequested() {
+    public JoystickButton TailUpRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, XboxController.Button.kY.value);
     }
 
-
     @Override
-    public JoystickButton TailDownRequested() {
+    public JoystickButton TailDownRequested() { //driver/operator will use this method
         return new JoystickButton(driveCont, XboxController.Button.kX.value);
     }
-
 
     @Override
     public JoystickButton GrabberUpRequested() {
         return new JoystickButton(operCont, XboxController.Axis.kRightY.value);
     }
 
-
     @Override
     public JoystickButton GrabberDownRequested() {
         return new JoystickButton(operCont, XboxController.Axis.kRightY.value);
     }
-
 
     @Override
     public double GetGrabberPct() {
@@ -204,17 +181,21 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
     }
 
-
     @Override
     public JoystickButton GrabberSuckRequested() {
         return new JoystickButton(operCont, XboxController.Axis.kRightTrigger.value);
     }
-
 
     @Override
     public JoystickButton GrabberSpitRequested() {
         return new JoystickButton(operCont, XboxController.Axis.kLeftTrigger.value);
     }
 
-
+    @Override
+    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
+        ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
+        ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
+        ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
+        ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
+    }
 }
