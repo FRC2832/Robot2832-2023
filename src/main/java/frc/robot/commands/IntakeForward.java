@@ -19,7 +19,7 @@ public class IntakeForward extends CommandBase{
 
     @Override
     public void initialize() {
-        timer.start();
+        intake.resetTimer();
     }
 
     @Override

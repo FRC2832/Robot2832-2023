@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
-import frc.robot.interfaces.ITailControl;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 
@@ -30,6 +29,7 @@ public class Robot extends TimedRobot {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
+    private static double batVolt;
 
     // robot features
     private ISwerveDrive drive;
@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+
+    private static boolean pieceMode;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -124,7 +126,7 @@ public class Robot extends TimedRobot {
             arm = new Arm(new ArmSim());
         }
         grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw());
+        intake = new Intake(new IntakeHw(), arm);
         tail = new Tail(new TailHw());
 
         //subsystems that we don't need to save the reference to, calling new schedules them
@@ -135,11 +137,15 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         tail.setDefaultCommand(new TailMovement(controls, tail));
+        intake.setDefaultCommand(new IntakeMove(controls, intake));
 
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
+        
+        controls.intakeInRequested().whileTrue(new IntakeBackward(grabber));
+        controls.intakeOutRequested().whileTrue(new IntakeForward(grabber));
         
         controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
@@ -148,12 +154,11 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-        
-        controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
-        controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
 
         controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
         controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
+
+        controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -169,6 +174,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
+        batVolt = pdp.getVoltage();
         if(count % 2 == 0) {
             loggingPeriodic();
         }
@@ -294,7 +300,7 @@ public class Robot extends TimedRobot {
         for(int i=0; i<pdpChannelNames.length; i++) {
             table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
         }
-        table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
+        table.getEntry("PDP Voltage").setDouble(batVolt);
         table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
         table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
    
@@ -311,5 +317,13 @@ public class Robot extends TimedRobot {
         table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
         table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
         table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+    }
+
+    public static boolean getGamePieceMode(){
+        return pieceMode;
+    }
+
+    public static double BatteryVoltage() {
+        return batVolt;
     }
 }

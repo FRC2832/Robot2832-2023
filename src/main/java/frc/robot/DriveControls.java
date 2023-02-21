@@ -171,4 +171,9 @@ public class DriveControls implements IDriveControls {
         return new JoystickButton(armCont, 20);
     }
 
+    @Override
+    public JoystickButton ChangePieceMode(){
+        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);
+    }
+
 }

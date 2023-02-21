@@ -11,7 +11,6 @@ public class IntakeBackward extends CommandBase{
     private GrabberIntake intake;
     private Timer timer;
 
-    //need to include the pneumatic code and the methods for that
     public IntakeBackward(GrabberIntake intake) { 
         this.intake = intake;
         addRequirements(intake);
@@ -19,7 +18,7 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public void initialize() {
-        timer.start();
+        intake.resetTimer();
     }
 
     @Override
