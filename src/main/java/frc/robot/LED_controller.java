@@ -1,56 +1,91 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 
-public class DisplayManager(){
+public class LED_controller{
 
-public enum cmds {
-    Arm(1),
-    targetting_computer(2),
-    brightness(3),
-    cone(4),
-    cube(5),
-    kitt(6),
-    lightning(7);
-
-    public final int value;
-    Button(int value) {
-      this.value = value;
-}
+    public LED_controller(){
 
 
+    }
+    
+    public enum cmds {
+        Arm(1),
+        targetting_computer(2),
+        brightness(3),
+        cone(4),
+        cube(5),
+        kitt(6),
+        lightning(7);
+    
+        public final int value;
+        cmds(int value) {
+          this.value = value;
+    }
+    }
 
-public boolean send(cmds prefix,Optional<Integer> num){
-    sp = SerialPort​(int 9600, SerialPort.Port "kOnboard");
+
+
+public boolean send(cmds prefix){
+    SerialPort  sp;
+    sp = new SerialPort(9600, Port.kOnboard);
+    String cmd = "";
     switch(prefix){
     case Arm:
-        cmd ="a"
+        cmd ="a";
         break;
     case targetting_computer: 
-        cmd ="t"
+         cmd ="t";
         break;
     case brightness:
-        cmd ="b"
+         cmd ="b";
         break;
     case cone:
-        cmd ="cone"
+         cmd ="cone";
         break;
     case cube: 
-        cmd ="cube"
+         cmd ="cube";
         break;
     case kitt:
-        cmd ="kitt"
+         cmd ="kitt";
         break;
     case lightning:
-        cmd ="l"
+         cmd ="l";
         break;
     }
 
-    if(num.isPresent() ){
-        sp.writeString(cmd+Integer.toString(num)+"/n");
+
+
+    return true;
+}
+public boolean send(cmds prefix, int num){
+    SerialPort sp = new SerialPort(9600, Port.kOnboard);
+    String cmd = "";
+    switch(prefix){
+    case Arm:
+        cmd ="a";
+        break;
+    case targetting_computer: 
+         cmd ="t";
+        break;
+    case brightness:
+         cmd ="b";
+        break;
+    case cone:
+         cmd ="cone";
+        break;
+    case cube: 
+         cmd ="cube";
+        break;
+    case kitt:
+         cmd ="kitt";
+        break;
+    case lightning:
+         cmd ="l";
+        break;
     }
-    else{
-    sp.writeString(cmd+"/n");
-    }
+
+
     return true;
 }
 }
