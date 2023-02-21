@@ -3,9 +3,9 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
 public class LED_controller{
-
+    private SerialPort sp;
     public LED_controller(){
-
+        this.sp = new SerialPort(9600, Port.kOnboard);
 
     }
     
@@ -27,8 +27,7 @@ public class LED_controller{
 
 
 public boolean send(cmds prefix){
-    SerialPort  sp;
-    sp = new SerialPort(9600, Port.kOnboard);
+
     String cmd = "";
     switch(prefix){
     case Arm:
@@ -53,13 +52,15 @@ public boolean send(cmds prefix){
          cmd ="l";
         break;
     }
+
+    this.sp.writeString(cmd+"/n");
+    
 
 
 
     return true;
 }
 public boolean send(cmds prefix, int num){
-    SerialPort sp = new SerialPort(9600, Port.kOnboard);
     String cmd = "";
     switch(prefix){
     case Arm:
@@ -85,7 +86,7 @@ public boolean send(cmds prefix, int num){
         break;
     }
 
-
+    this.sp.writeString(cmd+Integer.toString(num)+"/n");
     return true;
 }
 }
