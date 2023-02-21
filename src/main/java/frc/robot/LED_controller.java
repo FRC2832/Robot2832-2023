@@ -18,9 +18,9 @@ public enum cmds {
 }
 
 
-sp = SerialPort​(int 9600, SerialPort.Port "kOnboard")
 
 public boolean send(cmds prefix,Optional<Integer> num){
+    sp = SerialPort​(int 9600, SerialPort.Port "kOnboard");
     switch(prefix){
     case Arm:
         cmd ="a"
