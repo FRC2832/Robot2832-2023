@@ -24,7 +24,12 @@ public class TailMovement extends CommandBase{
     @Override
     public void execute() {  
         if(controls.TailUpRequested().getAsBoolean()){
-            tail.setTailAngle(105);
+            if(tail.getTailAngle() < 100){ //to facilitate the on/off toggle Jayden wants, if its already there it should go to the other position
+                tail.setTailAngle(105);
+            }
+            else if(tail.getTailAngle() > 0){
+                tail.setTailAngle(-8); //might mess up other drivers
+            }
             /*
             if (tail.getTailAngle() < 150) {
                 tail.setTailVoltage(6);
