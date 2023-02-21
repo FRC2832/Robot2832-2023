@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
-import frc.robot.interfaces.ITailControl;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 
@@ -47,6 +46,8 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+
+    private static boolean pieceMode;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -154,6 +155,8 @@ public class Robot extends TimedRobot {
 
         controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
         controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
+
+        controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -311,5 +314,9 @@ public class Robot extends TimedRobot {
         table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
         table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
         table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+    }
+
+    public static boolean getGamePieceMode(){
+        return pieceMode;
     }
 }

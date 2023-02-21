@@ -32,4 +32,5 @@ public interface IDriveControls {
     JoystickButton GrabberDownRequested();
     JoystickButton GrabberSuckRequested();
     JoystickButton GrabberSpitRequested();
+    JoystickButton ChangePieceMode();
 }
