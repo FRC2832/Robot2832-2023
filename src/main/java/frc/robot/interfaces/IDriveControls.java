@@ -10,8 +10,6 @@ public interface IDriveControls {
     double GetArmElbowPct();
     double GetArmKinXCommand();
     double GetArmKinZCommand();
-    JoystickButton intakeInRequested(); 
-    JoystickButton intakeOutRequested();
     boolean BoostTriggerRequested();
     boolean PrecisionTriggerRequested();
     boolean IsFieldOrientedResetRequested();
@@ -30,6 +28,7 @@ public interface IDriveControls {
     JoystickButton TailDownRequested();
     JoystickButton GrabberUpRequested();
     JoystickButton GrabberDownRequested();
+    double GetGrabberPct();
     JoystickButton GrabberSuckRequested();
     JoystickButton GrabberSpitRequested();
 }

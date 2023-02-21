@@ -15,7 +15,7 @@ public class DriveControls implements IDriveControls {
         driveCont = new XboxController(0);
         armCont = new Saitek(1);
     }
-    
+   
     @Override
     public boolean IsFieldOrientedResetRequested() {
         return driveCont.getLeftStickButtonPressed();
@@ -76,15 +76,6 @@ public class DriveControls implements IDriveControls {
         }
     }
 
-    @Override
-    public JoystickButton intakeInRequested() {
-        return new JoystickButton(armCont, Saitek.Button.pinkTopLeft.value);
-    }
-
-    @Override
-    public JoystickButton intakeOutRequested() {
-        return new JoystickButton(armCont, Saitek.Button.pinkTopMiddle.value);
-    }
 
     @Override
     public JoystickButton ShoulderPosRequested() {
@@ -110,7 +101,7 @@ public class DriveControls implements IDriveControls {
     public JoystickButton ArmToPickupGround(){
         return new JoystickButton(armCont, Saitek.Button.yellowTopLeft.value);
     }
-    
+   
     @Override
     public JoystickButton ArmToPickupTail(){
         return new JoystickButton(armCont, Saitek.Button.yellowBottomLeft.value);
@@ -120,22 +111,22 @@ public class DriveControls implements IDriveControls {
     public JoystickButton ArmToPickupHuman(){
         return new JoystickButton(armCont, Saitek.Button.pinkBottomLeft.value);
     }
-    
+   
     @Override
     public JoystickButton ArmToSecureLocation(){
         return new JoystickButton(armCont, Saitek.Button.yellowTopMiddle.value);
     }
-    
+   
     @Override
     public JoystickButton ArmToScoreLow(){
         return new JoystickButton(armCont, Saitek.Button.yellowBottomMiddle.value);
     }
-    
+   
     @Override
     public JoystickButton ArmToScoreMiddle(){
         return new JoystickButton(armCont, Saitek.Button.yellowBottomRight.value);
     }
-    
+   
     @Override
     public JoystickButton ArmToScoreTop(){
         return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
@@ -169,6 +160,17 @@ public class DriveControls implements IDriveControls {
     @Override
     public JoystickButton GrabberSpitRequested() {
         return new JoystickButton(armCont, 20);
+    }
+
+    @Override
+    public double GetGrabberPct() {
+        if(armCont.getRawButton(17)) {
+            return 5.0; //if backwards switch negative
+        } else if (armCont.getRawButton(19)) {
+            return -5.0;
+        } else {
+            return 0.0;
+        }
     }
 
 }
