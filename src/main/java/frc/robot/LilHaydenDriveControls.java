@@ -11,13 +11,12 @@ import frc.robot.commands.IntakeMove;
 import frc.robot.interfaces.IDriveControls;
 
 
-public class DriveControls implements IDriveControls {
+public class LilHaydenDriveControls implements IDriveControls {
     private XboxController driveCont;
     private Saitek armCont;
 
-    public DriveControls() {
-        driveCont = new XboxController(0);
-        armCont = new Saitek(2);
+    public LilHaydenDriveControls() {
+        armCont = new Saitek(2); //WARNING: HE USES THE CONTROLLER UPSIDE DOWN; port 2 since Jayden has 2 controllers technically
     }
    
     @Override
@@ -49,7 +48,7 @@ public class DriveControls implements IDriveControls {
     public boolean PrecisionTriggerRequested() {
         return driveCont.getLeftTriggerAxis() > .1;
     }
-
+    
     public double GetArmKinXCommand() {
         return armCont.getxAxis1();
     }
@@ -59,10 +58,14 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetArmShoulderPct() {
-        if(armCont.getOrangeTopLeftButton()) {
+    public double GetArmShoulderPct() { //driver/operator will use this method
+        if(armCont.getyAxis1() > 0) { //if he moves controller up, y goes towards 1 not -1
+            return 0.3 * armCont.getyAxis1();//positive #
+        } else if (armCont.getyAxis1() < 0) { //if he moves controller down, y towards -1
+            return 0.3 * armCont.getyAxis1();//negative #
+        } else if(armCont.getRawButton(10)) {
             return 0.3;
-        } else if (armCont.getOrangeBottomLeftButton()) {
+        } else if (armCont.getRawButton(5)) {
             return -0.3;
         } else {
             return 0;
@@ -70,70 +73,73 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetArmElbowPct() {
-        if(armCont.getOrangeTopRightButton()) {
+    public double GetArmElbowPct() {  //driver/operator will use this method
+        if(armCont.getxAxis1() > 0) { //if he moves controller left, y goes towards 1 not -1
+            return 0.3 * armCont.getxAxis1();//positive #
+        } else if (armCont.getxAxis1() < 0) { //if he moves controller right, y towards -1
+            return 0.3 * armCont.getxAxis1();//negative #
+        } else if(armCont.getRawButton(9)) {
             return -0.3;
-        } else if (armCont.getOrangeBottomRightButton()) {
+        } else if (armCont.getRawButton(4)) {
             return 0.3;
         } else {
             return 0;
         }
     }
 
-
     @Override
-    public JoystickButton ShoulderPosRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeTopLeft.value);
+    public JoystickButton ShoulderPosRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 10);
     }
 
     @Override
-    public JoystickButton ShoulderNegRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeBottomLeft.value);
+    public JoystickButton ShoulderNegRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 5);
     }
 
     @Override
-    public JoystickButton ElbowPosRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeTopRight.value);
+    public JoystickButton ElbowPosRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 9);
     }
 
     @Override
-    public JoystickButton ElbowNegRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeBottomRight.value);
+    public JoystickButton ElbowNegRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 4);
     }
 
     @Override
-    public JoystickButton ArmToPickupGround(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopLeft.value);
+    public JoystickButton ArmToPickupGround(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 18); //TODO: take stevens point
     }
    
     @Override
-    public JoystickButton ArmToPickupTail(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomLeft.value);
+    public JoystickButton ArmToPickupTail(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 20);
     }
 
     @Override
-    public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(armCont, Saitek.Button.pinkBottomLeft.value);
+    public JoystickButton ArmToPickupHuman(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 19);
     }
    
     @Override
-    public JoystickButton ArmToSecureLocation(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopMiddle.value);
+    public JoystickButton ArmToSecureLocation(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 21);
     }
    
     @Override
-    public JoystickButton ArmToScoreLow(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomMiddle.value);
+    public JoystickButton ArmToScoreLow(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 6); //technically he wanted this button to be for cubes, 12 for cones
     }
    
     @Override
-    public JoystickButton ArmToScoreMiddle(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomRight.value);
+    public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 7); //technically he wanted this button to be for cubes, 14 for cones
     }
    
     @Override
-    public JoystickButton ArmToScoreTop(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
+    public JoystickButton ArmToScoreTop(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 8); //technically he wanted this button to be for cubes, 16 for cones
     }
 
     @Override
@@ -157,20 +163,20 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton GrabberSuckRequested() {
-        return new JoystickButton(armCont, 18);
+    public JoystickButton GrabberSuckRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 23); //technically he wanted this button to be for cubes, 24 to intake cones
     }
 
     @Override
-    public JoystickButton GrabberSpitRequested() {
-        return new JoystickButton(armCont, 20);
+    public JoystickButton GrabberSpitRequested() { //driver/operator will use this method
+        return new JoystickButton(armCont, 24); //this should intake cones if he never switches game piece mode
     }
 
     @Override
-    public double GetGrabberPct() {
-        if(armCont.getRawButton(17)) {
+    public double GetGrabberPct() { //driver/operator will use this method
+        if(armCont.getRawButton(23)) {
             return 5.0; //if backwards switch negative
-        } else if (armCont.getRawButton(19)) {
+        } else if (armCont.getRawButton(24)) {
             return -5.0;
         } else {
             return 0.0;
@@ -178,7 +184,7 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
+    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
         ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
         ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
@@ -198,15 +204,6 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public JoystickButton ChangePieceMode() {
-        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
-    }
-
-    public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
-    }
-
-    @Override
-    public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
+        return new JoystickButton(armCont, XboxController.Button.kRightStick.value);
     }
 }

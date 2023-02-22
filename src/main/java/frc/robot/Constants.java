@@ -91,5 +91,8 @@ public final class Constants {
     public static final double ArmToScoreTop_Z = 42;
 
     public static final double IntakeVoltage = 12.5;
+    public static final double TAIL_LOW_POINT = 0;
+    public static final double TAIL_HIGH_POINT = 105;
     
+
 }

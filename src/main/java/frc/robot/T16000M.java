@@ -11,22 +11,22 @@ public class T16000M extends GenericHID {
   
   /** Represents a digital button on an Saitek. */
   public enum Button {
-    trigger(0),
-    middle (1),
-    left(2),
-    right(3),
-    leftSideUpLeft(4),
-    leftSideUpMiddle(5),
-    leftSideUpRight(6),
-    leftSideDownRight(7),
-    leftSideDownMiddle(8),
-    leftSideDownLeft(9),
-    rightSideUpLeft(10),
-    rightSideUpMiddle(11),
-    rightSideUpRight(12),
-    rightSideDownRight(13),
-    rightSideDownMiddle(14),
-    rightSideDownLeft(15);
+    trigger(1),
+    middle (2),
+    left(3),
+    right(4),
+    leftSideUpLeft(5),
+    leftSideUpMiddle(6),
+    leftSideUpRight(7),
+    leftSideDownRight(8),
+    leftSideDownMiddle(9),
+    leftSideDownLeft(10),
+    rightSideUpLeft(11),
+    rightSideUpMiddle(12),
+    rightSideUpRight(13),
+    rightSideDownRight(14),
+    rightSideDownMiddle(15),
+    rightSideDownLeft(16);
   
     public final int value;
     Button(int value) {

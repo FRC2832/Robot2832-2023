@@ -41,7 +41,6 @@ public class IntakeMove extends CommandBase{
         return false;
     }
 
-
     @Override
     public void end(boolean interrupted) {
         intake.setPivotMotorVolts(0);
