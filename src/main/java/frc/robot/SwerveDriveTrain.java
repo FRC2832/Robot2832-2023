@@ -63,10 +63,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         //initialize module names
         moduleNames = new String[Constants.NUM_WHEELS];
-        moduleNames[FL] = "Module FL/";
-        moduleNames[FR] = "Module FR/";
-        moduleNames[RL] = "Module RL/";
-        moduleNames[RR] = "Module RR/";
+        moduleNames[FL] = "Swerve FL ";
+        moduleNames[FR] = "Swerve FR ";
+        moduleNames[RL] = "Swerve RL ";
+        moduleNames[RR] = "Swerve RR ";
 
         //input is angle off desired, output is percent reduction
         speedReduction = new InterpolatingTreeMap<Double, Double>();
@@ -88,9 +88,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
 
         //display data on SmartDashboard
-        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());       
-        SmartDashboard.putNumber("Pitch", hardware.getPitch());
-        SmartDashboard.putNumber("Roll", hardware.getRoll());
         for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
             SmartDashboard.putNumber(moduleNames[wheel] + "Calc Angle", swerveStates[wheel].angle.getDegrees());
         }
