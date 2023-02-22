@@ -42,6 +42,6 @@ public class Intake extends SubsystemBase {
         else { //pieceMode false is cone
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
         }
-        return MathUtil.inputModulus(value, -180, 180);
+        return value;
     }
 }
