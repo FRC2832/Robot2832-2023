@@ -188,6 +188,7 @@ public class Robot extends TimedRobot {
         operatorChooser.addOption("Hayden", kHaydenOperator);
         SmartDashboard.putData("Driver Select", driverChooser);
         SmartDashboard.putData("Operator Select", operatorChooser);
+        SmartDashboard.putBoolean("Field Oriented", false);
         
     }
 
@@ -212,6 +213,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
+
+        odometry.resetHeading();
 
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
             if(AutonomousStartPosition == 0){
@@ -286,15 +289,15 @@ public class Robot extends TimedRobot {
         driverSelected = driverChooser.getSelected();
         operatorSelected = operatorChooser.getSelected();
 
-        if(driverSelected.equals("Mickey")){
+        if(driverSelected.equals(kMickeyDriver)){
             controls = new LilMickeyDriveControls();
-        } else if(driverSelected.equals("Jayden")){
+        } else if(driverSelected.equals(kJaydenDriver)){
             controls = new LilJaydenDriveControls();
         } else {}
 
-        if(operatorSelected.equals("James")){
+        if(operatorSelected.equals(kJamesOperator)){
             opControls = new LilJimmyDriveControls();
-        } else if(operatorSelected.equals("Hayden")){
+        } else if(operatorSelected.equals(kHaydenOperator)){
             opControls = new LilHaydenDriveControls();
         } else {}
 

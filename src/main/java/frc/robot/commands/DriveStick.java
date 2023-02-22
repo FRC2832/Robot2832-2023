@@ -29,7 +29,6 @@ public class DriveStick extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.putBoolean("Field Oriented", false);
         SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
         SmartDashboard.putNumber("Turtle Speed", 1);
         SmartDashboard.putNumber("Turtle Turn Speed", 4);

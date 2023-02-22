@@ -2,6 +2,7 @@ package frc.robot;
 
 import org.livoniawarriors.UtilFunctions;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ChangeMode;
 import frc.robot.interfaces.IDriveControls;
@@ -15,26 +16,28 @@ public class LilJaydenDriveControls implements IDriveControls {
     public LilJaydenDriveControls() {
         driveContLeft = new T16000M(0);
         driveContRight = new T16000M(1);
+        
+        SmartDashboard.putBoolean("Field Oriented", true);
     }
    
     @Override
     public boolean IsFieldOrientedResetRequested() { //driver/operator will use this method
-        return driveContLeft.getMiddlePressed(); //TODO: make sure this is the thumb press down
+        return driveContLeft.getRawButtonPressed(2); //TODO: make sure this is the thumb press down
     }
 
     @Override
     public double GetXDrivePct() { //driver/operator will use this method
-        return -UtilFunctions.deadband(driveContLeft.getyAxis1(), Constants.STICK_DEADBAND);
+        return -UtilFunctions.deadband(driveContRight.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
     public double GetYDrivePct() { //driver/operator will use this method
-        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
+        return -UtilFunctions.deadband(driveContRight.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
     public double GetTurnPct() { //driver/operator will use this method
-        return -UtilFunctions.deadband(driveContRight.getxAxis1(), Constants.STICK_DEADBAND);
+        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
@@ -133,8 +136,8 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton TailUpRequested() { //driver/operator will use this method
-        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
+    public JoystickButton TailUpRequested() { 
+        return new JoystickButton(driveContRight, T16000M.Button.left.value);
     }
 
     @Override
@@ -180,6 +183,6 @@ public class LilJaydenDriveControls implements IDriveControls {
 
     @Override
     public JoystickButton ChangePieceMode() {
-        return new JoystickButton(driveContLeft, T16000M.Button.middle.value);
+        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
 }

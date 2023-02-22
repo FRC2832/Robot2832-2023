@@ -16,7 +16,8 @@ public class LilJimmyDriveControls implements IDriveControls {
     private XboxController operCont;
 
     public LilJimmyDriveControls(){
-        operCont = new XboxController(1);
+        driveCont = new XboxController(0);
+        operCont = new XboxController(2);
     }
    
     @Override
@@ -154,12 +155,12 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+        return new JoystickButton(operCont, XboxController.Button.kRightBumper.value);
     }
 
     @Override
     public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
 
     @Override

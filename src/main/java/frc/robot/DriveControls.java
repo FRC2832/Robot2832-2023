@@ -17,7 +17,7 @@ public class DriveControls implements IDriveControls {
 
     public DriveControls() {
         driveCont = new XboxController(0);
-        armCont = new Saitek(1);
+        armCont = new Saitek(2);
     }
    
     @Override

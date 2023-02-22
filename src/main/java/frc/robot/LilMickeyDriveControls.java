@@ -3,6 +3,7 @@ package frc.robot;
 import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArmManualOverride;
 import frc.robot.interfaces.IDriveControls;
@@ -14,6 +15,9 @@ public class LilMickeyDriveControls implements IDriveControls {
 
     public LilMickeyDriveControls(){
         driveCont = new XboxController(0);
+        operCont = new XboxController(2);
+        
+        SmartDashboard.putBoolean("Field Oriented", false);
     }
    
     @Override
@@ -151,13 +155,13 @@ public class LilMickeyDriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton TailUpRequested() { //driver/operator will use this method
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+    public JoystickButton TailUpRequested() { 
+        return new JoystickButton(operCont, XboxController.Button.kY.value);
     }
 
     @Override
-    public JoystickButton TailDownRequested() { //driver/operator will use this method
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+    public JoystickButton TailDownRequested() { 
+        return new JoystickButton(operCont, XboxController.Button.kX.value);
     }
 
     @Override
