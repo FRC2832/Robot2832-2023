@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
+    private static double batVolt;
 
     // robot features
     private ISwerveDrive drive;
@@ -48,6 +49,8 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+
+    private static boolean pieceMode;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -195,6 +198,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
+        batVolt = pdp.getVoltage();
         if(count % 2 == 0) {
             loggingPeriodic();
         }
@@ -350,6 +354,7 @@ public class Robot extends TimedRobot {
         for(int i=0; i<pdpChannelNames.length; i++) {
             table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
         }
+        table.getEntry("PDP Voltage").setDouble(batVolt);
         table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
         table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
         table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
@@ -367,5 +372,17 @@ public class Robot extends TimedRobot {
         table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
         table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
         table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+    }
+
+    public static boolean getGamePieceMode(){
+        return pieceMode;
+    }
+
+    public static void setGamePieceMode(boolean mode){
+        pieceMode = mode;
+    }
+
+    public static double BatteryVoltage() {
+        return batVolt;
     }
 }

@@ -197,33 +197,8 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetGrabberPct() {
-        if(armCont.getRawButton(17)) {
-            return 5.0; //if backwards switch negative
-        } else if (armCont.getRawButton(19)) {
-            return -5.0;
-        } else {
-            return 0.0;
-        }
-    }
-
-    @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
-        ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
-        ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
-        ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
-        GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
+    public JoystickButton ChangePieceMode() {
+        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
     }
 
     
