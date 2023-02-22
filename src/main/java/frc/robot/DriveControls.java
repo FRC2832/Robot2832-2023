@@ -200,7 +200,4 @@ public class DriveControls implements IDriveControls {
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
     }
-
-    
-
 }

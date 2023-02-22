@@ -24,12 +24,6 @@ public class ArmHw implements IArmControl {
     boolean shoulderPIDRan;
     boolean elbowPIDRan;
 
-    final double MIN_DUTY_CYCLE = 0.998;
-    final double MAX_DUTY_CYCLE = 0.167;
-    final double SHOULDER_MIN_ANGLE = -55.7;
-    final double SHOULDER_MAX_ANGLE = 180+65.3;
-    final double ELBOW_MIN_ANGLE = -55.7;
-    final double ELBOW_MAX_ANGLE = 180+65.3;
     final double COUNTS_PER_DEGREE_SHOULDER = 152.492;
     final double COUNTS_PER_DEGREE_ELBOW =  426.667;
 
@@ -137,13 +131,13 @@ public class ArmHw implements IArmControl {
         var rawDC = shoulderEncoder.getOutput();
         SmartDashboard.putNumber("Shoulder Raw", rawDC);
         //make shoulder between -90 to 270 to "ignore" the rollover point at vertical on the arm
-        shoulderAngle = MathUtil.inputModulus((rawDC * 360) - 287,-90,270);
+        shoulderAngle = MathUtil.inputModulus((rawDC * 360) - Constants.SHOULDER_OFFSET,-90,270);
 
         shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
 
         rawDC = elbowEncoder.getOutput();
         SmartDashboard.putNumber("Elbow Raw", rawDC);
-        elbowAngle =  MathUtil.inputModulus((rawDC * 360)-135,-180,180);
+        elbowAngle =  MathUtil.inputModulus((rawDC * 360) - Constants.ELBOW_OFFSET,-180,180);
 
         elbowMotor.setSelectedSensorPosition(elbowAngle * COUNTS_PER_DEGREE_ELBOW);
 
