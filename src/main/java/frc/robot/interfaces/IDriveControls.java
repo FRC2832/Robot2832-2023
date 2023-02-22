@@ -10,6 +10,8 @@ public interface IDriveControls {
     double GetArmElbowPct();
     double GetArmKinXCommand();
     double GetArmKinZCommand();
+    double GetPercentRightTriggerAxis();
+    double GetPercentLeftTriggerAxis();
     JoystickButton intakeInRequested(); 
     JoystickButton intakeOutRequested();
     boolean BoostTriggerRequested();
