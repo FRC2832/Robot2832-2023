@@ -109,7 +109,7 @@ public class LilHaydenDriveControls implements IDriveControls {
 
     @Override
     public JoystickButton ArmToPickupGround(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 18);
+        return new JoystickButton(armCont, 18); //TODO: take stevens point
     }
    
     @Override

@@ -24,12 +24,12 @@ public class LilJaydenDriveControls implements IDriveControls {
 
     @Override
     public double GetXDrivePct() { //driver/operator will use this method
-        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
+        return -UtilFunctions.deadband(driveContLeft.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
     public double GetYDrivePct() { //driver/operator will use this method
-        return -UtilFunctions.deadband(driveContLeft.getyAxis1(), Constants.STICK_DEADBAND);
+        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override

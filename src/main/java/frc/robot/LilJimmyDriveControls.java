@@ -51,10 +51,10 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public double GetArmKinXCommand() { //driver/operator will use this method
-        if(operCont.pov(90, null).getAsBoolean()){
+        if(operCont.getPOV() == 90){
             return 1.0;
         }
-        else if(operCont.pov(270, null).getAsBoolean()){
+        else if(operCont.getPOV() == 270){
             return -1.0;
         }
         else{
@@ -64,10 +64,10 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public double GetArmKinZCommand() { //driver/operator will use this method
-        if(operCont.pov(180, null).getAsBoolean()){
+        if(operCont.getPOV() == 180){
             return 1.0;
         }
-        else if(operCont.pov(0, null).getAsBoolean()){
+        else if(operCont.getPOV() == 0){
             return -1.0;
         }
         else{
@@ -77,9 +77,9 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public double GetArmShoulderPct() { //driver/operator will use this method
-        if(driveCont.pov(0, null).getAsBoolean()) {
+        if(operCont.getPOV() == 0) {
             return 0.3;
-        } else if (driveCont.pov(180,null).getAsBoolean()) {
+        } else if (operCont.getPOV() == 180) {
             return -0.3;
         } else {
             return 0.0;
@@ -88,9 +88,9 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public double GetArmElbowPct() { //driver/operator will use this method
-        if(driveCont.pov(90, null).getAsBoolean()) {
+        if(operCont.getPOV() == 90) {
             return -0.3;
-        } else if (driveCont.pov(270,null).getAsBoolean()) {
+        } else if (operCont.getPOV() == 270) {
             return 0.3;
         } else {
             return 0.0;

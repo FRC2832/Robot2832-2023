@@ -75,9 +75,9 @@ public class LilMickeyDriveControls implements IDriveControls {
     //"Give it to Mickey" -James
     @Override
     public double GetArmShoulderPct() { //driver/operator will use this method
-        if(driveCont.pov(0, null).getAsBoolean()) {
+        if(driveCont.getPOV() == 0) {
             return 0.3;
-        } else if (driveCont.pov(180,null).getAsBoolean()) {
+        } else if (driveCont.getPOV() == 180) {
             return -0.3;
         } else {
             return 0.0;
@@ -86,9 +86,9 @@ public class LilMickeyDriveControls implements IDriveControls {
 
     @Override
     public double GetArmElbowPct() { //driver/operator will use this method
-        if(driveCont.pov(90, null).getAsBoolean()) {
+        if(driveCont.getPOV() == 90) {
             return -0.3;
-        } else if (driveCont.pov(270,null).getAsBoolean()) {
+        } else if (driveCont.getPOV() == 270) {
             return 0.3;
         } else {
             return 0.0;
