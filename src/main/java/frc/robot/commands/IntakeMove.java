@@ -25,10 +25,10 @@ public class IntakeMove extends CommandBase{
     @Override
     public void execute() {  
         if(controls.GrabberUpRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(5);
+            intake.setPivotMotorVolts(6);
             angleOffset = intake.optimalIntakeAngle() - intake.getPivotAngle();
         } else if(controls.GrabberDownRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(-5);
+            intake.setPivotMotorVolts(-6);
             angleOffset = intake.optimalIntakeAngle() - intake.getPivotAngle();
         } else {
             intake.setPivotAngle(intake.optimalIntakeAngle() - angleOffset);
