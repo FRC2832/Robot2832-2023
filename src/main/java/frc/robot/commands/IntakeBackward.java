@@ -1,14 +1,16 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.GrabberIntake;
 
 
 
+
 public class IntakeBackward extends CommandBase{
     private GrabberIntake intake;
+    private Timer timer;
 
-    //need to include the pneumatic code and the methods for that
     public IntakeBackward(GrabberIntake intake) { 
         this.intake = intake;
         addRequirements(intake);
@@ -16,7 +18,7 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public void initialize() {
-        
+        intake.resetTimer();
     }
 
     @Override
@@ -26,7 +28,14 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return false; 
+        if(timer.get() > 2.0){
+            timer.stop();
+            timer.reset();
+            return true;
+        }
+        else{
+            return false; 
+        } 
     }
 
     @Override

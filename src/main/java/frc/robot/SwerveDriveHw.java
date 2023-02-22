@@ -4,9 +4,11 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,6 +65,11 @@ public class SwerveDriveHw implements ISwerveDriveIo {
 
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
 
+        for (CANCoder sensor: absSensor) {
+            sensor.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 250);
+            sensor.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
+        }
+
         for(TalonFX motor : driveMotor) {
             motor.configFactoryDefault(100);
             motor.getAllConfigs(allConfigs,100);
@@ -72,6 +79,8 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.slot0.kF = 0.047;
             allConfigs.slot0.integralZone = 200;
             motor.configAllSettings(allConfigs,100);
+
+            motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
 
         for(TalonFX motor : turnMotor) {
@@ -94,6 +103,8 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             motor.configStatorCurrentLimit(cfg);
             motor.selectProfileSlot(1, 0);
             System.out.println("Turn motor config: " + error.name());
+
+            motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
         
         //initialize sensor buffers

@@ -140,7 +140,7 @@ public class Robot extends TimedRobot {
             arm = new Arm(new ArmSim());
         }
         grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw());
+        intake = new Intake(new IntakeHw(), arm);
         tail = new Tail(new TailHw());
 
         //subsystems that we don't need to save the reference to, calling new schedules them
@@ -173,6 +173,8 @@ public class Robot extends TimedRobot {
         // controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
 
         //controls.ChangePieceMode().toggleOnTrue(new ChangeMode());
+
+        controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -355,7 +357,6 @@ public class Robot extends TimedRobot {
             table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
         }
         table.getEntry("PDP Voltage").setDouble(batVolt);
-        table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
         table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
         table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
    
