@@ -185,4 +185,14 @@ public class LilJaydenDriveControls implements IDriveControls {
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
+
+    @Override
+    public double GetPercentRightTriggerAxis() {
+        return 0;
+    }
+
+    @Override
+    public double GetPercentLeftTriggerAxis() {
+        return 0;
+    }
 }
