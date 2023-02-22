@@ -53,7 +53,7 @@ public boolean send(cmds prefix){
         break;
     }
 
-    this.sp.writeString(cmd+"/n");
+    sp.writeString(cmd+"/n");
     
 
 
@@ -86,7 +86,7 @@ public boolean send(cmds prefix, int num){
         break;
     }
 
-    this.sp.writeString(cmd+Integer.toString(num)+"/n");
+    sp.writeString(cmd+Integer.toString(num)+"/n");
     return true;
 }
 }
