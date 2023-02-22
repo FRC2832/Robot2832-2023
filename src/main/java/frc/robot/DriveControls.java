@@ -68,31 +68,21 @@ public class DriveControls implements IDriveControls {
     @Override
     public double GetArmElbowPct() {
         if(armCont.getOrangeTopRightButton()) {
-            return 0.3;
-        } else if (armCont.getOrangeBottomRightButton()) {
             return -0.3;
+        } else if (armCont.getOrangeBottomRightButton()) {
+            return 0.3;
         } else {
             return 0;
         }
     }
 
     @Override
-    public boolean IntakeConeRequested() {
-        return armCont.getYellowTopLeftButton();
-    }
-
-    @Override
-    public boolean OuttakeConeRequested() {
-        return armCont.getYellowTopMiddleButton();
-    }
-
-    @Override
-    public JoystickButton CubeGrabCloseRequested() {
+    public JoystickButton intakeInRequested() {
         return new JoystickButton(armCont, Saitek.Button.pinkTopLeft.value);
     }
 
     @Override
-    public JoystickButton CubeGrabOpenRequested() {
+    public JoystickButton intakeOutRequested() {
         return new JoystickButton(armCont, Saitek.Button.pinkTopMiddle.value);
     }
 
@@ -149,6 +139,41 @@ public class DriveControls implements IDriveControls {
     @Override
     public JoystickButton ArmToScoreTop(){
         return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
+    }
+
+    @Override
+    public JoystickButton TailUpRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+    }
+
+    @Override
+    public JoystickButton TailDownRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+    }
+
+    @Override
+    public JoystickButton GrabberUpRequested() {
+        return new JoystickButton(armCont, 17);
+    }
+
+    @Override
+    public JoystickButton GrabberDownRequested() {
+        return new JoystickButton(armCont, 19);
+    }
+
+    @Override
+    public JoystickButton GrabberSuckRequested() {
+        return new JoystickButton(armCont, 18);
+    }
+
+    @Override
+    public JoystickButton GrabberSpitRequested() {
+        return new JoystickButton(armCont, 20);
+    }
+
+    @Override
+    public JoystickButton ChangePieceMode(){
+        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);
     }
 
 }

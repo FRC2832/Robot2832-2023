@@ -10,10 +10,8 @@ public interface IDriveControls {
     double GetArmElbowPct();
     double GetArmKinXCommand();
     double GetArmKinZCommand();
-    boolean IntakeConeRequested();
-    boolean OuttakeConeRequested();
-    JoystickButton CubeGrabCloseRequested(); 
-    JoystickButton CubeGrabOpenRequested();
+    JoystickButton intakeInRequested(); 
+    JoystickButton intakeOutRequested();
     boolean BoostTriggerRequested();
     boolean PrecisionTriggerRequested();
     boolean IsFieldOrientedResetRequested();
@@ -28,5 +26,11 @@ public interface IDriveControls {
     JoystickButton ArmToScoreLow();
     JoystickButton ArmToScoreMiddle();
     JoystickButton ArmToScoreTop();
-    
+    JoystickButton TailUpRequested();
+    JoystickButton TailDownRequested();
+    JoystickButton GrabberUpRequested();
+    JoystickButton GrabberDownRequested();
+    JoystickButton GrabberSuckRequested();
+    JoystickButton GrabberSpitRequested();
+    JoystickButton ChangePieceMode();
 }

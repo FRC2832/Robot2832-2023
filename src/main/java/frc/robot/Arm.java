@@ -18,6 +18,8 @@ public class Arm implements Subsystem{
         hardware.updateInputs();
         SmartDashboard.putNumber("Shoulder Angle", getShoulderAngle());
         SmartDashboard.putNumber("Elbow Angle", getElbowAngle());
+        SmartDashboard.putNumber("Arm X", getArmXPosition());
+        SmartDashboard.putNumber("Arm Z", getArmZPosition());
         hardware.checkBrake();
     }
 
@@ -51,39 +53,49 @@ public class Arm implements Subsystem{
     //this one will become not good once we figure out the equation for an arm with two segments of different lengths
     public void calcAngles(double x, double z) { //calculate the angles for each part of the arm to get to the point (x, z)
         // from https://www.youtube.com/watch?v=Q-UeYEpwXXU
+        SmartDashboard.putNumber("Commanded Arm X", x);
+        SmartDashboard.putNumber("Commanded Arm Z", z);
+        
         double shoulder = 0;
         double elbow = 0;
-        boolean side = (x > -46); //arm cannot reach outside of 48 inches, we have a grabber on the arm so it checks for <46
-        boolean armLength = Math.sqrt((x*x) + (z*z)) < 60; //total armLength for 34in plus 26in00934
-        if(side && armLength){
-            double l = Math.abs(x);
-            double h = Math.sqrt(l * l + z * z);
-            double phi = Math.toDegrees(Math.atan(z/l));
-            double theta = Math.toDegrees(Math.acos((h/2)/30));
-            if(x >= 0) {
-                shoulder = phi + theta;
-                elbow = (phi - theta);
-            }
-            else{
-                shoulder = 180 - (phi + theta);
-                elbow = 180 - (phi - theta);
-            }
+        double forearmLen = Constants.FOREARM_LENGTH;
+        double bicepLen = Constants.BICEP_LENGTH;
+
+        boolean sideLimit = x < 77.5 && x > -48;
+        boolean heightLimit = z < 59 && z > -14;
+        boolean robotHeightLimit = (-5 < x && x < 30) && (z < 0);
+        boolean armLengthLimit = Math.sqrt(x*x + z*z) < forearmLen + bicepLen;
+
+        //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm
+        if(x > 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit) {
+            elbow =  Math.acos((bicepLen*bicepLen + forearmLen*forearmLen - x*x - z*z)/(2*bicepLen*forearmLen)) - 3.14159;
+            shoulder = Math.atan(z/x) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
-        else { //if requested point is outside limited range then set arm angles to what they were before
-            elbow = getElbowAngle();
-            shoulder = getShoulderAngle();
+        else if(x < 0 && sideLimit && heightLimit && !robotHeightLimit && armLengthLimit){
+            elbow = Math.acos((x*x + z*z - bicepLen*bicepLen - forearmLen*forearmLen)/(2*bicepLen*forearmLen));
+            shoulder = 3.14159 - Math.atan(z/Math.abs(x)) - Math.atan((forearmLen*Math.sin(elbow))/(bicepLen + forearmLen*Math.cos(elbow)));
         }
+        else {
+            return;
+        }
+        // finds shoulder angle in radians
+        
+        elbow = Math.toDegrees(elbow);
+        shoulder = Math.toDegrees(shoulder);
+        
         this.setElbowAngle(elbow);
         this.setShoulderAngle(shoulder);
     }
 
-    public double getArmXPosition(){
-        double xPos = (Math.cos(getShoulderAngle())*Constants.BICEP_LENGTH) + (Math.cos(getShoulderAngle()+getElbowAngle())*Constants.FOREARM_LENGTH);
+    public double getArmXPosition(){// 20.416                                         10.156
+        double xPos = (Math.cos(Math.toRadians(getShoulderAngle()))*Constants.BICEP_LENGTH) + (Math.cos(Math.toRadians(getShoulderAngle()+getElbowAngle()))*Constants.FOREARM_LENGTH);
+        
         return xPos;
     }
 
     public double getArmZPosition(){
-        double zPos = (Math.sin(getShoulderAngle())*Constants.BICEP_LENGTH) + (Math.sin(getShoulderAngle()+getElbowAngle())*Constants.FOREARM_LENGTH);
+        double zPos = (Math.sin(Math.toRadians(getShoulderAngle()))*Constants.BICEP_LENGTH) + (Math.sin(Math.toRadians(getShoulderAngle()+getElbowAngle()))*Constants.FOREARM_LENGTH);
+        
         return zPos;
     }
 

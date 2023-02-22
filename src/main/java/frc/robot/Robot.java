@@ -18,7 +18,6 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -27,15 +26,18 @@ import frc.robot.simulation.SwerveDriveSim;
  * project.
  */
 public class Robot extends TimedRobot {
-
+    private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
+    private static double batVolt;
 
     // robot features
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
-
+    private GrabberIntake grabber;
+    private Intake intake;
+    private Tail tail;
 
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -45,6 +47,8 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+
+    private static boolean pieceMode;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -66,26 +70,26 @@ public class Robot extends TimedRobot {
       };
 
       private String[] pdhRealChannelNames = {
-        "RFTurn",
+        "RF Turn",
         "RF Drive",
         "LF Turn",
         "LF Drive",
-        "4",
-        "5",
+        "Elbow",
+        "Shoulder",
         "6",
         "7",
-        "8",
+        "Intake",
         "Front MPM",
         "10",
-        "11",
-        "12",
+        "Tail",
+        "Wrist",
         "Back MPM",
         "14",
         "15",
-        "RLTurn",
-        "RLDrive",
-        "RRDrive",
-        "RRTurn",
+        "RL Turn",
+        "RL Drive",
+        "RR Drive",
+        "RR Turn",
         "Radio Power",
         "Pneumatics",
         "RoboRio",
@@ -111,7 +115,7 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        
+       
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
@@ -121,19 +125,28 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
         }
-        
+        grabber = new GrabberIntake();
+        intake = new Intake(new IntakeHw(), arm);
+        tail = new Tail(new TailHw());
+
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        tail.setDefaultCommand(new TailMovement(controls, tail));
+        intake.setDefaultCommand(new IntakeMove(controls, intake));
+
         controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
+        
+        controls.intakeInRequested().whileTrue(new IntakeBackward(grabber));
+        controls.intakeOutRequested().whileTrue(new IntakeForward(grabber));
+        
         controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
@@ -142,8 +155,14 @@ public class Robot extends TimedRobot {
         controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
 
+        controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
+        controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
+
+        controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
+
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
+        SmartDashboard.putData(schedule);
     }
 
     /**
@@ -155,13 +174,17 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        loggingPeriodic();
+        batVolt = pdp.getVoltage();
+        if(count % 2 == 0) {
+            loggingPeriodic();
+        }
+        count++;
     }
-
+    int count = 0;
+    
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
-
         double AutonomousStartPosition = SmartDashboard.getNumber("AutonomousStartPosition", 0);
 
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
@@ -189,13 +212,13 @@ public class Robot extends TimedRobot {
                 startPosition = Constants.START_RED_RIGHT;
             }
             else{
-                SmartDashboard.putString("Error", "No Position"); 
+                SmartDashboard.putString("Error", "No Position");
             }
-
         }
         else{
             SmartDashboard.putString("Error", "No Team");
         };
+
         //set out position to the auto starting position
         odometry.resetPose(startPosition);
 
@@ -211,7 +234,7 @@ public class Robot extends TimedRobot {
 
         //schedule this command for our autonomous
         //schedule.schedule(commands);
-        
+       
         //test auto to try driving to spots
         DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, startPosition);
         SmartDashboard.putData(driveToPoint);
@@ -272,13 +295,15 @@ public class Robot extends TimedRobot {
     }
 
     public void loggingPeriodic() {
+        SmartDashboard.putNumber("Pressure Sensor", (pneumatics.getAnalogVoltage(0) - 0.5) / VOLTS_PER_PSI);
+        SmartDashboard.putNumber("Pressure Sensor Voltage", pneumatics.getAnalogVoltage(0));
         for(int i=0; i<pdpChannelNames.length; i++) {
             table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
         }
-        table.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
+        table.getEntry("PDP Voltage").setDouble(batVolt);
         table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
         table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
-    
+   
         var canStatus = RobotController.getCANStatus();
         table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
         table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
@@ -292,5 +317,17 @@ public class Robot extends TimedRobot {
         table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
         table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
         table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+    }
+
+    public static boolean getGamePieceMode(){
+        return pieceMode;
+    }
+
+    public static void setGamePieceMode(boolean mode){
+        pieceMode = mode;
+    }
+
+    public static double BatteryVoltage() {
+        return batVolt;
     }
 }

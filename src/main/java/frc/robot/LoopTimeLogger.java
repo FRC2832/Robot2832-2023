@@ -75,11 +75,14 @@ public class LoopTimeLogger implements Runnable {
         }
 
         if(cmdEpochs != null) {
+            var cmdTime = 0.f;
             for (var key : cmdEpochs.keySet()) {
                 var entry = table.getEntry(key);
                 var time = cmdEpochs.get(key)/1000f;
                 entry.setDouble(time);
+                cmdTime += time;
             }
+            table.getEntry("Scheduler_Time").setDouble(cmdTime);
         }
 
         //restart the task each loop it runs

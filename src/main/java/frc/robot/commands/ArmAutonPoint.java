@@ -37,5 +37,8 @@ public class ArmAutonPoint extends CommandBase{
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        arm.setShoulderMotorVolts(0);
+        arm.setElbowMotorVolts(0);
+    }
 }

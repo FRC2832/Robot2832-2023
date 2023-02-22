@@ -5,14 +5,16 @@ import frc.robot.Arm;
 import frc.robot.interfaces.IDriveControls;
 
 
-public class DriveArmToPoint extends CommandBase{
+public class moveArmToAngles extends CommandBase{
     private Arm arm;
     private IDriveControls controls;
     private double xPos, zPos;
+    private double shoulderAng, elbowAng;
     
-    public DriveArmToPoint(Arm arm, IDriveControls controls) {
+    public moveArmToAngles(Arm arm, double shoulderAng, double elbowAng) {
         this.arm = arm;
-        this.controls = controls;
+        this.shoulderAng = shoulderAng;
+        this.elbowAng = elbowAng;
         addRequirements(arm);
     }
 
@@ -23,15 +25,8 @@ public class DriveArmToPoint extends CommandBase{
 
     @Override
     public void execute() {
-        xPos = arm.getArmXPosition();
-        zPos = arm.getArmZPosition();
-        //take the current position and +/- max 0.2" per loop
-        xPos += controls.GetArmKinXCommand() * 0.2;
-        zPos += -controls.GetArmKinZCommand() * 0.2;
-        var x = xPos;
-        var z = zPos;
-
-        //arm.calcAngles(x, z);
+        arm.setElbowAngle(elbowAng);
+        arm.setShoulderAngle(shoulderAng);
     }
 
     @Override
