@@ -198,4 +198,9 @@ public class LilMickeyDriveControls implements IDriveControls {
         ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
     }
+
+    @Override
+    public JoystickButton ChangePieceMode() {
+        return new JoystickButton(operCont, XboxController.Button.kRightStick.value);
+    }
 }

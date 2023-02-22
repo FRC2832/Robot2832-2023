@@ -3,6 +3,7 @@ package frc.robot;
 import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ChangeMode;
 import frc.robot.interfaces.IDriveControls;
 
 
@@ -174,6 +175,11 @@ public class LilJaydenDriveControls implements IDriveControls {
 
     @Override
     public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
-        // nothing needed here yet
+        ChangePieceMode().toggleOnTrue(new ChangeMode());
+    }
+
+    @Override
+    public JoystickButton ChangePieceMode() {
+        return new JoystickButton(driveContLeft, T16000M.Button.middle.value);
     }
 }

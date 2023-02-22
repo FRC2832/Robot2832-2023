@@ -5,6 +5,7 @@ import org.livoniawarriors.UtilFunctions;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArmAutonPoint;
+import frc.robot.commands.ChangeMode;
 import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
 import frc.robot.interfaces.IDriveControls;
@@ -202,6 +203,12 @@ public class LilJimmyDriveControls implements IDriveControls {
         GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
         GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
         GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
+        ChangePieceMode().toggleOnTrue(new ChangeMode());
+    }
+
+    @Override
+    public JoystickButton ChangePieceMode() {
+        return new JoystickButton(operCont, XboxController.Button.kRightStick.value);
     }
 }
 

@@ -201,4 +201,9 @@ public class LilHaydenDriveControls implements IDriveControls {
         GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
         GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
     }
+
+    @Override
+    public JoystickButton ChangePieceMode() {
+        return new JoystickButton(armCont, XboxController.Button.kRightStick.value);
+    }
 }

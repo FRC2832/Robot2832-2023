@@ -148,13 +148,13 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
         tail.setDefaultCommand(new TailMovement(controls, tail));
+        intake.setDefaultCommand(new IntakeMove(controls, intake));
 
-        //Keeping all of these button things here for now
         // controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         // controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
         // controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         // controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
-
+        
         // controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         // controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         // controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
@@ -162,12 +162,14 @@ public class Robot extends TimedRobot {
         // controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         // controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         // controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-
-        //controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
+        
+        // controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
         // controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
 
         // controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
         // controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
+
+        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode());
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -302,6 +304,7 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail));
+        intake.setDefaultCommand(new IntakeMove(opControls, intake));
     }
 
     /** This function is called periodically during operator control. */
