@@ -1,14 +1,15 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.ITailControl;
 
 
-public class Tail implements Subsystem{
+public class Tail extends SubsystemBase {
     private ITailControl hardware;
     double tailAngle;
    
     public Tail(ITailControl hardware) {
+        super();
         this.hardware = hardware;
     }
 
