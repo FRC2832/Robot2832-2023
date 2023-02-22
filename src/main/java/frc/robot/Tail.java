@@ -34,4 +34,9 @@ public class Tail implements Subsystem{
     public void setTailAngle(double angleDeg) {
         hardware.setTailAngle(angleDeg);
     }
+
+    public double getDistSensor() {
+        return hardware.getDistSensor();
+    }
+
 }
