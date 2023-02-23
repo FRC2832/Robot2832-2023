@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import org.livoniawarriors.Logger;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -15,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
@@ -129,7 +130,32 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         driveWheelDistance = new double[Constants.NUM_WHEELS];
         turnMotorAngle = new double[Constants.NUM_WHEELS];
 
-        SmartDashboard.putNumber("Angle", 0);
+        Logger.RegisterTalon("FL Turn", turnMotor[ISwerveDrive.FL]);
+        Logger.RegisterTalon("FR Turn", turnMotor[ISwerveDrive.FR]);
+        Logger.RegisterTalon("RL Turn", turnMotor[ISwerveDrive.RL]);
+        Logger.RegisterTalon("RR Turn", turnMotor[ISwerveDrive.RR]);
+
+        Logger.RegisterTalon("FL Drive", driveMotor[ISwerveDrive.FL]);
+        Logger.RegisterTalon("FR Drive", driveMotor[ISwerveDrive.FR]);
+        Logger.RegisterTalon("RL Drive", driveMotor[ISwerveDrive.RL]);
+        Logger.RegisterTalon("RR Drive", driveMotor[ISwerveDrive.RR]);
+
+        Logger.RegisterCanCoder("FL Abs", absSensor[ISwerveDrive.FL]);
+        Logger.RegisterCanCoder("FR Abs", absSensor[ISwerveDrive.FR]);
+        Logger.RegisterCanCoder("RL Abs", absSensor[ISwerveDrive.RL]);
+        Logger.RegisterCanCoder("RR Abs", absSensor[ISwerveDrive.RR]);
+
+        Logger.RegisterSensor("FL Speed", () -> getCornerSpeed(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Speed", () -> getCornerSpeed(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Speed", () -> getCornerSpeed(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Speed", () -> getCornerSpeed(ISwerveDrive.RR));
+
+        Logger.RegisterSensor("FL Turn Pos", () -> getCornerAngle(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Turn Pos", () -> getCornerAngle(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Turn Pos", () -> getCornerAngle(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Turn Pos", () -> getCornerAngle(ISwerveDrive.RR));
+
+        Logger.RegisterPigeon(pigeon);
     }
 
     @Override
@@ -240,26 +266,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public double getCornerDistance(int wheel) {
         return driveWheelDistance[wheel];
-    }
-
-    @Override
-    public double getTurnMotorCurrent(int wheel) {
-        return turnMotor[wheel].getStatorCurrent();
-    }
-
-    @Override
-    public double getDriveMotorCurrent(int wheel) {
-        return driveMotor[wheel].getStatorCurrent();
-    }
-
-    @Override
-    public double getTurnMotorTemperature(int wheel) {
-        return turnMotor[wheel].getTemperature();
-    }
-
-    @Override
-    public double getDriveMotorTemperature(int wheel) {
-        return driveMotor[wheel].getTemperature();
     }
 
     @Override

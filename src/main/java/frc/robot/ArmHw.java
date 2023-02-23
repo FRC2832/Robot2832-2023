@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.livoniawarriors.Logger;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -38,12 +40,15 @@ public class ArmHw implements IArmControl {
 
         shoulderPid = new PIDController(.3, 0.0, 0);
         elbowPid = new PIDController(.3, 0.0, 0);
+
+        Logger.RegisterTalon("Shoulder", shoulderMotor);
+        Logger.RegisterTalon("Elbow", elbowMotor);
+        Logger.RegisterSensor("Shoulder Angle", () -> getShoulderAngle());
+        Logger.RegisterSensor("Elbow Angle", () -> getElbowAngle());
     }
 
     @Override
     public void setShoulderAngle(double angleDeg) {
-        // TODO Implement ARM PID
-        //shoulderMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_SHOULDER);
         double volts = shoulderPid.calculate(shoulderAngle, angleDeg);
         double delta = Math.abs(shoulderAngle - angleDeg);
         if(delta>4){
@@ -65,8 +70,6 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void setElbowAngle(double angleDeg) {
-        // TODO Implement ARM PID
-        //elbowMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_ELBOW);
         double volts = -elbowPid.calculate(elbowAngle, angleDeg);
         double delta = Math.abs(elbowAngle - angleDeg);
         if(delta>4){
@@ -83,7 +86,7 @@ public class ArmHw implements IArmControl {
         }
         setElbowMotorVolts(volts);
         SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
-        SmartDashboard.putNumber("elbow Volts Command", volts);
+        SmartDashboard.putNumber("Elbow Volts Command", volts);
     }
 
     @Override
@@ -129,14 +132,12 @@ public class ArmHw implements IArmControl {
         
         //Frac is 0 at lowest point, 1 at max extension
         var rawDC = shoulderEncoder.getOutput();
-        SmartDashboard.putNumber("Shoulder Raw", rawDC);
         //make shoulder between -90 to 270 to "ignore" the rollover point at vertical on the arm
         shoulderAngle = MathUtil.inputModulus((rawDC * 360) - Constants.SHOULDER_OFFSET,-90,270);
 
         shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
 
         rawDC = elbowEncoder.getOutput();
-        SmartDashboard.putNumber("Elbow Raw", rawDC);
         elbowAngle =  MathUtil.inputModulus((rawDC * 360) - Constants.ELBOW_OFFSET,-180,180);
 
         elbowMotor.setSelectedSensorPosition(elbowAngle * COUNTS_PER_DEGREE_ELBOW);

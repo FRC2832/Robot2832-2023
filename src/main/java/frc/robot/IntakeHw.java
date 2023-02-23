@@ -2,6 +2,8 @@ package frc.robot;
 
 import frc.robot.interfaces.IIntakeControl;
 
+import org.livoniawarriors.Logger;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -27,6 +29,9 @@ public class IntakeHw implements IIntakeControl{
         pid = new PIDController(0.13, 0.005, 0);
         rotations = 0;
         oldReading = 0;
+
+        Logger.RegisterTalon("Pivot", pivotMotor);
+        Logger.RegisterSensor("Pivot Angle", () -> getPivotAngle());
     }
     
     public void setPivotAngle(double angleDeg){

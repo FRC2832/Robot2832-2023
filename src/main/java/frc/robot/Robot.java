@@ -3,9 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
+import org.livoniawarriors.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -36,7 +35,6 @@ import frc.robot.simulation.TailSim;
  * project.
  */
 public class Robot extends TimedRobot {
-    private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
     // robot parts
     private CommandScheduler schedule;
     private static double batVolt;
@@ -52,12 +50,7 @@ public class Robot extends TimedRobot {
 
     private PneumaticHub pneumatics;
     private Arm arm;
-
-    private PowerDistribution pdp;
-    private NetworkTable table;
-
     public Pose2d startPosition;
-    private String[] pdpChannelNames;
     private AnalogInput jumper;
 
     private static boolean pieceMode;
@@ -79,34 +72,53 @@ public class Robot extends TimedRobot {
         "FL Turn",
         "RL Drive",
         "RL Turn"
-      };
+    };
 
-      private String[] pdhRealChannelNames = {
-        "RF Turn",
-        "RF Drive",
-        "LF Turn",
-        "LF Drive",
+    private String[] pdhRealChannelNames = {
+        null,           //"RF Turn",
+        null,           //"RF Drive",
+        null,           //"LF Turn",
+        null,           //"LF Drive",
         "Elbow",
         "Shoulder",
-        "6",
-        "7",
+        null,           //"6",
+        null,           //"7",
         "Intake",
         "Front MPM",
-        "10",
+        null,           //"10",
         "Tail",
         "Wrist",
         "Back MPM",
-        "14",
-        "15",
-        "RL Turn",
-        "RL Drive",
-        "RR Drive",
-        "RR Turn",
+        null,           //"14",
+        null,           //"15",
+        null,           //"RL Turn",
+        null,           //"RL Drive",
+        null,           //"RR Drive",
+        null,           //"RR Turn",
         "Radio Power",
         "Pneumatics",
         "RoboRio",
-        "23",
-      };
+        null,           //"23",
+    };
+
+    private String[] pneumaticNames = {
+        null,           //"0",
+        null,           //"1",
+        "Elbow Brake",
+        "Shoulder Brake",
+        null,           //"4",
+        null,           //"5",
+        null,           //"6",
+        null,           //"7",
+        null,           //"8",
+        null,           //"9",
+        null,           //"10",
+        null,           //"11",
+        null,           //"12",
+        null,           //"13",
+        null,           //"14",
+        null,           //"15",
+    };
     //driver profile variables
     private static final String kDefaultDriver = "Default";
     private static final String kJamesOperator = "James";
@@ -131,15 +143,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Starts recording to data log
-        DataLogManager.start();
-        // Record both DS control and joystick data
-        DriverStation.startDataLog(DataLogManager.getLog());
-        table = NetworkTableInstance.getDefault().getTable("/status");
-        
-        new LoopTimeLogger(this);
-        pneumatics = new PneumaticHub();
-        pneumatics.enableCompressorDigital();
+        //internal logger class
+        new Logger();
+        Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
@@ -155,24 +161,25 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);
-            pdpChannelNames = pdpPracticeChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Simulation/Buzz");
         } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
             //practice chassis
             drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);
-            pdpChannelNames = pdpPracticeChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Practice");
         } else {
             //real robot
+            pneumatics = new PneumaticHub();
+            pneumatics.enableCompressorDigital();
+            Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
+
             drive = new SwerveDriveTrain(new SwerveDriveHw());
             arm = new Arm(new ArmHw());
             tail = new Tail(new TailHw());
-            pdp = new PowerDistribution(1,ModuleType.kRev);
-            pdpChannelNames = pdhRealChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             SmartDashboard.putString("Robot", "Real");
         }
         grabber = new GrabberIntake();
@@ -246,13 +253,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        batVolt = pdp.getVoltage();
-        if(count % 2 == 0) {
-            loggingPeriodic();
-        }
-        count++;
     }
-    int count = 0;
     
     /** This function is called once when autonomous is enabled. */
     @Override
@@ -420,30 +421,6 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
     }
 
-    public void loggingPeriodic() {
-        SmartDashboard.putNumber("Pressure Sensor", (pneumatics.getAnalogVoltage(0) - 0.5) / VOLTS_PER_PSI);
-        SmartDashboard.putNumber("Pressure Sensor Voltage", pneumatics.getAnalogVoltage(0));
-        for(int i=0; i<pdpChannelNames.length; i++) {
-            table.getEntry("PDP Current " + pdpChannelNames[i]).setDouble(pdp.getCurrent(i));
-        }
-        table.getEntry("PDP Voltage").setDouble(batVolt);
-        table.getEntry("PDP Total Current").setDouble(pdp.getTotalCurrent());
-        table.getEntry("PDP Temperature").setDouble(pdp.getTemperature());
-   
-        var canStatus = RobotController.getCANStatus();
-        table.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
-        table.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
-        table.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
-        table.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
-        table.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
-
-        table.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
-        table.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
-        table.getEntry("Rio 6V Voltage").setDouble(RobotController.getVoltage6V());
-        table.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
-        table.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
-        table.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
-    }
 
     public static boolean getGamePieceMode(){
         return pieceMode;
@@ -456,4 +433,5 @@ public class Robot extends TimedRobot {
     public static double BatteryVoltage() {
         return batVolt;
     }
+
 }

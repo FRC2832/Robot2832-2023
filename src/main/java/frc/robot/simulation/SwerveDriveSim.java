@@ -232,30 +232,6 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     }
 
     @Override
-    public double getTurnMotorCurrent(int wheel) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public double getDriveMotorCurrent(int wheel) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public double getTurnMotorTemperature(int wheel) {
-        // TODO Auto-generated method stub
-        return 23;
-    }
-
-    @Override
-    public double getDriveMotorTemperature(int wheel) {
-        // TODO Auto-generated method stub
-        return 23;
-    }
-
-    @Override
     public Translation2d[] getCornerLocations() {
         return swervePositions;
     }
@@ -264,5 +240,4 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     public double getWheelOffset(int wheel) {
         return absOffset[wheel];
     }
-    
 }
