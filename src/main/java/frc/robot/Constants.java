@@ -29,10 +29,10 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_RIGHT_ENCODER_PORT = 43;
 
     //CanCoder zero locations
-    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 310.7;
-    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 318.0;
-    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 179.2;
-    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 19.3;
+    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 142.2;
+    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 10.8;
+    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 90.5;
+    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 120.4;
 
     //Swerve corner locations for kinematics
     //22.25 -1.5" width 10.375"

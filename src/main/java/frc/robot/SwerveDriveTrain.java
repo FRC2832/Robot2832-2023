@@ -49,10 +49,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         //initialize the swerve offsets
         swerveOffsets = new double[Constants.NUM_WHEELS];
-        swerveOffsets[FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
-        swerveOffsets[FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
-        swerveOffsets[RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
-        swerveOffsets[RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        swerveOffsets[FL] = hardware.getWheelOffset(FL);
+        swerveOffsets[FR] = hardware.getWheelOffset(FR);
+        swerveOffsets[RL] = hardware.getWheelOffset(RL);
+        swerveOffsets[RR] = hardware.getWheelOffset(RR);
 
         hardware.updateInputs();
         turnOffsets = new double[Constants.NUM_WHEELS];

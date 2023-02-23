@@ -37,6 +37,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private double driveWheelVelocity[];
     private double driveWheelDistance[];
     private double turnMotorAngle[];
+    private double absOffset[];
 
     private Translation2d[] swervePositions = {
         Constants.SWERVE_FRONT_LEFT_LOCATION,
@@ -66,6 +67,12 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         absSensor[ISwerveDrive.FR] = new CANCoder(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT);
         absSensor[ISwerveDrive.RL] = new CANCoder(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT);
         absSensor[ISwerveDrive.RR] = new CANCoder(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT);
+
+        absOffset = new double[Constants.NUM_WHEELS];
+        absOffset[ISwerveDrive.FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
 
         pigeon = new Pigeon2(Constants.PIGEON_IMU_ID);
 
@@ -247,6 +254,11 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     @Override
     public Translation2d[] getCornerLocations() {
         return swervePositions;
+    }
+
+    @Override
+    public double getWheelOffset(int wheel) {
+        return absOffset[wheel];
     }
     
 }

@@ -13,6 +13,7 @@ public  interface ISwerveDriveIo {
     double getPitch();
     double getRoll();
     Translation2d[] getCornerLocations();
+    double getWheelOffset(int wheel);
     void setKinematics(SwerveDriveKinematics kinematics);
     void setTurnMotorBrakeMode(boolean brakeOn);
     void setDriveMotorBrakeMode(boolean brakeOn);

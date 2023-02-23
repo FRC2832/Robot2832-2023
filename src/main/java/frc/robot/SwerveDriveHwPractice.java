@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,6 +37,7 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
     private double driveWheelVelocity[];
     private double driveWheelDistance[];
     private double turnMotorAngle[];
+    private double absOffset[];
 
     private Translation2d[] swervePositions = {
         new Translation2d(0.291, 0.291),
@@ -67,6 +67,12 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
         absSensor[ISwerveDrive.FR] = new CANCoder(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT);
         absSensor[ISwerveDrive.RL] = new CANCoder(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT);
         absSensor[ISwerveDrive.RR] = new CANCoder(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT);
+
+        absOffset = new double[Constants.NUM_WHEELS];
+        absOffset[ISwerveDrive.FL] = 310.7;
+        absOffset[ISwerveDrive.FR] = 318.0;
+        absOffset[ISwerveDrive.RL] = 179.2;
+        absOffset[ISwerveDrive.RR] = 19.3;
 
         pigeon = new PigeonIMU(Constants.PIGEON_IMU_ID);
 
@@ -248,5 +254,10 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
     @Override
     public Translation2d[] getCornerLocations() {
         return swervePositions;
+    }
+
+    @Override
+    public double getWheelOffset(int wheel) {
+        return absOffset[wheel];
     }
 }
