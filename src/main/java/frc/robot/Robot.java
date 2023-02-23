@@ -6,8 +6,6 @@ package frc.robot;
 
 import org.livoniawarriors.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -146,14 +143,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        pneumatics = new PneumaticHub();
-        pneumatics.enableCompressorDigital();
-
         //internal logger class
         new Logger();
-        Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
         Logger.RegisterLoopTimes(this);
-        Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
@@ -169,24 +161,25 @@ public class Robot extends TimedRobot {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);
-            pdpChannelNames = pdpPracticeChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Simulation/Buzz");
         } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
             //practice chassis
             drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);
-            pdpChannelNames = pdpPracticeChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Practice");
         } else {
             //real robot
+            pneumatics = new PneumaticHub();
+            pneumatics.enableCompressorDigital();
+            Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
+
             drive = new SwerveDriveTrain(new SwerveDriveHw());
             arm = new Arm(new ArmHw());
             tail = new Tail(new TailHw());
-            pdp = new PowerDistribution(1,ModuleType.kRev);
-            pdpChannelNames = pdhRealChannelNames;
+            Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             SmartDashboard.putString("Robot", "Real");
         }
         grabber = new GrabberIntake();

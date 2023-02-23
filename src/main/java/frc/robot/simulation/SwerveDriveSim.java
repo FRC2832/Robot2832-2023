@@ -230,4 +230,14 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         // TODO Auto-generated method stub
         return 0;
     }
+
+    @Override
+    public Translation2d[] getCornerLocations() {
+        return swervePositions;
+    }
+
+    @Override
+    public double getWheelOffset(int wheel) {
+        return absOffset[wheel];
+    }
 }
