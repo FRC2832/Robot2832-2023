@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -34,33 +33,24 @@ public class DriveToPoint extends CommandBase {
     @Override
     public void initialize() {
         isFinished = false;
-
-        //test code!!!  Pick a random point to go to
-        Pose2d[] points = {
-            new Pose2d(2.25, 5.03, Rotation2d.fromDegrees(-135)),
-            new Pose2d(5.97, 10.97, Rotation2d.fromDegrees(45)),
-            new Pose2d(2.25, 10.97, Rotation2d.fromDegrees(135)),
-            new Pose2d(5.97, 5.03, Rotation2d.fromDegrees(-45)),
-        };
-        dest = points[(int)(Math.random()*points.length)];
     }
 
     @Override
     public void execute() {
         Pose2d currentPose = odometry.getPose();
-        distX = currentPose.getX() - dest.getX();
-        distY = currentPose.getY() - dest.getY();
+        distX = dest.getX() - currentPose.getX();
+        distY = dest.getY() - currentPose.getY();
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
         if(distLeft > TARGET_ERROR) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
-            scale = Constants.MAX_DRIVETRAIN_SPEED / distLeft;
+            scale = Constants.MAX_AUTO_SPEED / distLeft;
             drive.SwerveDrive(
                 distX  * scale, 
                 distY  * scale, 
                 0, //TODO: Fix Me!
-                false);
+                true);
         } else {
             //we are at our spot, stop
             drive.SwerveDrive(0, 0, 0, false);

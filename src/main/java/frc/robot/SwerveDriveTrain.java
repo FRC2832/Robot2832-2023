@@ -190,6 +190,11 @@ public class SwerveDriveTrain implements ISwerveDrive {
     }
 
     @Override
+    public double getPitch() {
+        return hardware.getPitch();
+    }
+
+    @Override
     public SwerveModulePosition[] getSwerveStates() {
         return swerveStates;
     }
