@@ -70,7 +70,12 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToPickupGround(){
+    public JoystickButton ArmToPickupGroundCube(){
+        return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupGroundCone(){
         return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
     }
    
@@ -97,6 +102,11 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public JoystickButton ArmToScoreMiddle(){
         return new JoystickButton(operCont, Saitek.Button.yellowBottomRight.value);
+    }
+
+    @Override
+    public JoystickButton ArmToScoreMiddleFront(){ //driver/operator will use this method
+        return new JoystickButton(operCont, Saitek.Button.pinkTopMiddle.value); 
     }
    
     @Override
@@ -141,12 +151,13 @@ public class OperatorControls implements IOperatorControls {
         ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
         ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
         ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
         GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
         GrabberDownRequested().whileTrue(new IntakeMove(this, intake));

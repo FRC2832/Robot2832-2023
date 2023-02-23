@@ -86,9 +86,14 @@ public final class Constants {
 
     public static final double ArmToScoreMiddle_X = -25.5;
     public static final double ArmToScoreMiddle_Z = 30;
+    
+    public static final double ArmToScoreMiddleFront_X = 50;
+    public static final double ArmToScoreMiddleFront_Z = 30;
 
     public static final double ArmToScoreTop_X = -40;
     public static final double ArmToScoreTop_Z = 42;
+
+    public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
     public static final double TAIL_LOW_POINT = 0;

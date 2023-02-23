@@ -13,7 +13,6 @@ import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
 import frc.robot.interfaces.IOperatorControls;
 
-
 public class LilJimmyDriveControls implements IOperatorControls {
     private XboxController operCont;
 
@@ -90,7 +89,12 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToPickupGround(){
+    public JoystickButton ArmToPickupGroundCube(){
+        return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupGroundCone(){
         return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
     }
    
@@ -117,6 +121,11 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
         return new JoystickButton(operCont, XboxController.Button.kX.value);
+    }
+
+    @Override
+    public JoystickButton ArmToScoreMiddleFront(){ 
+        return new JoystickButton(operCont, 12); 
     }
    
     @Override

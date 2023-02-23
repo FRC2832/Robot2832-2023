@@ -14,12 +14,14 @@ public interface IOperatorControls {
     JoystickButton ShoulderNegRequested();
     JoystickButton ElbowPosRequested();
     JoystickButton ElbowNegRequested();
-    JoystickButton ArmToPickupGround(); //possibly need one for each game piece type
+    JoystickButton ArmToPickupGroundCube(); //possibly need one for each game piece type
+    JoystickButton ArmToPickupGroundCone(); //possibly need one for each game piece type
     JoystickButton ArmToPickupTail();
     JoystickButton ArmToPickupHuman();
     JoystickButton ArmToSecureLocation();
     JoystickButton ArmToScoreLow();
     JoystickButton ArmToScoreMiddle();
+    JoystickButton ArmToScoreMiddleFront();
     JoystickButton ArmToScoreTop();
     JoystickButton GrabberUpRequested();
     JoystickButton GrabberDownRequested();
