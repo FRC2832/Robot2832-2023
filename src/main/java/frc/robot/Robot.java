@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
-import frc.robot.interfaces.ITailControl;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 import frc.robot.simulation.TailSim;
@@ -48,6 +47,7 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+    private AnalogInput jumper;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -113,31 +113,40 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-       
+
+        //check to see what robot we are
+        jumper = new AnalogInput(0);
+        var jumperVolts = jumper.getVoltage();
+
         // initialize robot features
-        var practice = true;
-        schedule = CommandScheduler.getInstance();
-        if (practice) { 
-            drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
-            arm = new Arm(new ArmSim());
-            tail = new Tail(new TailSim());
-            pdp = new PowerDistribution(0,ModuleType.kCTRE);
-            pdpChannelNames = pdpPracticeChannelNames;
-        } else if(isReal()) {
-            drive = new SwerveDriveTrain(new SwerveDriveHw());
-            arm = new Arm(new ArmHw());
-            tail = new Tail(new TailHw());
-            pdp = new PowerDistribution(1,ModuleType.kRev);
-            pdpChannelNames = pdhRealChannelNames;
-        }   else {
+        if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
+            //either buzz or simulation
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
             pdp = new PowerDistribution(0,ModuleType.kCTRE);
             pdpChannelNames = pdpPracticeChannelNames;
+            SmartDashboard.putString("Robot", "Simulation/Buzz");
+        } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
+            //practice chassis
+            drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
+            arm = new Arm(new ArmSim());
+            tail = new Tail(new TailSim());
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);
+            pdpChannelNames = pdpPracticeChannelNames;
+            SmartDashboard.putString("Robot", "Practice");
+        } else {
+            //real robot
+            drive = new SwerveDriveTrain(new SwerveDriveHw());
+            arm = new Arm(new ArmHw());
+            tail = new Tail(new TailHw());
+            pdp = new PowerDistribution(1,ModuleType.kRev);
+            pdpChannelNames = pdhRealChannelNames;
+            SmartDashboard.putString("Robot", "Real");
         }
         grabber = new GrabberIntake();
         intake = new Intake(new IntakeHw());
+        schedule = CommandScheduler.getInstance();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);

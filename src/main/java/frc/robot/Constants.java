@@ -87,4 +87,9 @@ public final class Constants {
 
     public static final double IntakeVoltage = 3;
     
+
+    //jumper values for different robots
+    public static final double BuzzVoltage = 1.11;
+    public static final double PracticeVoltage = 2.38;
+    public static final double JumperError = 0.1;
 }
