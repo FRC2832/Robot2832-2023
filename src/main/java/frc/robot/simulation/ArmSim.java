@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.ArmBrakes;
 import frc.robot.interfaces.IArmControl;
 
 public class ArmSim implements IArmControl {
@@ -17,10 +18,12 @@ public class ArmSim implements IArmControl {
     private MechanismLigament2d elbowBar;
     private double elbowDeg;
     private double shoulderDeg;
+    private ArmBrakes brakes;
 
     public ArmSim() {
-        shoulderDeg = 0;
-        elbowDeg = 0;
+        brakes = new ArmBrakes();
+        shoulderDeg = 60;
+        elbowDeg = -60;
 
         //all units in inches, 0* angle is straight right
         //ligaments are used a lot because they will be shown in the picture, roots are not
@@ -79,7 +82,7 @@ public class ArmSim implements IArmControl {
 
     @Override
     public double getElbowAngle() {
-        return elbowDeg;
+        return elbowDeg - shoulderDeg;
     }
 
     @Override

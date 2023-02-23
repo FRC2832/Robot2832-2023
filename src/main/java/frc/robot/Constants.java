@@ -61,14 +61,19 @@ public final class Constants {
     public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
     public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
 
+    //sensor offsets
+    public static final double SHOULDER_OFFSET = 347;
+    public static final double ELBOW_OFFSET = 135;
+    public static final double INTAKE_OFFSET = -41;
+
     public static final double ARM_ACCEPT_ERROR = 0.5;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
     public static final double ArmToPickupGround_X = 36;
     public static final double ArmToPickupGround_Z = -2;
 
-    public static final double ArmToPickupTail_X = 30;
-    public static final double ArmToPickupTail_Z = 0;
+    public static final double ArmToPickupTail_X = 21;
+    public static final double ArmToPickupTail_Z = 14.6;
 
     public static final double ArmToPickupHuman_X = 30;
     public static final double ArmToPickupHuman_Z = 20;
@@ -76,18 +81,19 @@ public final class Constants {
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;
 
-    public static final double ArmToScoreLow_X = -10;
-    public static final double ArmToScoreLow_Z = -4;
+    public static final double ArmToScoreLow_X = -29;
+    public static final double ArmToScoreLow_Z = 2;
 
-    public static final double ArmToScoreMiddle_X = -20;
-    public static final double ArmToScoreMiddle_Z = 20;
+    public static final double ArmToScoreMiddle_X = -25.5;
+    public static final double ArmToScoreMiddle_Z = 30;
 
-    public static final double ArmToScoreTop_X = -43;
-    public static final double ArmToScoreTop_Z = 30;
+    public static final double ArmToScoreTop_X = -40;
+    public static final double ArmToScoreTop_Z = 42;
 
-    public static final double IntakeVoltage = 3;
+    public static final double IntakeVoltage = 12.5;
+    public static final double TAIL_LOW_POINT = 0;
+    public static final double TAIL_HIGH_POINT = 105;
     
-
     //jumper values for different robots
     public static final double BuzzVoltage = 1.11;
     public static final double PracticeVoltage = 2.38;

@@ -2,52 +2,52 @@ package frc.robot;
 
 import org.livoniawarriors.UtilFunctions;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ArmAutonPoint;
-import frc.robot.commands.ArmManualOverride;
-import frc.robot.commands.GrabberMove;
-import frc.robot.commands.IntakeMove;
+import frc.robot.commands.ChangeMode;
 import frc.robot.interfaces.IDriveControls;
 
 
-public class DriveControls implements IDriveControls {
-    private XboxController driveCont;
+public class LilJaydenDriveControls implements IDriveControls {
+    private T16000M driveContLeft;
+    private T16000M driveContRight;
     private Saitek armCont;
 
-    public DriveControls() {
-        driveCont = new XboxController(0);
-        armCont = new Saitek(2);
+    public LilJaydenDriveControls() {
+        driveContLeft = new T16000M(0);
+        driveContRight = new T16000M(1);
+        
+        SmartDashboard.putBoolean("Field Oriented", true);
     }
    
     @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
+    public boolean IsFieldOrientedResetRequested() { //driver/operator will use this method
+        return driveContLeft.getRawButtonPressed(2); //TODO: make sure this is the thumb press down
     }
 
     @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
+    public double GetXDrivePct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContRight.getyAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
+    public double GetYDrivePct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContRight.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
+    public double GetTurnPct() { //driver/operator will use this method
+        return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
     }
 
     @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
+    public boolean BoostTriggerRequested() { //driver/operator will use this method
+        return driveContRight.getTrigger();
     }
 
     @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
+    public boolean PrecisionTriggerRequested() { //driver/operator will use this method
+        return driveContLeft.getTrigger();
     }
 
     public double GetArmKinXCommand() {
@@ -79,7 +79,6 @@ public class DriveControls implements IDriveControls {
             return 0;
         }
     }
-
 
     @Override
     public JoystickButton ShoulderPosRequested() {
@@ -137,13 +136,13 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+    public JoystickButton TailUpRequested() { 
+        return new JoystickButton(driveContRight, T16000M.Button.left.value);
     }
 
     @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+    public JoystickButton TailDownRequested() {  //driver/operator will use this method
+        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
 
     @Override
@@ -178,36 +177,22 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
-        ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
-        ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
-        ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
-        GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
+    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
+        ChangePieceMode().toggleOnTrue(new ChangeMode());
     }
 
     @Override
     public JoystickButton ChangePieceMode() {
-        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
+        return new JoystickButton(driveContRight, T16000M.Button.middle.value);
     }
 
     @Override
     public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
+        return 0;
     }
 
     @Override
     public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
+        return 0;
     }
 }

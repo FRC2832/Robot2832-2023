@@ -9,10 +9,12 @@ public class DriveArmToPoint extends CommandBase{
     private Arm arm;
     private IDriveControls controls;
     private double xPos, zPos;
-    
+    private boolean isRunX, isRunZ;    
     public DriveArmToPoint(Arm arm, IDriveControls controls) {
         this.arm = arm;
         this.controls = controls;
+        this.isRunX = false;
+        this.isRunZ = false;
         addRequirements(arm);
     }
 
@@ -25,18 +27,27 @@ public class DriveArmToPoint extends CommandBase{
     public void execute() {
         xPos = arm.getArmXPosition();
         zPos = arm.getArmZPosition();
-        //take the current position and +/- max 0.2" per loop
-        xPos += controls.GetArmKinXCommand() * 0.2;
-        zPos += -controls.GetArmKinZCommand() * 0.2;
-        var x = xPos;
-        var z = zPos;
+        
+        if(controls.GetArmKinXCommand() > 0.5 && !isRunX) {
+            xPos += controls.GetArmKinXCommand() + 3;
+            isRunX = true;
+        } else if(controls.GetArmKinXCommand() < 0.5 && !isRunX) {
+            isRunX = false;
+        }
 
-        arm.calcAngles(x, z);
+        if(controls.GetArmKinZCommand() > 0.5 && !isRunZ) {
+            zPos += controls.GetArmKinZCommand() + 3;
+            isRunZ = true;
+        } else if(controls.GetArmKinZCommand() < 0.5 && !isRunZ) {
+            isRunZ = false;
+        }        
+
+        arm.calcAngles(xPos, zPos);
     }
 
     @Override
     public boolean isFinished() {
-        return true; 
+        return false; 
     }
 
     @Override
