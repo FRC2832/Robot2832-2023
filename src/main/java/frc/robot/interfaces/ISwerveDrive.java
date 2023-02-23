@@ -26,6 +26,8 @@ public interface ISwerveDrive extends Subsystem {
 
     SwerveDriveKinematics getKinematics();
     Rotation2d getHeading();
+    double getPitch();
+    
     SwerveModulePosition[] getSwerveStates();
     void setPose(Pose2d robotPose);
 

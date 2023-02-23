@@ -11,12 +11,14 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveSim implements ISwerveDriveIo {
     private SwerveDriveKinematics kinematics;
     private double chassisAngle;
+    private double pitchAngle;
 
     private double absAngle[];
     private double absOffset[];
@@ -114,6 +116,18 @@ public class SwerveDriveSim implements ISwerveDriveIo {
             turnCommand[i] = ControlMode.Disabled;
             turnPower[i] = 0;
 
+            //check to see if we are in scale
+            if(Robot.odometry != null) {
+                var pose = Robot.odometry.getPose();
+                if ((12.09 < pose.getX() && pose.getX() < 12.747) && (1.87 < pose.getY() && pose.getY() < 4.027)) {
+                    pitchAngle = 0.12;
+                } else if ((11.05 < pose.getX() && pose.getX() < 11.77) && (1.87 < pose.getY() && pose.getY() < 4.027)) {
+                    pitchAngle = -0.12;
+                } else {
+                    pitchAngle = 0;
+                }
+            }
+
             /*
             //run at 1ms rate to simulate hardware
             for(var loops =0; loops < Constants.LOOP_TIME / 0.001; loops++) {
@@ -200,8 +214,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     @Override
     public double getPitch() {
-        // TODO Auto-generated method stub
-        return 0;
+        return pitchAngle;
     }
 
     @Override
