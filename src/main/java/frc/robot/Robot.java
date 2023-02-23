@@ -61,9 +61,9 @@ public class Robot extends TimedRobot {
         "FL Turn",
         "RL Drive",
         "RL Turn"
-      };
+    };
 
-      private String[] pdhRealChannelNames = {
+    private String[] pdhRealChannelNames = {
         null,           //"RF Turn",
         null,           //"RF Drive",
         null,           //"LF Turn",
@@ -88,7 +88,26 @@ public class Robot extends TimedRobot {
         "Pneumatics",
         "RoboRio",
         null,           //"23",
-      };
+    };
+
+    private String[] pneumaticNames = {
+        null,           //"0",
+        null,           //"1",
+        "Elbow Brake",
+        "Shoulder Brake",
+        null,           //"4",
+        null,           //"5",
+        null,           //"6",
+        null,           //"7",
+        null,           //"8",
+        null,           //"9",
+        null,           //"10",
+        null,           //"11",
+        null,           //"12",
+        null,           //"13",
+        null,           //"14",
+        null,           //"15",
+    };
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -96,11 +115,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Starts recording to data log
-        DataLogManager.start();
-        // Record both DS control and joystick data
-        DriverStation.startDataLog(DataLogManager.getLog());
-        
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
 
@@ -108,7 +122,7 @@ public class Robot extends TimedRobot {
         new Logger();
         Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
         Logger.RegisterLoopTimes(this);
-        Logger.RegisterPneumaticHub(pneumatics);
+        Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();

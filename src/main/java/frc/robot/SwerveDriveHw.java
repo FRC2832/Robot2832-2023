@@ -105,8 +105,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         driveWheelDistance = new double[Constants.NUM_WHEELS];
         turnMotorAngle = new double[Constants.NUM_WHEELS];
 
-        SmartDashboard.putNumber("Angle", 0);
-
         Logger.RegisterTalon("FL Turn", turnMotor[ISwerveDrive.FL]);
         Logger.RegisterTalon("FR Turn", turnMotor[ISwerveDrive.FR]);
         Logger.RegisterTalon("RL Turn", turnMotor[ISwerveDrive.RL]);
@@ -117,10 +115,10 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         Logger.RegisterTalon("RL Drive", driveMotor[ISwerveDrive.RL]);
         Logger.RegisterTalon("RR Drive", driveMotor[ISwerveDrive.RR]);
 
-        Logger.RegisterSensor("FL Abs", () -> getCornerAbsAngle(ISwerveDrive.FL));
-        Logger.RegisterSensor("FR Abs", () -> getCornerAbsAngle(ISwerveDrive.FR));
-        Logger.RegisterSensor("RL Abs", () -> getCornerAbsAngle(ISwerveDrive.RL));
-        Logger.RegisterSensor("RR Abs", () -> getCornerAbsAngle(ISwerveDrive.RR));
+        Logger.RegisterCanCoder("FL Abs", absSensor[ISwerveDrive.FL]);
+        Logger.RegisterCanCoder("FR Abs", absSensor[ISwerveDrive.FR]);
+        Logger.RegisterCanCoder("RL Abs", absSensor[ISwerveDrive.RL]);
+        Logger.RegisterCanCoder("RR Abs", absSensor[ISwerveDrive.RR]);
 
         Logger.RegisterSensor("FL Speed", () -> getCornerSpeed(ISwerveDrive.FL));
         Logger.RegisterSensor("FR Speed", () -> getCornerSpeed(ISwerveDrive.FR));
@@ -132,9 +130,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         Logger.RegisterSensor("RL Turn Pos", () -> getCornerAngle(ISwerveDrive.RL));
         Logger.RegisterSensor("RR Turn Pos", () -> getCornerAngle(ISwerveDrive.RR));
 
-        Logger.RegisterSensor("Pigeon Yaw", () -> getHeading().getDegrees());
-        Logger.RegisterSensor("Pigeon Pitch", () -> getPitch());
-        Logger.RegisterSensor("Pigeon Roll", () -> getRoll());
+        Logger.RegisterPigeon(pigeon);
     }
 
     @Override
