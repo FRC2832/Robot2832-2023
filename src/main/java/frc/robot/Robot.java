@@ -18,6 +18,7 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
+import frc.robot.simulation.TailSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 
     public Pose2d startPosition;
     private String[] pdpChannelNames;
+    private AnalogInput jumper;
 
     private static boolean pieceMode;
 
@@ -120,8 +122,7 @@ public class Robot extends TimedRobot {
         // Record both DS control and joystick data
         DriverStation.startDataLog(DataLogManager.getLog());
         table = NetworkTableInstance.getDefault().getTable("/status");
-        pdp = new PowerDistribution(1,ModuleType.kRev);
-        pdpChannelNames = pdhRealChannelNames;
+        
         new LoopTimeLogger(this);
         pneumatics = new PneumaticHub();
         pneumatics.enableCompressorDigital();
@@ -131,17 +132,34 @@ public class Robot extends TimedRobot {
         opControls = new DriveControls(); // initialize default operator controls, not used until teleopInit
        
         // initialize robot features
-        schedule = CommandScheduler.getInstance();
-        if(isReal()) {
-            drive = new SwerveDriveTrain(new SwerveDriveHw());
-            arm = new Arm(new ArmHw());
-        } else {
+        if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
+            //either buzz or simulation
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
+            tail = new Tail(new TailSim());
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);
+            pdpChannelNames = pdpPracticeChannelNames;
+            SmartDashboard.putString("Robot", "Simulation/Buzz");
+        } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
+            //practice chassis
+            drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
+            arm = new Arm(new ArmSim());
+            tail = new Tail(new TailSim());
+            pdp = new PowerDistribution(0,ModuleType.kCTRE);
+            pdpChannelNames = pdpPracticeChannelNames;
+            SmartDashboard.putString("Robot", "Practice");
+        } else {
+            //real robot
+            drive = new SwerveDriveTrain(new SwerveDriveHw());
+            arm = new Arm(new ArmHw());
+            tail = new Tail(new TailHw());
+            pdp = new PowerDistribution(1,ModuleType.kRev);
+            pdpChannelNames = pdhRealChannelNames;
+            SmartDashboard.putString("Robot", "Real");
         }
         grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw(), arm);
-        tail = new Tail(new TailHw());
+        intake = new Intake(new IntakeHw());
+        schedule = CommandScheduler.getInstance();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);

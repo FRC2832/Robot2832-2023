@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -30,6 +31,13 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     private FlywheelSim turnMotorSim[];
     private PIDController turningPIDController[];
+
+    private Translation2d[] swervePositions = {
+        new Translation2d(0.291, 0.291),
+        new Translation2d(0.291, -0.291),
+        new Translation2d(-0.291, 0.291),
+        new Translation2d(-0.291, -0.291),
+    };
 
     public SwerveDriveSim() {
         absAngle = new double[Constants.NUM_WHEELS];
@@ -232,6 +240,16 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     public double getDriveMotorTemperature(int wheel) {
         // TODO Auto-generated method stub
         return 23;
+    }
+
+    @Override
+    public Translation2d[] getCornerLocations() {
+        return swervePositions;
+    }
+
+    @Override
+    public double getWheelOffset(int wheel) {
+        return absOffset[wheel];
     }
     
 }
