@@ -1,54 +1,26 @@
-package frc.robot;
-
-import org.livoniawarriors.UtilFunctions;
+package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Arm;
+import frc.robot.Constants;
+import frc.robot.GrabberIntake;
+import frc.robot.Intake;
+import frc.robot.Saitek;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.ArmManualOverride;
 import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
 
-public class LilHaydenDriveControls implements IDriveControls {
-    private XboxController driveCont;
+public class LilHaydenDriveControls implements IOperatorControls {
     private Saitek armCont;
 
     public LilHaydenDriveControls() {
         armCont = new Saitek(2); //WARNING: HE USES THE CONTROLLER UPSIDE DOWN; port 2 since Jayden has 2 controllers technically
     }
    
-    @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
-    }
-
-    @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-    
     public double GetArmKinXCommand() {
         return armCont.getxAxis1();
     }
@@ -143,16 +115,6 @@ public class LilHaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
-    }
-
-    @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
-    }
-
-    @Override
     public JoystickButton GrabberUpRequested() {
         return new JoystickButton(armCont, 17);
     }
@@ -205,15 +167,5 @@ public class LilHaydenDriveControls implements IDriveControls {
     @Override
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(armCont, XboxController.Button.kRightStick.value);
-    }
-
-    @Override
-    public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
-    }
-
-    @Override
-    public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
     }
 }

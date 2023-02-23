@@ -1,68 +1,37 @@
-package frc.robot;
+package frc.robot.controls;
 
-import org.livoniawarriors.UtilFunctions;
-
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Arm;
+import frc.robot.Constants;
+import frc.robot.GrabberIntake;
+import frc.robot.Intake;
+import frc.robot.Saitek;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.ArmManualOverride;
 import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
+public class OperatorControls implements IOperatorControls {
+    private Saitek operCont;
 
-public class DriveControls implements IDriveControls {
-    private XboxController driveCont;
-    private Saitek armCont;
-
-    public DriveControls() {
-        driveCont = new XboxController(0);
-        armCont = new Saitek(2);
+    public OperatorControls() {
+        operCont = new Saitek(2);
     }
    
-    @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
-    }
-
-    @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-
     public double GetArmKinXCommand() {
-        return armCont.getxAxis1();
+        return operCont.getxAxis1();
     }
 
     public double GetArmKinZCommand() {
-        return armCont.getyAxis1();
+        return operCont.getyAxis1();
     }
 
     @Override
     public double GetArmShoulderPct() {
-        if(armCont.getOrangeTopLeftButton()) {
+        if(operCont.getOrangeTopLeftButton()) {
             return 0.3;
-        } else if (armCont.getOrangeBottomLeftButton()) {
+        } else if (operCont.getOrangeBottomLeftButton()) {
             return -0.3;
         } else {
             return 0;
@@ -71,106 +40,95 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public double GetArmElbowPct() {
-        if(armCont.getOrangeTopRightButton()) {
+        if(operCont.getOrangeTopRightButton()) {
             return -0.3;
-        } else if (armCont.getOrangeBottomRightButton()) {
+        } else if (operCont.getOrangeBottomRightButton()) {
             return 0.3;
         } else {
             return 0;
         }
     }
 
-
     @Override
     public JoystickButton ShoulderPosRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeTopLeft.value);
+        return new JoystickButton(operCont, Saitek.Button.orangeTopLeft.value);
     }
 
     @Override
     public JoystickButton ShoulderNegRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeBottomLeft.value);
+        return new JoystickButton(operCont, Saitek.Button.orangeBottomLeft.value);
     }
 
     @Override
     public JoystickButton ElbowPosRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeTopRight.value);
+        return new JoystickButton(operCont, Saitek.Button.orangeTopRight.value);
     }
 
     @Override
     public JoystickButton ElbowNegRequested() {
-        return new JoystickButton(armCont, Saitek.Button.orangeBottomRight.value);
+        return new JoystickButton(operCont, Saitek.Button.orangeBottomRight.value);
     }
 
     @Override
     public JoystickButton ArmToPickupGround(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopLeft.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
     }
    
     @Override
     public JoystickButton ArmToPickupTail(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomLeft.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowBottomLeft.value);
     }
 
     @Override
     public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(armCont, Saitek.Button.pinkBottomLeft.value);
+        return new JoystickButton(operCont, Saitek.Button.pinkBottomLeft.value);
     }
    
     @Override
     public JoystickButton ArmToSecureLocation(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopMiddle.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowTopMiddle.value);
     }
    
     @Override
     public JoystickButton ArmToScoreLow(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomMiddle.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowBottomMiddle.value);
     }
    
     @Override
     public JoystickButton ArmToScoreMiddle(){
-        return new JoystickButton(armCont, Saitek.Button.yellowBottomRight.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowBottomRight.value);
     }
    
     @Override
     public JoystickButton ArmToScoreTop(){
-        return new JoystickButton(armCont, Saitek.Button.yellowTopRight.value);
-    }
-
-    @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
-    }
-
-    @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+        return new JoystickButton(operCont, Saitek.Button.yellowTopRight.value);
     }
 
     @Override
     public JoystickButton GrabberUpRequested() {
-        return new JoystickButton(armCont, 17);
+        return new JoystickButton(operCont, 17);
     }
 
     @Override
     public JoystickButton GrabberDownRequested() {
-        return new JoystickButton(armCont, 19);
+        return new JoystickButton(operCont, 19);
     }
 
     @Override
     public JoystickButton GrabberSuckRequested() {
-        return new JoystickButton(armCont, 18);
+        return new JoystickButton(operCont, 18);
     }
 
     @Override
     public JoystickButton GrabberSpitRequested() {
-        return new JoystickButton(armCont, 20);
+        return new JoystickButton(operCont, 20);
     }
 
     @Override
     public double GetGrabberPct() {
-        if(armCont.getRawButton(17)) {
+        if(operCont.getRawButton(17)) {
             return 5.0; //if backwards switch negative
-        } else if (armCont.getRawButton(19)) {
+        } else if (operCont.getRawButton(19)) {
             return -5.0;
         } else {
             return 0.0;
@@ -198,16 +156,6 @@ public class DriveControls implements IDriveControls {
 
     @Override
     public JoystickButton ChangePieceMode() {
-        return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
-    }
-
-    @Override
-    public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
-    }
-
-    @Override
-    public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
+        return new JoystickButton(operCont, Saitek.Button.pinkTopRight.value);        
     }
 }

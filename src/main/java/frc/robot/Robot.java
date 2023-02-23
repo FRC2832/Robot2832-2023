@@ -14,7 +14,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
+import frc.robot.controls.DriveControls;
+import frc.robot.controls.LilHaydenDriveControls;
+import frc.robot.controls.LilJaydenDriveControls;
+import frc.robot.controls.LilJimmyDriveControls;
+import frc.robot.controls.LilMickeyDriveControls;
+import frc.robot.controls.OperatorControls;
 import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
@@ -36,7 +43,7 @@ public class Robot extends TimedRobot {
     private ISwerveDrive drive;
     private Odometry odometry;
     private IDriveControls controls;
-    private IDriveControls opControls;
+    private IOperatorControls opControls;
     private GrabberIntake grabber;
     private Intake intake;
     private Tail tail;
@@ -128,7 +135,7 @@ public class Robot extends TimedRobot {
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
-        opControls = new DriveControls(); // initialize default operator controls, not used until teleopInit
+        opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
        
         // initialize robot features
         schedule = CommandScheduler.getInstance();
@@ -149,9 +156,9 @@ public class Robot extends TimedRobot {
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
-        arm.setDefaultCommand(new DriveArmToPoint(arm, controls));
+        arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail));
-        intake.setDefaultCommand(new IntakeMove(controls, intake));
+        intake.setDefaultCommand(new IntakeMove(opControls, intake));
 
         // controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
         // controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
@@ -174,7 +181,7 @@ public class Robot extends TimedRobot {
 
         //controls.ChangePieceMode().toggleOnTrue(new ChangeMode());
 
-        controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
+        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
