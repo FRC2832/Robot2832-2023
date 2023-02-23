@@ -9,6 +9,7 @@ import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import frc.robot.interfaces.ITailControl;
@@ -17,7 +18,8 @@ import frc.robot.interfaces.ITailControl;
 public class TailHw implements ITailControl{
     TalonSRX tailMotor;
     DutyCycle tailEncoder;
-    Rev2mDistanceSensor distSensor;
+    //Rev2mDistanceSensor distSensor;
+    PIDController tailPid;
 
     double tailAngle;
     double distValue;
@@ -30,9 +32,11 @@ public class TailHw implements ITailControl{
         tailMotor.setNeutralMode(NeutralMode.Brake);
         tailEncoder = new DutyCycle(new DigitalInput(3)); // TODO: Verify channel number
         
-        distSensor = new Rev2mDistanceSensor(Port.kOnboard);
-        distSensor.setAutomaticMode(true);
-        distSensor.setMeasurementPeriod(0.018);
+        //distSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        //distSensor.setAutomaticMode(true);
+        //distSensor.setMeasurementPeriod(0.018);
+
+        tailPid = new PIDController(0.13, 0, 0);
     }
 
     @Override
@@ -42,8 +46,8 @@ public class TailHw implements ITailControl{
 
     @Override
     public void setTailAngle(double angleDeg) {
-        // TODO Implement Tail PID
-        tailMotor.set(ControlMode.Position, angleDeg * COUNTS_PER_DEGREE_TAIL);
+        double volts = tailPid.calculate(tailAngle, angleDeg);
+        setTailVoltage(volts);
     }
 
     @Override
@@ -51,13 +55,11 @@ public class TailHw implements ITailControl{
         return tailAngle;
     }
 
-    
-
     @Override
     public void updateInputs() {
         tailAngle = TAIL_ZERO_OFFSET + tailEncoder.getOutput() * 360;
         tailAngle = MathUtil.inputModulus(tailAngle, -180, 180);
-        distValue = distSensor.getRange(Unit.kInches);
+        //distValue = distSensor.getRange(Unit.kInches);
         tailMotor.setSelectedSensorPosition(tailAngle * COUNTS_PER_DEGREE_TAIL);
     }
 

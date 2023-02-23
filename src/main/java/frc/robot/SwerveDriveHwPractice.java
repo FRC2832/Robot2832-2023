@@ -1,17 +1,13 @@
 package frc.robot;
 
 
-import org.livoniawarriors.Logger;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
-public class SwerveDriveHw implements ISwerveDriveIo {
+public class SwerveDriveHwPractice implements ISwerveDriveIo {
     //measuring the robot, we got 11114 counts/90*, the theoretical amount is 10971.428/90* (150/7:1 gear ratio, 2048 counts/rev)
     private final double COUNTS_PER_DEGREE = 121.9; //using theoretical amount
 
@@ -33,7 +29,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private TalonFX turnMotor[];
     private TalonFX driveMotor[];
     private CANCoder absSensor[];
-    private Pigeon2 pigeon;
+    private PigeonIMU pigeon;
     
     //sensor value buffers
     private double ypr_deg[];
@@ -44,13 +40,13 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private double absOffset[];
 
     private Translation2d[] swervePositions = {
-        Constants.SWERVE_FRONT_LEFT_LOCATION,
-        Constants.SWERVE_FRONT_RIGHT_LOCATION,
-        Constants.SWERVE_BACK_LEFT_LOCATION,
-        Constants.SWERVE_BACK_RIGHT_LOCATION
+        new Translation2d(0.291, 0.291),
+        new Translation2d(0.291, -0.291),
+        new Translation2d(-0.291, 0.291),
+        new Translation2d(-0.291, -0.291),
     };
 
-    public SwerveDriveHw() {
+    public SwerveDriveHwPractice() {
         //initialize array sizes
         turnMotor = new TalonFX[Constants.NUM_WHEELS];
         driveMotor = new TalonFX[Constants.NUM_WHEELS];
@@ -73,19 +69,14 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         absSensor[ISwerveDrive.RR] = new CANCoder(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT);
 
         absOffset = new double[Constants.NUM_WHEELS];
-        absOffset[ISwerveDrive.FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
-        absOffset[ISwerveDrive.FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
-        absOffset[ISwerveDrive.RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
-        absOffset[ISwerveDrive.RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        absOffset[ISwerveDrive.FL] = 310.7;
+        absOffset[ISwerveDrive.FR] = 318.0;
+        absOffset[ISwerveDrive.RL] = 179.2;
+        absOffset[ISwerveDrive.RR] = 19.3;
 
-        pigeon = new Pigeon2(Constants.PIGEON_IMU_ID);
+        pigeon = new PigeonIMU(Constants.PIGEON_IMU_ID);
 
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
-
-        for (CANCoder sensor: absSensor) {
-            sensor.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 250);
-            sensor.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
-        }
 
         for(TalonFX motor : driveMotor) {
             motor.configFactoryDefault(100);
@@ -96,17 +87,15 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.slot0.kF = 0.047;
             allConfigs.slot0.integralZone = 200;
             motor.configAllSettings(allConfigs,100);
-
-            motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
 
         for(TalonFX motor : turnMotor) {
             motor.configFactoryDefault(100);
             var error = motor.getAllConfigs(allConfigs,100);
             System.out.println("Turn Read config: " + error.name());
-            allConfigs.slot1.kP = 0.4;
-            allConfigs.slot1.kI = 0.0005;
-            allConfigs.slot1.kD = 40;
+            allConfigs.slot1.kP = 0.2;
+            allConfigs.slot1.kI = 0.00007;
+            allConfigs.slot1.kD = 0.1;
             allConfigs.slot1.kF = 0;
             allConfigs.slot1.integralZone = 0;
             allConfigs.slot1.allowableClosedloopError = 300;
@@ -120,8 +109,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             motor.configStatorCurrentLimit(cfg);
             motor.selectProfileSlot(1, 0);
             System.out.println("Turn motor config: " + error.name());
-
-            motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
         
         //initialize sensor buffers
@@ -131,32 +118,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         driveWheelDistance = new double[Constants.NUM_WHEELS];
         turnMotorAngle = new double[Constants.NUM_WHEELS];
 
-        Logger.RegisterTalon("FL Turn", turnMotor[ISwerveDrive.FL]);
-        Logger.RegisterTalon("FR Turn", turnMotor[ISwerveDrive.FR]);
-        Logger.RegisterTalon("RL Turn", turnMotor[ISwerveDrive.RL]);
-        Logger.RegisterTalon("RR Turn", turnMotor[ISwerveDrive.RR]);
-
-        Logger.RegisterTalon("FL Drive", driveMotor[ISwerveDrive.FL]);
-        Logger.RegisterTalon("FR Drive", driveMotor[ISwerveDrive.FR]);
-        Logger.RegisterTalon("RL Drive", driveMotor[ISwerveDrive.RL]);
-        Logger.RegisterTalon("RR Drive", driveMotor[ISwerveDrive.RR]);
-
-        Logger.RegisterCanCoder("FL Abs", absSensor[ISwerveDrive.FL]);
-        Logger.RegisterCanCoder("FR Abs", absSensor[ISwerveDrive.FR]);
-        Logger.RegisterCanCoder("RL Abs", absSensor[ISwerveDrive.RL]);
-        Logger.RegisterCanCoder("RR Abs", absSensor[ISwerveDrive.RR]);
-
-        Logger.RegisterSensor("FL Speed", () -> getCornerSpeed(ISwerveDrive.FL));
-        Logger.RegisterSensor("FR Speed", () -> getCornerSpeed(ISwerveDrive.FR));
-        Logger.RegisterSensor("RL Speed", () -> getCornerSpeed(ISwerveDrive.RL));
-        Logger.RegisterSensor("RR Speed", () -> getCornerSpeed(ISwerveDrive.RR));
-
-        Logger.RegisterSensor("FL Turn Pos", () -> getCornerAngle(ISwerveDrive.FL));
-        Logger.RegisterSensor("FR Turn Pos", () -> getCornerAngle(ISwerveDrive.FR));
-        Logger.RegisterSensor("RL Turn Pos", () -> getCornerAngle(ISwerveDrive.RL));
-        Logger.RegisterSensor("RR Turn Pos", () -> getCornerAngle(ISwerveDrive.RR));
-
-        Logger.RegisterPigeon(pigeon);
+        SmartDashboard.putNumber("Angle", 0);
     }
 
     @Override
@@ -270,6 +232,26 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     }
 
     @Override
+    public double getTurnMotorCurrent(int wheel) {
+        return turnMotor[wheel].getStatorCurrent();
+    }
+
+    @Override
+    public double getDriveMotorCurrent(int wheel) {
+        return driveMotor[wheel].getStatorCurrent();
+    }
+
+    @Override
+    public double getTurnMotorTemperature(int wheel) {
+        return turnMotor[wheel].getTemperature();
+    }
+
+    @Override
+    public double getDriveMotorTemperature(int wheel) {
+        return driveMotor[wheel].getTemperature();
+    }
+
+    @Override
     public Translation2d[] getCornerLocations() {
         return swervePositions;
     }
@@ -278,5 +260,4 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public double getWheelOffset(int wheel) {
         return absOffset[wheel];
     }
-    
 }

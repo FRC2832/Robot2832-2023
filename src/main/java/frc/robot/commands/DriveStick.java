@@ -29,7 +29,6 @@ public class DriveStick extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.putBoolean("Field Oriented", false);
         SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
         SmartDashboard.putNumber("Turtle Speed", 1);
         SmartDashboard.putNumber("Turtle Turn Speed", 4);
@@ -46,24 +45,17 @@ public class DriveStick extends CommandBase {
         double turn   = cont.GetTurnPct();
         if(cont.BoostTriggerRequested()){
             drive.SwerveDrive(
-                xSpeed  * boostSpeed, //maybe make max driver speed constants into boost constants? or get boost constants from a driver profile?
-                ySpeed  * boostSpeed, 
+                (xSpeed + cont.GetPercentRightTriggerAxis())  * boostSpeed, //maybe make max driver speed constants into boost constants? or get boost constants from a driver profile?
+                (ySpeed + cont.GetPercentRightTriggerAxis())  * boostSpeed, 
                 turn    * Constants.MAX_DRIVER_OMEGA, 
                 fieldOriented);
         } else if(cont.PrecisionTriggerRequested()) {
             drive.SwerveDrive(
-                xSpeed  * turtleSpeed, 
-                ySpeed  * turtleSpeed, 
+                (xSpeed + cont.GetPercentLeftTriggerAxis())  * turtleSpeed, 
+                (ySpeed + cont.GetPercentLeftTriggerAxis())  * turtleSpeed, 
                 turn    * turtleTurnSpeed, 
                 fieldOriented);
         } 
-        else {
-            drive.SwerveDrive(
-                xSpeed  * Constants.MAX_DRIVER_SPEED, 
-                ySpeed  * Constants.MAX_DRIVER_SPEED, 
-                turn    * Constants.MAX_DRIVER_OMEGA, 
-                fieldOriented);
-        }
     }
 
     @Override

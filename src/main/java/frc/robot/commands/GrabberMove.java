@@ -1,14 +1,16 @@
 package frc.robot.commands;
+import frc.robot.Constants;
 import frc.robot.GrabberIntake;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class GrabberMove extends CommandBase{
     private GrabberIntake grabber;
-    private IDriveControls controls;
+    private IOperatorControls controls;
 
-    public GrabberMove(IDriveControls controls, GrabberIntake grabber){
+    public GrabberMove(IOperatorControls controls, GrabberIntake grabber){
         this.grabber = grabber;
         this.controls = controls;
         addRequirements(grabber);
@@ -21,10 +23,10 @@ public class GrabberMove extends CommandBase{
     @Override
     public void execute() {  
         if(controls.GrabberSuckRequested().getAsBoolean()){
-            grabber.setIntakeVolts(-4);// TODO: Determine angle of "UP" position
+            grabber.setIntakeVolts(-Constants.IntakeVoltage);// TODO: Determine angle of "UP" position
         }  
         if(controls.GrabberSpitRequested().getAsBoolean()){
-            grabber.setIntakeVolts(4); // TODO: Determine angle of "DOWN" position
+            grabber.setIntakeVolts(Constants.IntakeVoltage); // TODO: Determine angle of "DOWN" position
         }  
     }
 
@@ -37,6 +39,6 @@ public class GrabberMove extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        grabber.setIntakeVolts(0);
+        grabber.setIntakeVolts(Constants.IntakeVoltage);
     }
 }

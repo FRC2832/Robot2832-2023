@@ -2,8 +2,10 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -24,16 +26,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private double swerveOffsets[];
     private double turnOffsets[];
     private InterpolatingTreeMap<Double, Double> speedReduction;
-    
+    private double gyroOffset = 0;
+    private PIDController pidZero = new PIDController(0.1, 0.001, 0);
+
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
 
         //initialize the corner locations
-        kinematics = new SwerveDriveKinematics(
-            Constants.SWERVE_FRONT_LEFT_LOCATION,
-            Constants.SWERVE_FRONT_RIGHT_LOCATION,
-            Constants.SWERVE_BACK_LEFT_LOCATION,
-            Constants.SWERVE_BACK_RIGHT_LOCATION);
+        kinematics = new SwerveDriveKinematics(hSwerveDriveIo.getCornerLocations());
         hardware.setKinematics(kinematics);
         
         //initialize the swerve states
@@ -44,10 +44,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         //initialize the swerve offsets
         swerveOffsets = new double[Constants.NUM_WHEELS];
-        swerveOffsets[FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
-        swerveOffsets[FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
-        swerveOffsets[RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
-        swerveOffsets[RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        swerveOffsets[FL] = hardware.getWheelOffset(FL);
+        swerveOffsets[FR] = hardware.getWheelOffset(FR);
+        swerveOffsets[RL] = hardware.getWheelOffset(RL);
+        swerveOffsets[RR] = hardware.getWheelOffset(RR);
 
         hardware.updateInputs();
         turnOffsets = new double[Constants.NUM_WHEELS];
@@ -60,6 +60,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             }
             turnOffsets[i] = offset + hardware.getCornerAngle(i);
         }
+        gyroOffset = getHeading().getDegrees();
 
         //initialize module names
         moduleNames = new String[Constants.NUM_WHEELS];
@@ -71,8 +72,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //input is angle off desired, output is percent reduction
         speedReduction = new InterpolatingTreeMap<Double, Double>();
         speedReduction.put(0., 1.);
-        speedReduction.put(45., 0.3);
-        speedReduction.put(90., 0.);
+        speedReduction.put(45., 1.);
+        speedReduction.put(90., 1.0);
     }
     
     @Override
@@ -97,6 +98,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
     public void SwerveDrive(double xSpeed, double ySpeed, double turn, boolean fieldOriented) {
         // ask the kinematics to determine our swerve command
         ChassisSpeeds speeds;
+
+        double currentHeading = getHeading().getDegrees();
+        if (Math.abs(turn) > 0.1) {
+            //if a turn is requested, reset the zero for the drivetrain
+            gyroOffset = currentHeading;
+            pidZero.reset();
+        } else {
+            //straighten the robot
+            turn = pidZero.calculate(currentHeading,gyroOffset);
+        }
 
         if (fieldOriented) {
             var angle = robotPose.getRotation();
@@ -160,6 +171,11 @@ public class SwerveDriveTrain implements ISwerveDrive {
     }
 
     @Override
+    public double getPitch() {
+        return hardware.getPitch();
+    }
+
+    @Override
     public SwerveModulePosition[] getSwerveStates() {
         return swerveStates;
     }
@@ -177,5 +193,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public void setDriveMotorBrakeMode(boolean brakeOn) {
         hardware.setDriveMotorBrakeMode(brakeOn);
+    }
+
+    @Override
+    public Translation2d[] getCornerLocations() {
+        return hardware.getCornerLocations();
     }
 }
