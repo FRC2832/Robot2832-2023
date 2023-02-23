@@ -36,7 +36,7 @@ public class TailHw implements ITailControl{
         distSensor.setAutomaticMode(true);
         distSensor.setMeasurementPeriod(0.018);
 
-        tailPid = new PIDController(0.2, 0, 0);
+        tailPid = new PIDController(0.13, 0, 0);
     }
 
     @Override

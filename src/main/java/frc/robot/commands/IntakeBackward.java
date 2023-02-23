@@ -28,14 +28,7 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        if(timer.get() > 2.0){
-            timer.stop();
-            timer.reset();
-            return true;
-        }
-        else{
-            return false; 
-        } 
+        return false; 
     }
 
     @Override

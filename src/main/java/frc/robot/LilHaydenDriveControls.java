@@ -206,4 +206,14 @@ public class LilHaydenDriveControls implements IDriveControls {
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(armCont, XboxController.Button.kRightStick.value);
     }
+
+    @Override
+    public double GetPercentRightTriggerAxis() {
+        return driveCont.getRightTriggerAxis();
+    }
+
+    @Override
+    public double GetPercentLeftTriggerAxis() {
+        return driveCont.getLeftTriggerAxis();
+    }
 }

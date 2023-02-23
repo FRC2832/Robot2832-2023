@@ -13,6 +13,8 @@ public interface IDriveControls {
     double GetArmElbowPct();
     double GetArmKinXCommand();
     double GetArmKinZCommand();
+    double GetPercentRightTriggerAxis();
+    double GetPercentLeftTriggerAxis();
     boolean BoostTriggerRequested();
     boolean PrecisionTriggerRequested();
     boolean IsFieldOrientedResetRequested();

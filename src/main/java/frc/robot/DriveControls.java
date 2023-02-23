@@ -200,4 +200,14 @@ public class DriveControls implements IDriveControls {
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(driveCont, XboxController.Button.kRightStick.value);        
     }
+
+    @Override
+    public double GetPercentRightTriggerAxis() {
+        return driveCont.getRightTriggerAxis();
+    }
+
+    @Override
+    public double GetPercentLeftTriggerAxis() {
+        return driveCont.getLeftTriggerAxis();
+    }
 }

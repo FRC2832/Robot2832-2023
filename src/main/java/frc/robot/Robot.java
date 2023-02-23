@@ -319,6 +319,19 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
+        double tailDist = tail.getDistSensor();
+        if(tailDist > 0 && tailDist < 5.3) {
+            tail.setTailAngle(105);
+        }
+        
+        boolean tailUpOverride = SmartDashboard.getBoolean("Distance Sensor Not Working (Override Tail Up)", false);
+        if(tailUpOverride) {
+            tail.setTailAngle(-8);
+        }
+
+        if(arm.getArmXPosition() <= -10) {
+            tail.setTailAngle(105);
+        }
     }
 
     /** This function is called once when the robot is disabled. */
