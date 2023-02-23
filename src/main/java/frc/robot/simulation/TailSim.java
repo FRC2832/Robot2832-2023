@@ -4,10 +4,7 @@ import frc.robot.interfaces.ITailControl;
 
 public class TailSim implements ITailControl{
     double tailAngle;
-    double distValue;
-
-    final double TAIL_ZERO_OFFSET = -340+12;
-    final double COUNTS_PER_DEGREE_TAIL = 101;
+    double distValue = -1;
 
     public TailSim(){
     }

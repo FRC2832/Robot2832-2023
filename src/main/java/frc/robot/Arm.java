@@ -16,8 +16,6 @@ public class Arm implements Subsystem{
     @Override
     public void periodic() {
         hardware.updateInputs();
-        SmartDashboard.putNumber("Shoulder Angle", getShoulderAngle());
-        SmartDashboard.putNumber("Elbow Angle", getElbowAngle());
         SmartDashboard.putNumber("Arm X", getArmXPosition());
         SmartDashboard.putNumber("Arm Z", getArmZPosition());
         hardware.checkBrake();

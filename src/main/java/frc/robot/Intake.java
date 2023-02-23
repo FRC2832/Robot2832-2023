@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.IIntakeControl;
@@ -18,7 +17,6 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         hardware.updateInputs();
-        SmartDashboard.putNumber("Intake Angle", getPivotAngle());
         SmartDashboard.putNumber("Optimal Angle", optimalIntakeAngle());
     }
 

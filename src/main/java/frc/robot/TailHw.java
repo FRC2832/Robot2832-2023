@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import org.livoniawarriors.Logger;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -18,7 +20,7 @@ import frc.robot.interfaces.ITailControl;
 public class TailHw implements ITailControl{
     TalonSRX tailMotor;
     DutyCycle tailEncoder;
-    //Rev2mDistanceSensor distSensor;
+    Rev2mDistanceSensor distSensor;
     PIDController tailPid;
 
     double tailAngle;
@@ -30,13 +32,17 @@ public class TailHw implements ITailControl{
     public TailHw(){
         tailMotor = new TalonSRX(49);
         tailMotor.setNeutralMode(NeutralMode.Brake);
-        tailEncoder = new DutyCycle(new DigitalInput(3)); // TODO: Verify channel number
+        tailEncoder = new DutyCycle(new DigitalInput(3));
         
-        //distSensor = new Rev2mDistanceSensor(Port.kOnboard);
-        //distSensor.setAutomaticMode(true);
-        //distSensor.setMeasurementPeriod(0.018);
+        distSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        distSensor.setAutomaticMode(true);
+        distSensor.setMeasurementPeriod(0.018);
 
         tailPid = new PIDController(0.13, 0, 0);
+
+        Logger.RegisterTalon("Tail", tailMotor);
+        Logger.RegisterSensor("Tail Angle", () -> getTailAngle());
+        Logger.RegisterSensor("Tail Dist", () -> getDistSensor());
     }
 
     @Override
@@ -59,7 +65,7 @@ public class TailHw implements ITailControl{
     public void updateInputs() {
         tailAngle = TAIL_ZERO_OFFSET + tailEncoder.getOutput() * 360;
         tailAngle = MathUtil.inputModulus(tailAngle, -180, 180);
-        //distValue = distSensor.getRange(Unit.kInches);
+        distValue = distSensor.getRange(Unit.kInches);
         tailMotor.setSelectedSensorPosition(tailAngle * COUNTS_PER_DEGREE_TAIL);
     }
 
