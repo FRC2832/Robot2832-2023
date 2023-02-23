@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import frc.robot.Intake;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class IntakeMove extends CommandBase{
     private Intake intake;
-    private IDriveControls controls;
+    private IOperatorControls controls;
     private double angleOffset;
 
-    public IntakeMove(IDriveControls controls, Intake intake){
+    public IntakeMove(IOperatorControls controls, Intake intake){
         this.intake = intake;
         this.controls = controls;
         addRequirements(intake);

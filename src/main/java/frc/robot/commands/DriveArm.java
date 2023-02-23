@@ -2,13 +2,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
 public class DriveArm extends CommandBase{
     private Arm arm;
-    private IDriveControls controls;
+    private IOperatorControls controls;
     
-    public DriveArm(Arm arm, IDriveControls controls) {
+    public DriveArm(Arm arm, IOperatorControls controls) {
         this.arm = arm;
         this.controls = controls;
         addRequirements(arm);
