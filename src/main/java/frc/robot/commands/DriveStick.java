@@ -55,7 +55,13 @@ public class DriveStick extends CommandBase {
                 (ySpeed + cont.GetPercentLeftTriggerAxis())  * turtleSpeed, 
                 turn    * turtleTurnSpeed, 
                 fieldOriented);
-        } 
+        } else {
+            drive.SwerveDrive(
+                xSpeed * Constants.MAX_DRIVER_SPEED, 
+                ySpeed * Constants.MAX_DRIVER_SPEED,
+                turn   * Constants.MAX_DRIVER_OMEGA, 
+                fieldOriented);
+        }
     }
 
     @Override
