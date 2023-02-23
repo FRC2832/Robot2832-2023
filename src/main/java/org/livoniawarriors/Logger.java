@@ -211,11 +211,11 @@ public class Logger implements Runnable {
         }
 
         var canStatus = RobotController.getCANStatus();
-        taskTimings.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
-        taskTimings.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
-        taskTimings.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
-        taskTimings.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
-        taskTimings.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
+        canStatusTable.getEntry("CAN Bandwidth").setDouble(canStatus.percentBusUtilization);
+        canStatusTable.getEntry("CAN Bus Off Count").setDouble(canStatus.busOffCount);
+        canStatusTable.getEntry("CAN RX Error Count").setDouble(canStatus.receiveErrorCount);
+        canStatusTable.getEntry("CAN Tx Error Count").setDouble(canStatus.transmitErrorCount);
+        canStatusTable.getEntry("CAN Tx Full Count").setDouble(canStatus.txFullCount);
 
         sensorTable.getEntry("Rio 3.3V Voltage").setDouble(RobotController.getVoltage3V3());
         sensorTable.getEntry("Rio 5V Voltage").setDouble(RobotController.getVoltage5V());
