@@ -1,4 +1,4 @@
-package frc.robot;
+package org.livoniawarriors;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Robot;
 
 public class LoopTimeLogger implements Runnable {
     private NetworkTable table;

@@ -1,4 +1,4 @@
-package frc.robot;
+package org.livoniawarriors;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Robot;
 
 public class Logger implements Runnable {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
