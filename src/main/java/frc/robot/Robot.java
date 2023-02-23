@@ -193,7 +193,7 @@ public class Robot extends TimedRobot {
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
-        tail.setDefaultCommand(new TailMovement(controls, tail));
+        tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
 
         // controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
@@ -367,26 +367,13 @@ public class Robot extends TimedRobot {
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
-        tail.setDefaultCommand(new TailMovement(controls, tail));
+        tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        double tailDist = tail.getDistSensor();
-        if(tailDist > 0 && tailDist < 5.3) {
-            tail.setTailAngle(105);
-        }
-        
-        boolean tailUpOverride = SmartDashboard.getBoolean("Distance Sensor Not Working (Override Tail Up)", false);
-        if(tailUpOverride) {
-            tail.setTailAngle(-8);
-        }
-
-        if(arm.getArmXPosition() <= -10) {
-            tail.setTailAngle(105);
-        }
     }
 
     /** This function is called once when the robot is disabled. */
