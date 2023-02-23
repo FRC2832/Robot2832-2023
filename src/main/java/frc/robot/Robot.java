@@ -196,29 +196,6 @@ public class Robot extends TimedRobot {
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
 
-        // controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
-        
-        // controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
-        // controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        // controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
-        // controls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        // controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        // controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        // controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-        
-        // controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
-        // controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
-
-        // controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
-        // controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
-
-        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode());
-
-        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
-
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
         SmartDashboard.putString("Error","Ok");
@@ -348,13 +325,18 @@ public class Robot extends TimedRobot {
             controls = new LilMickeyDriveControls();
         } else if(driverSelected.equals(kJaydenDriver)){
             controls = new LilJaydenDriveControls();
-        } else {}
+        } else {
+            controls = new DriveControls();
+            
+        }
 
         if(operatorSelected.equals(kJamesOperator)){
             opControls = new LilJimmyDriveControls();
         } else if(operatorSelected.equals(kHaydenOperator)){
             opControls = new LilHaydenDriveControls();
-        } else {}
+        } else {
+            opControls = new OperatorControls();
+        }
 
         //initializes buttons to appropriate mappings
         controls.initializeButtons(arm, intake, grabber);
