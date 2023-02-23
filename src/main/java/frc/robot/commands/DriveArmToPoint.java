@@ -2,15 +2,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
 
 public class DriveArmToPoint extends CommandBase{
     private Arm arm;
-    private IDriveControls controls;
+    private IOperatorControls controls;
     private double xPos, zPos;
     private boolean isRunX, isRunZ;    
-    public DriveArmToPoint(Arm arm, IDriveControls controls) {
+    public DriveArmToPoint(Arm arm, IOperatorControls controls) {
         this.arm = arm;
         this.controls = controls;
         this.isRunX = false;

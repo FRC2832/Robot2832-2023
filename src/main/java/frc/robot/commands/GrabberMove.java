@@ -1,18 +1,16 @@
 package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.GrabberIntake;
-import frc.robot.interfaces.IDriveControls;
-
-import java.lang.invoke.ConstantBootstraps;
+import frc.robot.interfaces.IOperatorControls;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class GrabberMove extends CommandBase{
     private GrabberIntake grabber;
-    private IDriveControls controls;
+    private IOperatorControls controls;
 
-    public GrabberMove(IDriveControls controls, GrabberIntake grabber){
+    public GrabberMove(IOperatorControls controls, GrabberIntake grabber){
         this.grabber = grabber;
         this.controls = controls;
         addRequirements(grabber);

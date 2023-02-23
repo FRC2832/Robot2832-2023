@@ -1,54 +1,26 @@
-package frc.robot;
-
-import org.livoniawarriors.UtilFunctions;
+package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Arm;
+import frc.robot.Constants;
+import frc.robot.GrabberIntake;
+import frc.robot.Intake;
+import frc.robot.Saitek;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.ArmManualOverride;
 import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
 
-public class LilHaydenDriveControls implements IDriveControls {
-    private XboxController driveCont;
+public class LilHaydenDriveControls implements IOperatorControls {
     private Saitek armCont;
 
     public LilHaydenDriveControls() {
         armCont = new Saitek(2); //WARNING: HE USES THE CONTROLLER UPSIDE DOWN; port 2 since Jayden has 2 controllers technically
     }
    
-    @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
-    }
-
-    @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-    
     public double GetArmKinXCommand() {
         return armCont.getxAxis1();
     }
@@ -108,8 +80,13 @@ public class LilHaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public JoystickButton ArmToPickupGround(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 18); //TODO: take stevens point
+    public JoystickButton ArmToPickupGroundCube(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 18);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupGroundCone(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 18);
     }
    
     @Override
@@ -136,20 +113,15 @@ public class LilHaydenDriveControls implements IDriveControls {
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
         return new JoystickButton(armCont, 7); //technically he wanted this button to be for cubes, 14 for cones
     }
+
+    @Override
+    public JoystickButton ArmToScoreMiddleFront(){ //driver/operator will use this method
+        return new JoystickButton(armCont, 12); 
+    }
    
     @Override
     public JoystickButton ArmToScoreTop(){ //driver/operator will use this method
         return new JoystickButton(armCont, 8); //technically he wanted this button to be for cubes, 16 for cones
-    }
-
-    @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
-    }
-
-    @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
     }
 
     @Override
@@ -189,12 +161,13 @@ public class LilHaydenDriveControls implements IDriveControls {
         ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
         ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
         ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
         ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
         ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
         GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
         GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
@@ -205,15 +178,5 @@ public class LilHaydenDriveControls implements IDriveControls {
     @Override
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(armCont, XboxController.Button.kRightStick.value);
-    }
-
-    @Override
-    public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
-    }
-
-    @Override
-    public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
     }
 }

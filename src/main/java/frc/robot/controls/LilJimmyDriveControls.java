@@ -1,55 +1,25 @@
-package frc.robot;
-
-import org.livoniawarriors.UtilFunctions;
+package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Arm;
+import frc.robot.Constants;
+import frc.robot.GrabberIntake;
+import frc.robot.Intake;
+import frc.robot.Saitek;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.ChangeMode;
 import frc.robot.commands.GrabberMove;
 import frc.robot.commands.IntakeMove;
-import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 
-
-public class LilJimmyDriveControls implements IDriveControls {
-    private XboxController driveCont;
+public class LilJimmyDriveControls implements IOperatorControls {
     private XboxController operCont;
 
     public LilJimmyDriveControls(){
-        driveCont = new XboxController(0);
         operCont = new XboxController(2);
     }
    
-    @Override
-    public boolean IsFieldOrientedResetRequested() {
-        return driveCont.getLeftStickButtonPressed();
-    }
-
-    @Override
-    public double GetXDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftY(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetYDrivePct() {
-        return -UtilFunctions.deadband(driveCont.getLeftX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public double GetTurnPct() {
-        return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
-    }
-
-    @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-
     @Override
     public double GetArmKinXCommand() { //driver/operator will use this method
         if(operCont.getPOV() == 90){
@@ -100,26 +70,31 @@ public class LilJimmyDriveControls implements IDriveControls {
 
     @Override
     public JoystickButton ShoulderPosRequested() {
-        return new JoystickButton(driveCont, 8);
+        return new JoystickButton(operCont, 8);
     }
 
     @Override
     public JoystickButton ShoulderNegRequested() {
-        return new JoystickButton(driveCont, 8);
+        return new JoystickButton(operCont, 8);
     }
 
     @Override
     public JoystickButton ElbowPosRequested() {
-        return new JoystickButton(driveCont, 8);
+        return new JoystickButton(operCont, 8);
     }
 
     @Override
     public JoystickButton ElbowNegRequested() {
-        return new JoystickButton(driveCont, 8);
+        return new JoystickButton(operCont, 8);
     }
 
     @Override
-    public JoystickButton ArmToPickupGround(){
+    public JoystickButton ArmToPickupGroundCube(){
+        return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
+    }
+
+    @Override
+    public JoystickButton ArmToPickupGroundCone(){
         return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
     }
    
@@ -147,20 +122,15 @@ public class LilJimmyDriveControls implements IDriveControls {
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
         return new JoystickButton(operCont, XboxController.Button.kX.value);
     }
+
+    @Override
+    public JoystickButton ArmToScoreMiddleFront(){ 
+        return new JoystickButton(operCont, 12); 
+    }
    
     @Override
     public JoystickButton ArmToScoreTop(){ //driver/operator will use this method
         return new JoystickButton(operCont, XboxController.Button.kY.value);
-    }
-
-    @Override
-    public JoystickButton TailUpRequested() {
-        return new JoystickButton(operCont, XboxController.Button.kRightBumper.value);
-    }
-
-    @Override
-    public JoystickButton TailDownRequested() {
-        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
 
     @Override
@@ -210,16 +180,6 @@ public class LilJimmyDriveControls implements IDriveControls {
     @Override
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(operCont, XboxController.Button.kRightStick.value);
-    }
-
-    @Override
-    public double GetPercentRightTriggerAxis() {
-        return driveCont.getRightTriggerAxis();
-    }
-
-    @Override
-    public double GetPercentLeftTriggerAxis() {
-        return driveCont.getLeftTriggerAxis();
     }
 }
 
