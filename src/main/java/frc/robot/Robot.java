@@ -145,6 +145,10 @@ public class Robot extends TimedRobot {
         controls = new DriveControls();
         opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
 
+        //check to see what robot we are
+        jumper = new AnalogInput(0);
+        var jumperVolts = jumper.getVoltage();
+
         // initialize robot features
         if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
             //either buzz or simulation
@@ -172,7 +176,7 @@ public class Robot extends TimedRobot {
             SmartDashboard.putString("Robot", "Real");
         }
         grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw());
+        intake = new Intake(new IntakeHw(),arm);
         schedule = CommandScheduler.getInstance();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
