@@ -37,7 +37,6 @@ import frc.robot.simulation.TailSim;
 public class Robot extends TimedRobot {
     // robot parts
     private CommandScheduler schedule;
-    private static double batVolt;
 
     // robot features
     private ISwerveDrive drive;
@@ -398,9 +397,4 @@ public class Robot extends TimedRobot {
     public static void setGamePieceMode(boolean mode){
         pieceMode = mode;
     }
-
-    public static double BatteryVoltage() {
-        return batVolt;
-    }
-
 }

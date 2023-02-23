@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.RobotController;
 
 public class IntakeHw implements IIntakeControl{
     TalonSRX pivotMotor;
@@ -36,11 +37,11 @@ public class IntakeHw implements IIntakeControl{
     
     public void setPivotAngle(double angleDeg){
         double volts = pid.calculate(currentIntakeDeg,angleDeg);
-        pivotMotor.set(ControlMode.PercentOutput, volts / Robot.BatteryVoltage());
+        pivotMotor.set(ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
     }
 
     public void setPivotMotorVolts(double volts){
-        pivotMotor.set(ControlMode.PercentOutput, volts/Robot.BatteryVoltage());
+        pivotMotor.set(ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
     }
 
     public double getPivotAngle() {

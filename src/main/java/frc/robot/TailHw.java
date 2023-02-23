@@ -1,6 +1,5 @@
 package frc.robot;
 
-
 import org.livoniawarriors.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -14,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.interfaces.ITailControl;
 
 
@@ -47,7 +47,7 @@ public class TailHw implements ITailControl{
 
     @Override
     public void setTailVoltage(double volts) {
-        tailMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
+        tailMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
     }
 
     @Override
