@@ -24,7 +24,7 @@ public class IntakeHw implements IIntakeControl{
 
     public IntakeHw(){
         pivotMotor = new TalonSRX(47);
-        pivotMotor.setNeutralMode(NeutralMode.Coast);
+        pivotMotor.setNeutralMode(NeutralMode.Brake);
         pivotEncoder = new DutyCycle(new DigitalInput(2)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there
 
         pid = new PIDController(0.13, 0.005, 0);
@@ -46,6 +46,10 @@ public class IntakeHw implements IIntakeControl{
 
     public double getPivotAngle() {
         return currentIntakeDeg;
+    }
+
+    public void resetRotations() {
+        rotations = 0;
     }
 
     public void updateInputs(){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
