@@ -189,12 +189,6 @@ public class Robot extends TimedRobot {
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
-        //set the default commands to run
-        drive.setDefaultCommand(new DriveStick(drive, controls));
-        arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
-        tail.setDefaultCommand(new TailMovement(controls, tail, arm));
-        intake.setDefaultCommand(new IntakeMove(opControls, intake));
-
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
         SmartDashboard.putString("Error","Ok");
@@ -336,20 +330,34 @@ public class Robot extends TimedRobot {
         } else {
             opControls = new OperatorControls();
         }
-
-        //initializes buttons to appropriate mappings
-        controls.initializeButtons(arm, intake, grabber);
-        opControls.initializeButtons(arm, intake, grabber);
-        
         //Reassigning subsystems and default commands with selected driver profiles
+        var pose = odometry.getPose();
         odometry = new Odometry(drive, controls);
-        odometry.resetPose(Constants.START_BLUE_LEFT);
+        odometry.resetPose(pose);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
+        grabber.setDefaultCommand(new GrabberMove(opControls, grabber));
+
+        //set all the other commands
+        opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
+        opControls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
+        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
+        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        opControls.GrabberSuckRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.GrabberSpitRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.ChangePieceMode().onTrue(new ChangeMode());
     }
 
     /** This function is called periodically during operator control. */
