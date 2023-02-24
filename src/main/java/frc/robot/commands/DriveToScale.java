@@ -33,7 +33,7 @@ public class DriveToScale extends CommandBase {
     public void execute() {
         drive.SwerveDrive(Constants.MAX_AUTO_SPEED, 0, 0, false);
 
-        if(drive.getPitch() > 0.08) {
+        if(drive.getPitch() < -8) {
             finishedCounts++;
         } else {
             finishedCounts = 0;
@@ -43,7 +43,7 @@ public class DriveToScale extends CommandBase {
     @Override
     public boolean isFinished() {
         //check if the timer has finished
-        return finishedCounts > 5;
+        return finishedCounts > 50;
     }
 
     @Override

@@ -12,7 +12,7 @@ public class DriveToBalance extends CommandBase {
     public int finishedCounts;
 
     /**
-     * Drive the robot at 50% power for stopTime time.
+     * Drive the robot up the rest of the ramp and balance it.  Only works in forward direction!
      * @param drive Drivetrain subsystem to command
      * @param stopTime Time to drive
      */
@@ -33,20 +33,20 @@ public class DriveToBalance extends CommandBase {
     public void execute() {
         var pitch = drive.getPitch();
 
-        if(Math.abs(pitch) < 0.02) {
+        if(Math.abs(pitch) < 2) {
             finishedCounts++;
             drive.SwerveDrive(0, 0, 0, false);
         } else {
             finishedCounts = 0;
-            var speed = 3 * Constants.MAX_AUTO_SPEED * Math.abs(pitch);
-            drive.SwerveDrive(Math.signum(pitch) * Math.max(speed, Constants.MIN_DRIVER_SPEED), 0, 0, false);
+            var speed = Constants.MAX_AUTO_SPEED * Math.abs(pitch) / 28;    //this number is the tuning constant, larger number = slower the robot drives (ideal pitch up the ramp is 12)
+            drive.SwerveDrive(-Math.signum(pitch) * Math.max(speed, Constants.MIN_DRIVER_SPEED), 0, 0, false);
         }
     }
 
     @Override
     public boolean isFinished() {
         //check if the timer has finished
-        return finishedCounts > 5;
+        return finishedCounts > 25;
     }
 
     @Override

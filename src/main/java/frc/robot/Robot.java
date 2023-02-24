@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -276,10 +276,10 @@ public class Robot extends TimedRobot {
 
         Command sequence;
         if (AutonomousStartPosition.equals(kBalence)) {
-            sequence = new SequentialCommandGroup(
-                new DriveToScale(drive),
-                new DriveToBalance(drive)
-            );
+            //spend at max 1 sec straightening the wheels, then drive
+            sequence = new WaitCommand(1).deadlineWith(new MoveWheelsStraight(drive))
+                .andThen(new DriveToScale(drive))
+                .andThen(new DriveToBalance(drive));
         } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
             Pose2d targetPoint;
             double offset;
