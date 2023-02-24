@@ -51,11 +51,6 @@ public class Logger implements Runnable {
     //solenoids, compressor
 
     public Logger() {
-        //register with the robot to schedule our task
-        notify = new Notifier(this);
-        notify.startPeriodic(0.1);
-        notify.setName("Logging");
-
         // Starts recording to data log
         DataLogManager.start();
         // Record both DS control and joystick data
@@ -71,6 +66,11 @@ public class Logger implements Runnable {
         stickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
         sensorTable = NetworkTableInstance.getDefault().getTable("Sensors");
         taskTimings = NetworkTableInstance.getDefault().getTable("Task_Timings_ms");
+
+        //register with the robot to schedule our task
+        notify = new Notifier(this);
+        notify.startPeriodic(0.1);
+        notify.setName("Logging");
     }
 
     public static void RegisterTalon(String name, BaseTalon talon) {
