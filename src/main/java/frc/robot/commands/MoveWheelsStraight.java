@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -35,7 +36,9 @@ public class MoveWheelsStraight extends CommandBase {
         SwerveModulePosition[] states = drive.getSwerveStates();
         boolean result = true;
         for(int i=0; i<states.length; i++) {
-            if (Math.abs(states[i].angle.getDegrees()) > 3) {
+            var angle = states[i].angle.getDegrees();
+            angle = MathUtil.inputModulus(angle, -90, 90);
+            if (Math.abs(angle) > 3) {
                 result = false;
             }
         }
