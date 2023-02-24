@@ -40,28 +40,25 @@ public class DriveStick extends CommandBase {
         boostSpeed = SmartDashboard.getNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
         turtleSpeed = SmartDashboard.getNumber("Turtle Speed", 1);
         turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 4);
+        
         double xSpeed = cont.GetXDrivePct();
         double ySpeed = cont.GetYDrivePct();
         double turn   = cont.GetTurnPct();
+
         if(cont.BoostTriggerRequested()){
-            drive.SwerveDrive(
-                (xSpeed + cont.GetPercentRightTriggerAxis())  * boostSpeed, //maybe make max driver speed constants into boost constants? or get boost constants from a driver profile?
-                (ySpeed + cont.GetPercentRightTriggerAxis())  * boostSpeed, 
-                turn    * Constants.MAX_DRIVER_OMEGA, 
-                fieldOriented);
+            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * cont.GetPercentRightTriggerAxis() * Math.signum(xSpeed));
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * cont.GetPercentRightTriggerAxis() * Math.signum(ySpeed));
+            turn = turn * Constants.MAX_DRIVER_OMEGA;
         } else if(cont.PrecisionTriggerRequested()) {
-            drive.SwerveDrive(
-                (xSpeed + cont.GetPercentLeftTriggerAxis())  * turtleSpeed, 
-                (ySpeed + cont.GetPercentLeftTriggerAxis())  * turtleSpeed, 
-                turn    * turtleTurnSpeed, 
-                fieldOriented);
+            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * cont.GetPercentLeftTriggerAxis() * Math.signum(xSpeed));
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * cont.GetPercentLeftTriggerAxis() * Math.signum(ySpeed));
+            turn = turn * turtleTurnSpeed;
         } else {
-            drive.SwerveDrive(
-                xSpeed * Constants.MAX_DRIVER_SPEED, 
-                ySpeed * Constants.MAX_DRIVER_SPEED,
-                turn   * Constants.MAX_DRIVER_OMEGA, 
-                fieldOriented);
+            xSpeed = xSpeed * Constants.MAX_DRIVER_SPEED;
+            ySpeed = ySpeed * Constants.MAX_DRIVER_SPEED;
+            turn = turn * Constants.MAX_DRIVER_OMEGA;
         }
+        drive.SwerveDrive(xSpeed, ySpeed, turn, fieldOriented);
     }
 
     @Override
