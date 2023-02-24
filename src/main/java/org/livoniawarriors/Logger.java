@@ -18,6 +18,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU_Faults;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -26,6 +27,10 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 
 public class Logger implements Runnable {
@@ -66,7 +71,25 @@ public class Logger implements Runnable {
         stickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
         sensorTable = NetworkTableInstance.getDefault().getTable("Sensors");
         taskTimings = NetworkTableInstance.getDefault().getTable("Task_Timings_ms");
+        SmartDashboard.putBoolean("Clear Faults", false);
 
+        // Set the scheduler to log Shuffleboard events for command initialize,
+        // interrupt, finish
+        CommandScheduler.getInstance()
+                .onCommandInitialize(
+                        command -> Shuffleboard.addEventMarker(
+                                "Command initialized", command.getName(), EventImportance.kNormal));
+        CommandScheduler.getInstance()
+                .onCommandInterrupt(
+                        command -> Shuffleboard.addEventMarker(
+                                "Command interrupted", command.getName(), EventImportance.kNormal));
+        CommandScheduler.getInstance()
+                .onCommandFinish(
+                        command -> Shuffleboard.addEventMarker(
+                                "Command finished", command.getName(), EventImportance.kNormal));
+    }
+
+    public void start() {
         //register with the robot to schedule our task
         notify = new Notifier(this);
         notify.startPeriodic(0.1);
@@ -105,6 +128,20 @@ public class Logger implements Runnable {
 
     public static void RegisterPigeon(BasePigeon pigeon) {
         Logger.pigeon = pigeon;
+    }
+
+    public static void PushSwerveStates(SwerveModuleState[] state, SwerveModuleState[] request) {
+        var size = state.length;
+        var states = new double[size * 2];
+        var requests = new double[size * 2];
+        for(var i=0; i<size; i++) {
+            states[(i * 2)] = state[i].angle.getDegrees();
+            states[(i * 2)+1] = state[i].speedMetersPerSecond;
+            requests[(i * 2)] = request[i].angle.getDegrees();
+            requests[(i * 2)+1] = request[i].speedMetersPerSecond;
+        }
+        SmartDashboard.putNumberArray("Swerve State", states);
+        SmartDashboard.putNumberArray("Swerve Request", requests);
     }
 
     public void run() {
@@ -147,6 +184,7 @@ public class Logger implements Runnable {
             for(int i=0; i<pdpNames.length; i++) {
                 if(pdpNames[i] != null) {
                     currentTable.getEntry("PDP Current " + pdpNames[i]).setDouble(pdp.getCurrent(i));
+                } else {
                 }
             }
             sensorTable.getEntry("PDP Voltage").setDouble(pdp.getVoltage());
@@ -183,9 +221,9 @@ public class Logger implements Runnable {
 
             short[] accel_data = new short[3];
             pigeon.getBiasedAccelerometer(accel_data);
-            sensorTable.getEntry("Pigeon Ax").setDouble(accel_data[0]/16384);
-            sensorTable.getEntry("Pigeon Ay").setDouble(accel_data[1]/16384);
-            sensorTable.getEntry("Pigeon Az").setDouble(accel_data[2]/16384);
+            sensorTable.getEntry("Pigeon Ax").setDouble(accel_data[0]/16384.);
+            sensorTable.getEntry("Pigeon Ay").setDouble(accel_data[1]/16384.);
+            sensorTable.getEntry("Pigeon Az").setDouble(accel_data[2]/16384.);
 
             canStatusTable.getEntry("Pigeon").setString(pigeon.getLastError().name());
 
@@ -223,6 +261,8 @@ public class Logger implements Runnable {
         sensorTable.getEntry("Rio 3.3V Current").setDouble(RobotController.getCurrent3V3());
         sensorTable.getEntry("Rio 5V Current").setDouble(RobotController.getCurrent5V());
         sensorTable.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
+
+        checkClearFaults();
     }
 
     private void readTalon(String name, BaseTalon talon) {
@@ -312,5 +352,42 @@ public class Logger implements Runnable {
             }
         }
         return work.toString();
+    }
+
+    public void checkClearFaults() {
+        var clearFaults = SmartDashboard.getBoolean("Clear Faults", false);
+
+        if(clearFaults == false) {
+            return;
+        }
+        SmartDashboard.putBoolean("Clear Faults", false);
+
+        for (String name : items.keySet()) {
+            var item = items.get(name);
+            if(item instanceof BaseTalon) {
+                var talon = (BaseTalon)item;
+                talon.clearStickyFaults();
+            } else if(item instanceof CANCoder) {
+                var coder = (CANCoder)item;
+                coder.clearStickyFaults();
+            } else if(item instanceof CANSparkMax) {
+                spark = (CANSparkMax)item;
+                spark.clearFaults();
+            } else {
+                //unknown table
+            }
+        }
+
+        if(pdp != null) {
+            pdp.clearStickyFaults();
+        }
+
+        if(ph != null) {
+            ph.clearStickyFaults();
+        }
+
+        if(pigeon != null) {
+            pigeon.clearStickyFaults();
+        }
     }
 }

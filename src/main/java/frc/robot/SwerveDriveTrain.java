@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.livoniawarriors.Logger;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -22,6 +24,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveDriveKinematics kinematics;
     private ISwerveDriveIo hardware;
     private SwerveModulePosition[] swerveStates;
+    private SwerveModuleState[] swerveTargets;
     private Pose2d robotPose;
     private String moduleNames[];
     private double swerveOffsets[];
@@ -41,8 +44,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
         
         //initialize the swerve states
         swerveStates = new SwerveModulePosition[Constants.NUM_WHEELS];
+        swerveTargets = new SwerveModuleState[Constants.NUM_WHEELS];
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel] = new SwerveModulePosition();
+            swerveTargets[wheel] = new SwerveModuleState();
         }
 
         //initialize the swerve offsets
@@ -84,6 +89,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public void periodic() {
         hardware.updateInputs();
+        SwerveModuleState[] currentState = new SwerveModuleState[Constants.NUM_WHEELS];
 
         //read the swerve corner state
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
@@ -93,11 +99,16 @@ public class SwerveDriveTrain implements ISwerveDrive {
             angle = MathUtil.inputModulus(angle, -180, 180);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
 
+            currentState[wheel] = new SwerveModuleState();
+            currentState[wheel].angle = swerveStates[wheel].angle;
+            currentState[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
+
             if(DriverStation.isDisabled()) {
                 wheelPid[wheel].reset();
             }
         }
 
+        Logger.PushSwerveStates(currentState,swerveTargets);
         //display data on SmartDashboard
         for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
             SmartDashboard.putNumber(moduleNames[wheel] + "Calc Angle", swerveStates[wheel].angle.getDegrees());
@@ -148,6 +159,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
                 hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
             }
+            swerveTargets = requestStates;
 
             SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
             SmartDashboard.putNumber(moduleNames[i] + "Command Speed", requestStates[i].speedMetersPerSecond);
@@ -155,6 +167,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     }
 
     public void setWheelCommand(SwerveModuleState[] requestStates) {
+        swerveTargets = requestStates;
         for(int i=0; i<requestStates.length; i++) {
             requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 

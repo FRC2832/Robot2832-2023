@@ -78,15 +78,15 @@ public class Robot extends TimedRobot {
         null,           //"RF Drive",
         null,           //"LF Turn",
         null,           //"LF Drive",
-        "Elbow",
-        "Shoulder",
+        null,           //"Elbow",
+        null,           //"Shoulder",
         null,           //"6",
         null,           //"7",
-        "Intake",
+        null,           //"Intake",
         "Front MPM",
         null,           //"10",
-        "Tail",
-        "Wrist",
+        null,           //"Tail",
+        null,           //"Wrist",
         "Back MPM",
         null,           //"14",
         null,           //"15",
@@ -143,7 +143,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //internal logger class
-        new Logger();
+        var logger = new Logger();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
@@ -212,6 +212,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("StartPos Select", startPosChooser);
         SmartDashboard.putBoolean("Field Oriented", false);
         
+        logger.start();
     }
 
     /**
@@ -228,6 +229,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        //force the sticky faults to clear at Autonomous
+        SmartDashboard.putBoolean("Clear Faults", true);
+
         var alliance = DriverStation.getAlliance();
         AutonomousStartPosition = startPosChooser.getSelected();
 
@@ -330,6 +334,7 @@ public class Robot extends TimedRobot {
         } else {
             opControls = new OperatorControls();
         }
+        
         //Reassigning subsystems and default commands with selected driver profiles
         var pose = odometry.getPose();
         odometry = new Odometry(drive, controls);
