@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,9 +11,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.InterpolatingTreeMap;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
@@ -28,8 +29,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private InterpolatingTreeMap<Double, Double> speedReduction;
     private double gyroOffset = 0;
     private PIDController pidZero = new PIDController(0.1, 0.001, 0);
+    private PIDController[] wheelPid;
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
+        register();
         this.hardware = hSwerveDriveIo;
 
         //initialize the corner locations
@@ -51,6 +54,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         hardware.updateInputs();
         turnOffsets = new double[Constants.NUM_WHEELS];
+        wheelPid = new PIDController[Constants.NUM_WHEELS];
         for(int i=0; i<turnOffsets.length; i++) {
             double offset = (swerveOffsets[i] - hardware.getCornerAbsAngle(i));
             if (offset > 180) {
@@ -59,6 +63,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 offset += 360;
             }
             turnOffsets[i] = offset + hardware.getCornerAngle(i);
+            wheelPid[i] = new PIDController(5,1.8,0);
         }
         gyroOffset = getHeading().getDegrees();
 
@@ -73,7 +78,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         speedReduction = new InterpolatingTreeMap<Double, Double>();
         speedReduction.put(0., 1.);
         speedReduction.put(45., 1.);
-        speedReduction.put(90., 1.0);
+        speedReduction.put(90., 1.);
     }
     
     @Override
@@ -83,9 +88,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //read the swerve corner state
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].distanceMeters = hardware.getCornerDistance(wheel);
-            //double angle = (hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel]) + (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
-            double angle = (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
+
+            double angle = hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel];
+            angle = MathUtil.inputModulus(angle, -180, 180);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
+
+            if(DriverStation.isDisabled()) {
+                wheelPid[wheel].reset();
+            }
         }
 
         //display data on SmartDashboard
@@ -133,16 +143,10 @@ public class SwerveDriveTrain implements ISwerveDrive {
             }
             else {
                 requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
-                //figure out delta angle from the current swerve state
-                var delta = requestStates[i].angle.minus(swerveStates[i].angle);
                 
-                //reduce drive speed based on how far the wheel angle is off
-                var reduction = speedReduction.get(Math.abs(delta.getDegrees()));
-                requestStates[i].speedMetersPerSecond *= reduction;
-
-                //add it to the current hardware motor angle since we control that motor
-                requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
-                hardware.setCornerState(i, requestStates[i]);
+                var volts = -wheelPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
+                hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
+                hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
             }
 
             SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
@@ -150,13 +154,13 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
     }
 
-    public void setWheelCommand(SwerveModuleState[] requests) {
-        for(int i=0; i<requests.length; i++) {
-            //figure out delta angle from the current swerve state
-            var delta = requests[i].angle.minus(swerveStates[i].angle);
-            //add it to the current hardware motor angle since we control that motor
-            requests[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta).times(-1);
-            hardware.setCornerState(i, requests[i]);
+    public void setWheelCommand(SwerveModuleState[] requestStates) {
+        for(int i=0; i<requestStates.length; i++) {
+            requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
+                
+            var volts = -wheelPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
+            hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
+            hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
         }
     }
 

@@ -95,7 +95,9 @@ public class SwerveDriveSim implements ISwerveDriveIo {
             //process drive command
             if(driveCommand[i] == ControlMode.Velocity) {
                 driveSpeed[i] = drivePower[i];
-            } else {
+            } else if(driveCommand[i] == ControlMode.PercentOutput) {
+                driveSpeed[i] = drivePower[i] * Constants.MAX_DRIVETRAIN_SPEED;
+            }else {
                 driveSpeed[i] = 0;
             }
             driveDist[i] += driveSpeed[i] * Constants.LOOP_TIME;
