@@ -25,9 +25,11 @@ public class GrabberMove extends CommandBase{
         if(controls.GrabberSuckRequested().getAsBoolean()){
             grabber.setIntakeVolts(-Constants.IntakeVoltage);// TODO: Determine angle of "UP" position
         }  
-        if(controls.GrabberSpitRequested().getAsBoolean()){
+        else if(controls.GrabberSpitRequested().getAsBoolean()){
             grabber.setIntakeVolts(Constants.IntakeVoltage); // TODO: Determine angle of "DOWN" position
-        }  
+        } else {
+            grabber.setIntakeVolts(0);
+        }
     }
 
 
