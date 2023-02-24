@@ -4,10 +4,7 @@ import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Arm;
 import frc.robot.Constants;
-import frc.robot.GrabberIntake;
-import frc.robot.Intake;
 import frc.robot.Saitek;
 import frc.robot.interfaces.IDriveControls;
 
@@ -67,10 +64,6 @@ public class DriveControls implements IDriveControls {
     @Override
     public JoystickButton TailDownRequested() {
         return new JoystickButton(driveCont, XboxController.Button.kX.value);
-    }
-
-    @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
     }
 
     @Override

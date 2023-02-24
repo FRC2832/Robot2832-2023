@@ -32,6 +32,10 @@ public class Intake extends SubsystemBase {
         return hardware.getPivotAngle();
     }
 
+    public void resetRotations() {
+        hardware.resetRotations();
+    }
+
     public double optimalIntakeAngle(){
         double value;
         if(Robot.getGamePieceMode()) { //pieceMode true is cube
@@ -40,6 +44,6 @@ public class Intake extends SubsystemBase {
         else { //pieceMode false is cone
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
         }
-        return value;
+        return value - 35;  //optimum angle to "snowblower" the piece in
     }
 }

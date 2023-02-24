@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
-import frc.robot.Constants;
 import frc.robot.interfaces.IOperatorControls;
 
 public class ArmManualOverride extends CommandBase {
@@ -22,8 +22,8 @@ public class ArmManualOverride extends CommandBase {
 
     @Override
     public void execute() {
-        shoulder = controls.GetArmShoulderPct() * Constants.NOM_BATTERY_VOLTAGE;
-        elbow = controls.GetArmElbowPct() * Constants.NOM_BATTERY_VOLTAGE;
+        shoulder = controls.GetArmShoulderPct() * RobotController.getBatteryVoltage();
+        elbow = controls.GetArmElbowPct() * RobotController.getBatteryVoltage();
         
         arm.setShoulderMotorVolts(shoulder);
         arm.setElbowMotorVolts(elbow);        

@@ -7,6 +7,7 @@ public interface IIntakeControl {
     void setPivotMotorVolts(double volts);
 
     double getPivotAngle();
+    void resetRotations();
 
     void updateInputs();
 

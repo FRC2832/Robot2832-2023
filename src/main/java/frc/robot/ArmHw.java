@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IArmControl;
 
@@ -91,12 +92,12 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void setShoulderMotorVolts(double volts) {
-        shoulderMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
+        shoulderMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
     }
 
     @Override
     public void setElbowMotorVolts(double volts) {
-        elbowMotor.set(ControlMode.PercentOutput, volts/Constants.NOM_BATTERY_VOLTAGE);
+        elbowMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
     }
 
     @Override

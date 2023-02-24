@@ -82,28 +82,29 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         TalonFXConfiguration allConfigs = new TalonFXConfiguration();
 
         for (CANCoder sensor: absSensor) {
-            sensor.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 250);
+            sensor.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 18);
             sensor.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 250);
         }
 
         for(TalonFX motor : driveMotor) {
-            motor.configFactoryDefault(100);
-            motor.getAllConfigs(allConfigs,100);
+            //motors MUST be reset every powerup!!!
+            motor.configFactoryDefault();
+            motor.getAllConfigs(allConfigs);
             allConfigs.slot0.kP = 0.02;
             allConfigs.slot0.kI = 0.0005;
             allConfigs.slot0.kD = 4;
             allConfigs.slot0.kF = 0.047;
             allConfigs.slot0.integralZone = 200;
-            motor.configAllSettings(allConfigs,100);
+            motor.configAllSettings(allConfigs);
 
             motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
 
         for(TalonFX motor : turnMotor) {
-            motor.configFactoryDefault(100);
-            var error = motor.getAllConfigs(allConfigs,100);
-            System.out.println("Turn Read config: " + error.name());
-            allConfigs.slot1.kP = 0.4;
+            //motors MUST be reset every powerup!!!
+            motor.configFactoryDefault();
+            motor.getAllConfigs(allConfigs);
+            allConfigs.slot1.kP = 0.2;
             allConfigs.slot1.kI = 0.0005;
             allConfigs.slot1.kD = 40;
             allConfigs.slot1.kF = 0;
@@ -111,14 +112,13 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.slot1.allowableClosedloopError = 300;
             allConfigs.motionCruiseVelocity = 20960;
             allConfigs.motionAcceleration = 40960;
-            error = motor.configAllSettings(allConfigs,100);
+            motor.configAllSettings(allConfigs);
             StatorCurrentLimitConfiguration cfg = new StatorCurrentLimitConfiguration();
-            cfg.enable = true;
+            cfg.enable = false;
             cfg.currentLimit = 20;
             cfg.triggerThresholdCurrent = 40;
             motor.configStatorCurrentLimit(cfg);
             motor.selectProfileSlot(1, 0);
-            System.out.println("Turn motor config: " + error.name());
 
             motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
@@ -244,18 +244,6 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public void setCornerState(int wheel, SwerveModuleState swerveModuleState) {
         driveMotor[wheel].set(ControlMode.Velocity, swerveModuleState.speedMetersPerSecond * COUNTS_PER_METER);
         turnMotor[wheel].set(ControlMode.MotionMagic, swerveModuleState.angle.getDegrees() * COUNTS_PER_DEGREE);
-
-        //var counts = SmartDashboard.getNumber("Angle", 0);
-        //turnMotor[3].set(ControlMode.Position, counts * COUNTS_PER_DEGREE);
-        /*double time = Timer.getFPGATimestamp();
-        int active = ((int)time) % 4;
-        if (active == 1) {
-            turnMotor[wheel].set(ControlMode.MusicTone, 440);
-        } else if (active == 2) {
-            turnMotor[wheel].set(ControlMode.MusicTone, 220);
-        } else  {
-            turnMotor[wheel].set(ControlMode.MusicTone, 0);
-        }*/
     }
 
     @Override

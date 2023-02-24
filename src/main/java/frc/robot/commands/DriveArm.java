@@ -1,7 +1,8 @@
 package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
-import frc.robot.Constants;
 import frc.robot.interfaces.IOperatorControls;
 
 public class DriveArm extends CommandBase{
@@ -21,8 +22,8 @@ public class DriveArm extends CommandBase{
 
     @Override
     public void execute() {
-        arm.setElbowMotorVolts(controls.GetArmElbowPct() * Constants.NOM_BATTERY_VOLTAGE);
-        arm.setShoulderMotorVolts(controls.GetArmShoulderPct() * Constants.NOM_BATTERY_VOLTAGE);
+        arm.setElbowMotorVolts(controls.GetArmElbowPct() * RobotController.getBatteryVoltage());
+        arm.setShoulderMotorVolts(controls.GetArmShoulderPct() * RobotController.getBatteryVoltage());
     }
 
     @Override

@@ -4,10 +4,7 @@ import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Arm;
 import frc.robot.Constants;
-import frc.robot.GrabberIntake;
-import frc.robot.Intake;
 import frc.robot.T16000M;
 import frc.robot.interfaces.IDriveControls;
 
@@ -61,10 +58,6 @@ public class LilJaydenDriveControls implements IDriveControls {
     @Override
     public JoystickButton TailDownRequested() {  //driver/operator will use this method
         return new JoystickButton(driveContRight, T16000M.Button.middle.value);
-    }
-
-    @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber) {
     }
 
     @Override

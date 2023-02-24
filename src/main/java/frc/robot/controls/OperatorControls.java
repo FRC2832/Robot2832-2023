@@ -1,15 +1,8 @@
 package frc.robot.controls;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Arm;
-import frc.robot.Constants;
-import frc.robot.GrabberIntake;
-import frc.robot.Intake;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Saitek;
-import frc.robot.commands.ArmAutonPoint;
-import frc.robot.commands.ArmManualOverride;
-import frc.robot.commands.GrabberMove;
-import frc.robot.commands.IntakeMove;
 import frc.robot.interfaces.IOperatorControls;
 
 public class OperatorControls implements IOperatorControls {
@@ -50,23 +43,23 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ShoulderPosRequested() {
-        return new JoystickButton(operCont, Saitek.Button.orangeTopLeft.value);
+    public Trigger ShoulderPosRequested() {
+        return new Trigger(() -> operCont.getOrangeTopLeftButton());
     }
 
     @Override
-    public JoystickButton ShoulderNegRequested() {
-        return new JoystickButton(operCont, Saitek.Button.orangeBottomLeft.value);
+    public Trigger ShoulderNegRequested() {
+        return new Trigger(() -> operCont.getOrangeBottomLeftButton());   
     }
 
     @Override
-    public JoystickButton ElbowPosRequested() {
-        return new JoystickButton(operCont, Saitek.Button.orangeTopRight.value);
+    public Trigger ElbowPosRequested() {
+        return new Trigger(() -> operCont.getOrangeTopRightButton());
     }
 
     @Override
-    public JoystickButton ElbowNegRequested() {
-        return new JoystickButton(operCont, Saitek.Button.orangeBottomRight.value);
+    public Trigger ElbowNegRequested() {
+        return new Trigger(() -> operCont.getOrangeBottomRightButton());
     }
 
     @Override
@@ -132,37 +125,6 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public JoystickButton GrabberSpitRequested() {
         return new JoystickButton(operCont, 20);
-    }
-
-    @Override
-    public double GetGrabberPct() {
-        if(operCont.getRawButton(17)) {
-            return 5.0; //if backwards switch negative
-        } else if (operCont.getRawButton(19)) {
-            return -5.0;
-        } else {
-            return 0.0;
-        }
-    }
-
-    @Override
-    public void initializeButtons(Arm arm, Intake intake, GrabberIntake grabber){
-        ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowPosRequested().whileTrue(new ArmManualOverride(arm, this));
-        ElbowNegRequested().whileTrue(new ArmManualOverride(arm, this));
-        ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
-        ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
-        ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
-        ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        GrabberUpRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberDownRequested().whileTrue(new IntakeMove(this, intake));
-        GrabberSuckRequested().whileTrue(new GrabberMove(this, grabber));
-        GrabberSpitRequested().whileTrue(new GrabberMove(this, grabber));
     }
 
     @Override

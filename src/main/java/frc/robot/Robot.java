@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -37,7 +37,6 @@ import frc.robot.simulation.TailSim;
 public class Robot extends TimedRobot {
     // robot parts
     private CommandScheduler schedule;
-    private static double batVolt;
 
     // robot features
     private ISwerveDrive drive;
@@ -79,15 +78,15 @@ public class Robot extends TimedRobot {
         null,           //"RF Drive",
         null,           //"LF Turn",
         null,           //"LF Drive",
-        "Elbow",
-        "Shoulder",
+        null,           //"Elbow",
+        null,           //"Shoulder",
         null,           //"6",
         null,           //"7",
-        "Intake",
+        null,           //"Intake",
         "Front MPM",
         null,           //"10",
-        "Tail",
-        "Wrist",
+        null,           //"Tail",
+        null,           //"Wrist",
         "Back MPM",
         null,           //"14",
         null,           //"15",
@@ -144,7 +143,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //internal logger class
-        new Logger();
+        var logger = new Logger();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
@@ -190,35 +189,6 @@ public class Robot extends TimedRobot {
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
-        //set the default commands to run
-        drive.setDefaultCommand(new DriveStick(drive, controls));
-        arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
-        tail.setDefaultCommand(new TailMovement(controls, tail));
-        intake.setDefaultCommand(new IntakeMove(opControls, intake));
-
-        // controls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, controls));
-        // controls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, controls));
-        
-        // controls.ArmToPickupGround().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
-        // controls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        // controls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
-        // controls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        // controls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        // controls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        // controls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)); //measure these
-        
-        // controls.GrabberUpRequested().whileTrue(new IntakeMove(controls, intake));
-        // controls.GrabberDownRequested().whileTrue(new IntakeMove(controls, intake));
-
-        // controls.GrabberSuckRequested().whileTrue(new GrabberMove(controls, grabber));
-        // controls.GrabberSpitRequested().whileTrue(new GrabberMove(controls, grabber));
-
-        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode());
-
-        //controls.ChangePieceMode().toggleOnTrue(new ChangeMode()); //whenPressed is deprecated, is there something similar
-
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
         SmartDashboard.putString("Error","Ok");
@@ -242,6 +212,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("StartPos Select", startPosChooser);
         SmartDashboard.putBoolean("Field Oriented", false);
         
+        logger.start();
     }
 
     /**
@@ -258,6 +229,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        //force the sticky faults to clear at Autonomous
+        SmartDashboard.putBoolean("Clear Faults", true);
+
         var alliance = DriverStation.getAlliance();
         AutonomousStartPosition = startPosChooser.getSelected();
 
@@ -302,10 +276,10 @@ public class Robot extends TimedRobot {
 
         Command sequence;
         if (AutonomousStartPosition.equals(kBalence)) {
-            sequence = new SequentialCommandGroup(
-                new DriveToScale(drive),
-                new DriveToBalance(drive)
-            );
+            //spend at max 1 sec straightening the wheels, then drive
+            sequence = new WaitCommand(1).deadlineWith(new MoveWheelsStraight(drive))
+                .andThen(new DriveToScale(drive))
+                .andThen(new DriveToBalance(drive));
         } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
             Pose2d targetPoint;
             double offset;
@@ -348,45 +322,52 @@ public class Robot extends TimedRobot {
             controls = new LilMickeyDriveControls();
         } else if(driverSelected.equals(kJaydenDriver)){
             controls = new LilJaydenDriveControls();
-        } else {}
+        } else {
+            controls = new DriveControls();
+            
+        }
 
         if(operatorSelected.equals(kJamesOperator)){
             opControls = new LilJimmyDriveControls();
         } else if(operatorSelected.equals(kHaydenOperator)){
             opControls = new LilHaydenDriveControls();
-        } else {}
-
-        //initializes buttons to appropriate mappings
-        controls.initializeButtons(arm, intake, grabber);
-        opControls.initializeButtons(arm, intake, grabber);
+        } else {
+            opControls = new OperatorControls();
+        }
         
         //Reassigning subsystems and default commands with selected driver profiles
+        var pose = odometry.getPose();
         odometry = new Odometry(drive, controls);
-        odometry.resetPose(Constants.START_BLUE_LEFT);
+        odometry.resetPose(pose);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
-        tail.setDefaultCommand(new TailMovement(controls, tail));
+        tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
+        grabber.setDefaultCommand(new GrabberMove(opControls, grabber));
+
+        //set all the other commands
+        opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
+        opControls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
+        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
+        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
+        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        opControls.GrabberSuckRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.GrabberSpitRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.ChangePieceMode().onTrue(new ChangeMode());
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        double tailDist = tail.getDistSensor();
-        if(tailDist > 0 && tailDist < 5.3) {
-            tail.setTailAngle(105);
-        }
-        
-        boolean tailUpOverride = SmartDashboard.getBoolean("Distance Sensor Not Working (Override Tail Up)", false);
-        if(tailUpOverride) {
-            tail.setTailAngle(-8);
-        }
-
-        if(arm.getArmXPosition() <= -10) {
-            tail.setTailAngle(105);
-        }
     }
 
     /** This function is called once when the robot is disabled. */
@@ -429,9 +410,4 @@ public class Robot extends TimedRobot {
     public static void setGamePieceMode(boolean mode){
         pieceMode = mode;
     }
-
-    public static double BatteryVoltage() {
-        return batVolt;
-    }
-
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.RobotController;
 
 public class IntakeHw implements IIntakeControl{
     TalonSRX pivotMotor;
@@ -23,7 +24,7 @@ public class IntakeHw implements IIntakeControl{
 
     public IntakeHw(){
         pivotMotor = new TalonSRX(47);
-        pivotMotor.setNeutralMode(NeutralMode.Coast);
+        pivotMotor.setNeutralMode(NeutralMode.Brake);
         pivotEncoder = new DutyCycle(new DigitalInput(2)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there
 
         pid = new PIDController(0.13, 0.005, 0);
@@ -36,15 +37,19 @@ public class IntakeHw implements IIntakeControl{
     
     public void setPivotAngle(double angleDeg){
         double volts = pid.calculate(currentIntakeDeg,angleDeg);
-        pivotMotor.set(ControlMode.PercentOutput, volts / Robot.BatteryVoltage());
+        pivotMotor.set(ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
     }
 
     public void setPivotMotorVolts(double volts){
-        pivotMotor.set(ControlMode.PercentOutput, volts/Robot.BatteryVoltage());
+        pivotMotor.set(ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
     }
 
     public double getPivotAngle() {
         return currentIntakeDeg;
+    }
+
+    public void resetRotations() {
+        rotations = 0;
     }
 
     public void updateInputs(){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
