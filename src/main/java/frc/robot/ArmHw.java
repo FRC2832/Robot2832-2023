@@ -38,8 +38,8 @@ public class ArmHw implements IArmControl {
         elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
 
-        shoulderPid = new PIDController(.3, 0.0, 0);
-        elbowPid = new PIDController(.3, 0.0, 0);
+        shoulderPid = new PIDController(.6, 0.002, 0); // originally kp = .3; ki = 0
+        elbowPid = new PIDController(.6, 0.002, 0);
 
         Logger.RegisterTalon("Shoulder", shoulderMotor);
         Logger.RegisterTalon("Elbow", elbowMotor);

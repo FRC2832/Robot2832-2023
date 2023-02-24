@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
+import frc.robot.Robot;
 import frc.robot.interfaces.IOperatorControls;
 
 
@@ -25,9 +26,14 @@ public class DriveArmToPoint extends CommandBase{
 
     @Override
     public void execute() {
+
         xPos = arm.getArmXPosition();
         zPos = arm.getArmZPosition();
         
+        if(Robot.getGamePieceMode()){ // if cube mode true: lower z by 4
+            zPos -= 4;
+        }
+
         if(controls.GetArmKinXCommand() > 0.5 && !isRunX) {
             xPos += controls.GetArmKinXCommand() + 3;
             isRunX = true;

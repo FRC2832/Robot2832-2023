@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -386,6 +387,15 @@ public class Robot extends TimedRobot {
 
         if(arm.getArmXPosition() <= -10) {
             tail.setTailAngle(105);
+        }
+
+        // if cube mode: call cube LED's 
+        // else (cone mode): call cone LED's
+        if(getGamePieceMode()){
+            LED_controller.send(cmds.cube);
+        }
+        else{
+            LED_controller.send(cmds.cone);
         }
     }
 

@@ -81,8 +81,9 @@ public class Arm implements Subsystem{
         elbow = Math.toDegrees(elbow);
         shoulder = Math.toDegrees(shoulder);
         
-        this.setElbowAngle(elbow);
+        // swapped precedence for arm movement: instead of elbow --> shoulder; shoulder --> elbow
         this.setShoulderAngle(shoulder);
+        this.setElbowAngle(elbow);
     }
 
     public double getArmXPosition(){// 20.416                                         10.156
