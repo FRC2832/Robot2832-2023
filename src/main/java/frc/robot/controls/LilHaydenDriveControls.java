@@ -72,7 +72,7 @@ public class LilHaydenDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupGroundCube(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 18);
+        return new JoystickButton(armCont, 22); //dummy
     }
 
     @Override

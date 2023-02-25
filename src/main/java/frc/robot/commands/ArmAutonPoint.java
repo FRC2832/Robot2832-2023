@@ -3,24 +3,30 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
     private Arm arm;
     private double x, z;
+    private double zOrig;
     private double xError, zError;
 
     
     public ArmAutonPoint(Arm arm, double x, double z) {
         this.arm = arm;
         this.x = x;
-        this.z = z;
+        zOrig = z;
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
-        
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){ // if cube mode true: lower z by 4
+            z = zOrig - 4;
+        } else {
+            z = zOrig;
+        }
     }
 
     @Override

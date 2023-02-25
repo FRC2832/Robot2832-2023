@@ -1,6 +1,7 @@
 package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.GrabberIntake;
+import frc.robot.Robot;
 import frc.robot.interfaces.IOperatorControls;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,12 +22,17 @@ public class GrabberMove extends CommandBase{
 
 
     @Override
-    public void execute() {  
+    public void execute() {
+        var sign = 1;
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE) {
+            sign = -1;
+        }
+        
         if(controls.GrabberSuckRequested().getAsBoolean()){
-            grabber.setIntakeVolts(-Constants.IntakeVoltage);// TODO: Determine angle of "UP" position
+            grabber.setIntakeVolts(-Constants.IntakeVoltage * sign);
         }  
         else if(controls.GrabberSpitRequested().getAsBoolean()){
-            grabber.setIntakeVolts(Constants.IntakeVoltage); // TODO: Determine angle of "DOWN" position
+            grabber.setIntakeVolts(Constants.IntakeVoltage * sign);
         } else {
             grabber.setIntakeVolts(0);
         }
@@ -41,6 +47,6 @@ public class GrabberMove extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        grabber.setIntakeVolts(Constants.IntakeVoltage);
+        grabber.setIntakeVolts(0);
     }
 }
