@@ -44,6 +44,14 @@ public class Intake extends SubsystemBase {
         else { //pieceMode false is cone
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
         }
-        return value - 35;  //optimum angle to "snowblower" the piece in
+
+        //flip offset based on arm position
+        double offset;
+        if(arm.getArmXPosition() > 0) {
+            offset = 35;
+        } else {
+            offset = -35;
+        }
+        return value - offset;  //optimum angle to "snowblower" the piece in
     }
 }
