@@ -95,15 +95,13 @@ public class Robot extends TimedRobot {
         // initialize robot parts and locations where they are
         controls = new DriveControls();
         
-        camera1 = new PhotonCamera("JeVois-A31_Video_Camera");
 
-        
-        
         // initialize robot features
         schedule = CommandScheduler.getInstance();
-        if(false) {
+        if(isReal()) {
             drive = new SwerveDriveTrain(new SwerveDriveHw());
             arm = new Arm(new ArmHw());
+            camera1 = new PhotonCamera("JeVois-A31_Video_Camera");
         } else {
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
