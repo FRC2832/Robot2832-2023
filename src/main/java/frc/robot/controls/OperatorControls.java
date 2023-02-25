@@ -108,6 +108,11 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
+    public JoystickButton ArmToTransitionPoint(){
+        return new JoystickButton(operCont, 21);
+    }
+
+    @Override
     public JoystickButton GrabberUpRequested() {
         return new JoystickButton(operCont, 17);
     }

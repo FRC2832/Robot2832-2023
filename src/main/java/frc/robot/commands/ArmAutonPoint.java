@@ -11,12 +11,14 @@ public class ArmAutonPoint extends CommandBase{
     private double x, z;
     private double zOrig;
     private double xError, zError;
+    private boolean transition; //add transition from L3 to Tail because that is NOT working currently
 
     
     public ArmAutonPoint(Arm arm, double x, double z) {
         this.arm = arm;
         this.x = x;
         zOrig = z;
+        transition = false;
         addRequirements(arm);
     }
 
@@ -27,11 +29,21 @@ public class ArmAutonPoint extends CommandBase{
         } else {
             z = zOrig;
         }
+        if(Math.signum(x) != Math.signum(arm.getArmXPosition())){
+            transition = true;
+        }
     }
 
     @Override
     public void execute() {
-        arm.calcAngles(x, z);
+        if(transition){
+            arm.calcAngles(Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z);
+            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint_X - 3 && arm.getArmXPosition() < Constants.ArmToTransitionPoint_X + 3){
+                transition = false;
+            }
+        } else {
+            arm.calcAngles(x, z);
+        }
     }
 
     @Override

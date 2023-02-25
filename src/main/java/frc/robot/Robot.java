@@ -375,6 +375,7 @@ public class Robot extends TimedRobot {
         opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
         opControls.GrabberSuckRequested().whileTrue(new GrabberMove(opControls, grabber));
         opControls.GrabberSpitRequested().whileTrue(new GrabberMove(opControls, grabber));
         opControls.ChangePieceMode().onTrue(new ChangeMode());
