@@ -88,7 +88,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupGroundCone(){
-        return new JoystickButton(operCont, 16);
+        return new JoystickButton(operCont, XboxController.Button.kA.value);
     }
    
     @Override
@@ -108,17 +108,17 @@ public class LilJimmyDriveControls implements IOperatorControls {
    
     @Override
     public JoystickButton ArmToScoreLow(){ //driver/operator will use this method
-        return new JoystickButton(operCont, XboxController.Button.kA.value);
+        return new JoystickButton(operCont, 16);
     }
    
     @Override
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
-        return new JoystickButton(operCont, XboxController.Button.kX.value);
+        return new JoystickButton(operCont, XboxController.Button.kB.value);
     }
 
     @Override
     public JoystickButton ArmToScoreMiddleFront(){ 
-        return new JoystickButton(operCont, XboxController.Button.kB.value); 
+        return new JoystickButton(operCont, XboxController.Button.kX.value); 
     }
    
     @Override
@@ -147,8 +147,8 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ChangePieceMode() {
-        return new JoystickButton(operCont, XboxController.Button.kLeftStick.value);
+    public Trigger ChangePieceMode() {
+        return new Trigger(() -> operCont.getRightStickButton());
     }
 }
 

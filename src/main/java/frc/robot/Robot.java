@@ -352,6 +352,7 @@ public class Robot extends TimedRobot {
         opControls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
+        opControls.ArmToPickupGroundCone().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         opControls.ArmToPickupGroundCube().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
         opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));

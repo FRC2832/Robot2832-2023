@@ -25,5 +25,5 @@ public interface IOperatorControls {
     Trigger GrabberDownRequested();
     Trigger GrabberSuckRequested();
     Trigger GrabberSpitRequested();
-    JoystickButton ChangePieceMode();
+    Trigger ChangePieceMode();
 }
