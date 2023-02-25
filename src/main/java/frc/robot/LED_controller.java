@@ -3,10 +3,9 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
 public class LED_controller{
-    private SerialPort sp;
+    private static SerialPort sp;
     public LED_controller(){
-        this.sp = new SerialPort(9600, Port.kOnboard);
-
+        LED_controller.sp = new SerialPort(9600, Port.kOnboard);
     }
     
     public enum cmds {
@@ -26,7 +25,7 @@ public class LED_controller{
 
 
 
-public boolean send(cmds prefix){
+public static boolean send(cmds prefix){
 
     String cmd = "";
     switch(prefix){
@@ -60,7 +59,7 @@ public boolean send(cmds prefix){
 
     return true;
 }
-public boolean send(cmds prefix, int num){
+public static boolean send(cmds prefix, int num){
     String cmd = "";
     switch(prefix){
     case Arm:

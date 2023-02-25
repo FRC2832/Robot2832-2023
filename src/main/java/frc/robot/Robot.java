@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -35,6 +36,9 @@ import frc.robot.simulation.TailSim;
  * project.
  */
 public class Robot extends TimedRobot {
+    public static final boolean CUBE_MODE = true;
+    public static final boolean CONE_MODE = false;
+
     // robot parts
     private CommandScheduler schedule;
 
@@ -184,6 +188,7 @@ public class Robot extends TimedRobot {
         grabber = new GrabberIntake();
         intake = new Intake(new IntakeHw(),arm);
         schedule = CommandScheduler.getInstance();
+        new LED_controller();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
@@ -224,6 +229,15 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
+
+        // if cube mode: call cube LED's 
+        // else (cone mode): call cone LED's
+        if(getGamePieceMode() == CUBE_MODE){
+            LED_controller.send(cmds.cube);
+        }
+        else{
+            LED_controller.send(cmds.cone);
+        }
     }
     
     /** This function is called once when autonomous is enabled. */
