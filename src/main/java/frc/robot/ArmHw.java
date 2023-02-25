@@ -39,8 +39,8 @@ public class ArmHw implements IArmControl {
         elbowEncoder = new DutyCycle(new DigitalInput(1));
         brakes = new ArmBrakes();
 
-        shoulderPid = new PIDController(.3, 0.0, 0);
-        elbowPid = new PIDController(.3, 0.0, 0);
+        shoulderPid = new PIDController(.5, 0.002, 0);
+        elbowPid = new PIDController(.5, 0.002, 0);
 
         Logger.RegisterTalon("Shoulder", shoulderMotor);
         Logger.RegisterTalon("Elbow", elbowMotor);
@@ -58,8 +58,8 @@ public class ArmHw implements IArmControl {
         if(delta < 2 && shoulderPIDRan){
             shoulderPIDRan = false;
         }
-        if(Math.abs(volts) > 3){
-            volts = Math.signum(volts) * 3;
+        if(Math.abs(volts) > 4){
+            volts = Math.signum(volts) * 4;
         }
         if(!shoulderPIDRan){
             volts = 0;
@@ -79,8 +79,8 @@ public class ArmHw implements IArmControl {
         if(delta < 2 && elbowPIDRan){
             elbowPIDRan = false;
         }
-        if(Math.abs(volts) > 3){
-            volts = Math.signum(volts) * 3;
+        if(Math.abs(volts) > 4){
+            volts = Math.signum(volts) * 4;
         }
         if(!elbowPIDRan){
             volts = 0;
