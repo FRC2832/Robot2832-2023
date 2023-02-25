@@ -70,11 +70,11 @@ public final class Constants {
     public static final double ARM_ACCEPT_ERROR = 0.5;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
-    public static final double ArmToPickupGround_X = 36;
-    public static final double ArmToPickupGround_Z = -2;
+    public static final double ArmToPickupGround_X = 40.8;
+    public static final double ArmToPickupGround_Z = -3;
 
     public static final double ArmToPickupTail_X = 21;
-    public static final double ArmToPickupTail_Z = 14.6;
+    public static final double ArmToPickupTail_Z = 15;
 
     public static final double ArmToPickupHuman_X = 30;
     public static final double ArmToPickupHuman_Z = 20;
