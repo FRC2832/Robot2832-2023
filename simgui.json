@@ -3,9 +3,15 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/Brakes:": "String Chooser",
+      "/SmartDashboard/ChangeMode": "Command",
       "/SmartDashboard/DriveToPoint": "Command",
+      "/SmartDashboard/Driver Select": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/MoveWheelsStraight": "Command"
+      "/SmartDashboard/MoveWheelsStraight": "Command",
+      "/SmartDashboard/Operator Select": "String Chooser",
+      "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/StartPos Select": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -13,6 +19,16 @@
         "window": {
           "visible": true
         }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
       }
     }
   }
