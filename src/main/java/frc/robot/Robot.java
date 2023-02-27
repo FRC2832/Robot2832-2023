@@ -5,6 +5,8 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
+import org.livoniawarriors.REVDigitBoard;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
     private GrabberIntake grabber;
     private Intake intake;
     private Tail tail;
+    private REVDigitBoard digit;
 
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -189,6 +192,7 @@ public class Robot extends TimedRobot {
         intake = new Intake(new IntakeHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
+        digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
@@ -229,7 +233,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-
+        digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
         if(getGamePieceMode() == CUBE_MODE){
