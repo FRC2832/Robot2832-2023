@@ -42,7 +42,11 @@ public class DriveArmToPoint extends CommandBase{
             isRunZ = false;
         }        
 
-        arm.calcAngles(xPos, zPos);
+        if(isRunX || isRunZ) {
+            arm.calcAngles(xPos, zPos);
+        } else {
+            //no command, don't move the arm
+        }
     }
 
     @Override
