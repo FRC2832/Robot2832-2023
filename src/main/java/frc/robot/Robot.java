@@ -199,12 +199,12 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Error","Ok");
         SmartDashboard.putData(schedule);
 
-        driverChooser.setDefaultOption("Default Settings", kDefaultDriver);        
-        driverChooser.addOption("Mickey", kMickeyDriver); 
+        driverChooser.setDefaultOption("Mickey", kMickeyDriver);        
+        driverChooser.addOption("Programming Settings", kDefaultDriver); 
         driverChooser.addOption("Jayden", kJaydenDriver); 
 
-        operatorChooser.setDefaultOption("Default Settings", kDefaultDriver);      
-        operatorChooser.addOption("James", kJamesOperator);
+        operatorChooser.setDefaultOption("James", kJamesOperator);      
+        operatorChooser.addOption("Programming Settings", kDefaultDriver);
         operatorChooser.addOption("Hayden", kHaydenOperator);
         
         startPosChooser.setDefaultOption("No Obstacles", kNoObstacles);
