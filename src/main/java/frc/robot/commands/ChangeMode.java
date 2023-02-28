@@ -15,7 +15,7 @@ public class ChangeMode extends CommandBase{
 
     @Override
     public void initialize() {
-        
+
     }
 
     @Override
@@ -23,10 +23,10 @@ public class ChangeMode extends CommandBase{
         currentMode = Robot.getGamePieceMode();
         Robot.setGamePieceMode(!currentMode);
         if(currentMode)
-            mode = "Cube!";
-        else
             mode = "Cone!";
-        SmartDashboard.putString("Piece Mode: ", mode);
+        else
+            mode = "Cube!";
+        SmartDashboard.putString("Piece Mode", mode);
     }
 
     @Override
