@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.robot.interfaces.IIntakeControl;
+import frc.robot.interfaces.IPivotControl;
 
 import org.livoniawarriors.Logger;
 
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
 
-public class IntakeHw implements IIntakeControl{
+public class PivotHw implements IPivotControl{
     TalonSRX pivotMotor;
     DutyCycle pivotEncoder;
     double currentIntakeDeg;
@@ -22,7 +22,7 @@ public class IntakeHw implements IIntakeControl{
     double rotations;
     double oldReading;
 
-    public IntakeHw(){
+    public PivotHw(){
         pivotMotor = new TalonSRX(47);
         pivotMotor.setNeutralMode(NeutralMode.Brake);
         pivotEncoder = new DutyCycle(new DigitalInput(2)); //channel is currently 3 on PDP schematic but tail encoder is plugged in there

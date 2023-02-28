@@ -3,16 +3,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.GrabberIntake;
+import frc.robot.Intake;
 
 
 
 public class IntakeForward extends CommandBase{
     
-    private GrabberIntake intake;
+    private Intake intake;
     private Timer timer;
 
-    public IntakeForward(GrabberIntake intake) { 
+    public IntakeForward(Intake intake) { 
         this.intake = intake;
         addRequirements(intake);
     }

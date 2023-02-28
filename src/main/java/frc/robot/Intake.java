@@ -1,57 +1,60 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.interfaces.IIntakeControl;
+import edu.wpi.first.wpilibj.Timer;
+
+import org.livoniawarriors.Logger;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake extends SubsystemBase { 
-    private IIntakeControl hardware;
-    private Arm arm;
-    
-    public Intake(IIntakeControl hardware, Arm arm){
+    private CANSparkMax intakeMotor;
+    private double velocity;
+    private Timer timer;
+
+    public Intake() {
         super();
-        this.hardware = hardware;
-        this.arm = arm;
+        intakeMotor = new CANSparkMax(48,MotorType.kBrushless);
+        intakeMotor.setInverted(true);
+        intakeMotor.setIdleMode(IdleMode.kBrake);
+        timer = new Timer();
+
+        Logger.RegisterCanSparkMax("Intake", intakeMotor);
     }
 
-    @Override
     public void periodic() {
-        hardware.updateInputs();
-        SmartDashboard.putNumber("Optimal Angle", optimalIntakeAngle());
+        SmartDashboard.putNumber("Intake Input Volts", intakeMotor.getBusVoltage());
     }
 
-    public void setPivotAngle(double angleDeg){
-        hardware.setPivotAngle(angleDeg);
+    public void setIntakeVolts(double volts) {
+        intakeMotor.setVoltage(volts);
     }
-
-    public void setPivotMotorVolts(double volts){
-        hardware.setPivotMotorVolts(volts);
-    }
-
-    public double getPivotAngle(){
-        return hardware.getPivotAngle();
-    }
-
-    public void resetRotations() {
-        hardware.resetRotations();
-    }
-
-    public double optimalIntakeAngle(){
-        double value;
-        if(Robot.getGamePieceMode()) { //pieceMode true is cube
-            value =  arm.getElbowAngle() + arm.getShoulderAngle();
-        }
-        else { //pieceMode false is cone
-            value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
-        }
-
-        //flip offset based on arm position
-        double offset;
-        if(arm.getArmXPosition() > 0) {
-            offset = 35;
+    
+    public void Grab(boolean forward) {
+        velocity = intakeMotor.getEncoder().getVelocity();
+        SmartDashboard.putNumber("Intake Velocity", velocity);
+        
+        timer.start();
+        if(timer.hasElapsed(1.0)) {
+            intakeOff();
+            timer.stop();
         } else {
-            offset = -35;
+            if (forward) {
+                setIntakeVolts(Constants.IntakeVoltage);
+            } else {
+                setIntakeVolts(-1 * Constants.IntakeVoltage);
+            }
         }
-        return value - offset;  //optimum angle to "snowblower" the piece in
+    }
+
+    public void intakeOff(){
+        setIntakeVolts(0.0);
+    }
+
+    public void resetTimer() {
+        timer.reset();
     }
 }
