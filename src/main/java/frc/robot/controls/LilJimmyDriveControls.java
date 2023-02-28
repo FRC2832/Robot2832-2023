@@ -142,18 +142,18 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
-    public Trigger GrabberSuckRequested() { //driver/operator will use this method
+    public Trigger IntakeSuckRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getRightTriggerAxis() > Constants.STICK_DEADBAND);
     }
 
     @Override
-    public Trigger GrabberSpitRequested() { //driver/operator will use this method
+    public Trigger IntakeSpitRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getLeftTriggerAxis() > Constants.STICK_DEADBAND);
     }
 
     @Override
     public Trigger ChangePieceMode() {
-        return new Trigger(() -> operCont.getRightStickButton());
+        return new Trigger(() -> operCont.getLeftStickButton());
     }
 }
 

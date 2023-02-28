@@ -27,6 +27,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     //measuring the robot, we got 13899 counts/rev, theoretical is 13824 counts/rev (L2 gearset at 6.75:1 ratio)
     //needs to be scaled * 39.37 (in/m) / (4"*Pi wheel diameter) / 10 (units per 100ms)
     private final double COUNTS_PER_METER = 4331.1;
+    private final double DIST_PER_METER = 43311;
 
     //motors and sensors
     private TalonFX turnMotor[];
@@ -96,6 +97,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.slot0.kF = 0.047;
             allConfigs.slot0.integralZone = 200;
             motor.configAllSettings(allConfigs);
+            motor.setSelectedSensorPosition(0);
 
             motor.setStatusFramePeriod(StatusFrame.Status_1_General, 40);
         }
@@ -155,6 +157,11 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         Logger.RegisterSensor("RL Turn Pos", () -> getCornerAngle(ISwerveDrive.RL));
         Logger.RegisterSensor("RR Turn Pos", () -> getCornerAngle(ISwerveDrive.RR));
 
+        Logger.RegisterSensor("FL Drive Dist", () -> getCornerDistance(ISwerveDrive.FL));
+        Logger.RegisterSensor("FR Drive Dist", () -> getCornerDistance(ISwerveDrive.FR));
+        Logger.RegisterSensor("RL Drive Dist", () -> getCornerDistance(ISwerveDrive.RL));
+        Logger.RegisterSensor("RR Drive Dist", () -> getCornerDistance(ISwerveDrive.RR));
+
         Logger.RegisterPigeon(pigeon);
     }
 
@@ -165,7 +172,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
             absSensorValue[i] = absSensor[i].getAbsolutePosition();
             driveWheelVelocity[i] = driveMotor[i].getSelectedSensorVelocity() / COUNTS_PER_METER;
-            driveWheelDistance[i] = driveMotor[i].getSelectedSensorPosition() / COUNTS_PER_METER;
+            driveWheelDistance[i] = driveMotor[i].getSelectedSensorPosition() / DIST_PER_METER;
             turnMotorAngle[i] = -turnMotor[i].getSelectedSensorPosition() / COUNTS_PER_DEGREE;
         }
     }

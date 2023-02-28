@@ -24,7 +24,7 @@ public interface IOperatorControls {
     JoystickButton ArmToTransitionPoint();
     Trigger GrabberUpRequested();
     Trigger GrabberDownRequested();
-    Trigger GrabberSuckRequested();
-    Trigger GrabberSpitRequested();
+    Trigger IntakeSuckRequested();
+    Trigger IntakeSpitRequested();
     Trigger ChangePieceMode();
 }

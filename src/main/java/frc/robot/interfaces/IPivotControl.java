@@ -1,6 +1,6 @@
 package frc.robot.interfaces;
 
-public interface IIntakeControl {
+public interface IPivotControl {
     
     void setPivotAngle(double angleDeg);
 

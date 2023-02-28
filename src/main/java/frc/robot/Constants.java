@@ -102,7 +102,7 @@ public final class Constants {
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
-    public static final double TAIL_LOW_POINT = 0;
+    public static final double TAIL_LOW_POINT = -8;
     public static final double TAIL_HIGH_POINT = 105;
     
     //jumper values for different robots

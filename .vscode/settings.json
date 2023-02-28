@@ -8,12 +8,15 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "bin/": true,
+    "build/": true,
     "**/.classpath": true,
+    "**/.gradle": true,
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
     "**/*~": true
   },
+  "wpilib.skipSelectSimulateExtension": true,
   "java.test.config": [
     {
       "name": "WPIlibUnitTests",

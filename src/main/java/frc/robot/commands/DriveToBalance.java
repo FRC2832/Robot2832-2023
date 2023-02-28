@@ -38,7 +38,8 @@ public class DriveToBalance extends CommandBase {
             drive.SwerveDrive(0, 0, 0, false);
         } else {
             finishedCounts = 0;
-            var speed = Constants.MAX_AUTO_SPEED * Math.abs(pitch) / 28;    //this number is the tuning constant, larger number = slower the robot drives (ideal pitch up the ramp is 12)
+            //28 for our scale, 32 for kettering
+            var speed = Constants.MAX_AUTO_SPEED * Math.abs(pitch) / 31;    //this number is the tuning constant, larger number = slower the robot drives (ideal pitch up the ramp is 12*)
             drive.SwerveDrive(-Math.signum(pitch) * Math.max(speed, Constants.MIN_DRIVER_SPEED), 0, 0, false);
         }
     }
