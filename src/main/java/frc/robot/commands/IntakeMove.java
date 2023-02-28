@@ -1,8 +1,9 @@
 package frc.robot.commands;
-
+import frc.robot.Constants;
 import frc.robot.Intake;
 import frc.robot.Robot;
 import frc.robot.interfaces.IOperatorControls;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -10,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class IntakeMove extends CommandBase{
     private Intake intake;
     private IOperatorControls controls;
-    private double angleOffset;
-    private boolean pieceMode;
 
     public IntakeMove(IOperatorControls controls, Intake intake){
         this.intake = intake;
@@ -25,25 +24,20 @@ public class IntakeMove extends CommandBase{
         pieceMode = Robot.getGamePieceMode();
     }
 
-
     @Override
-    public void execute() {  
-        //reset the offset angle when the piece mode changed
-        boolean newMode = Robot.getGamePieceMode();
-        if(pieceMode != newMode) {
-            angleOffset = 0;
-            intake.resetRotations();
+    public void execute() {
+        var sign = 1;
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE) {
+            sign = -1;
         }
-        pieceMode = newMode;
-
-        if(controls.GrabberUpRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(6);
-            angleOffset = intake.optimalIntakeAngle() - intake.getPivotAngle();
-        } else if(controls.GrabberDownRequested().getAsBoolean()){
-            intake.setPivotMotorVolts(-6);
-            angleOffset = intake.optimalIntakeAngle() - intake.getPivotAngle();
+        
+        if(controls.IntakeSuckRequested().getAsBoolean()){
+            intake.setIntakeVolts(-Constants.IntakeVoltage * sign);
+        }  
+        else if(controls.IntakeSpitRequested().getAsBoolean()){
+            intake.setIntakeVolts(Constants.IntakeVoltage * sign);
         } else {
-            intake.setPivotAngle(intake.optimalIntakeAngle() - angleOffset);
+            intake.setIntakeVolts(0);
         }
         SmartDashboard.putNumber("Target Intake Angle", intake.optimalIntakeAngle() - angleOffset);
     }
@@ -54,8 +48,9 @@ public class IntakeMove extends CommandBase{
         return false;
     }
 
+
     @Override
     public void end(boolean interrupted) {
-        intake.setPivotMotorVolts(0);
+        intake.setIntakeVolts(0);
     }
 }

@@ -4,16 +4,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Arm;
 import frc.robot.Constants;
-import frc.robot.GrabberIntake;
+import frc.robot.Intake;
 import frc.robot.commands.ArmAutonPoint;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class InitAutonScore extends CommandBase {
     private Arm arm;
-    private GrabberIntake intake;
+    private Intake intake;
     private int location;
 
-    public InitAutonScore(Arm arm, GrabberIntake intake, int location) {
+    public InitAutonScore(Arm arm, Intake intake, int location) {
         this.arm = arm;
         this.intake = intake;
         this.location = location;
