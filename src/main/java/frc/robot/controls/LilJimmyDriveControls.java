@@ -132,12 +132,12 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
-    public Trigger GrabberUpRequested() { //driver/operator will use this method
+    public Trigger IntakeUpRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getRightY() > Constants.STICK_DEADBAND);
     }
 
     @Override
-    public Trigger GrabberDownRequested() { //driver/operator will use this method
+    public Trigger IntakeDownRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getRightY() < -Constants.STICK_DEADBAND);
     }
 

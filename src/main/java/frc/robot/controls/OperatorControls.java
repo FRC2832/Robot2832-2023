@@ -113,12 +113,12 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton GrabberUpRequested() {
+    public JoystickButton IntakeUpRequested() {
         return new JoystickButton(operCont, 17);
     }
 
     @Override
-    public JoystickButton GrabberDownRequested() {
+    public JoystickButton IntakeDownRequested() {
         return new JoystickButton(operCont, 19);
     }
 

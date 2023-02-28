@@ -121,12 +121,12 @@ public class LilHaydenDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton GrabberUpRequested() {
+    public JoystickButton IntakeUpRequested() {
         return new JoystickButton(armCont, 23);
     }
 
     @Override
-    public JoystickButton GrabberDownRequested() {
+    public JoystickButton IntakeDownRequested() {
         return new JoystickButton(armCont, 24);
     }
 
