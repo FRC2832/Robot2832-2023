@@ -239,13 +239,19 @@ public class Robot extends TimedRobot {
         digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
-        if(getGamePieceMode() == CUBE_MODE){
-            LED_controller.send(cmds.cube);
+
+        //run once a second
+        if( count % 5 == 0) {
+            if(getGamePieceMode() == CUBE_MODE){
+                LED_controller.send(cmds.cube);
+            }
+            else{
+                LED_controller.send(cmds.cone);
+            }
         }
-        else{
-            LED_controller.send(cmds.cone);
-        }
+        count++;
     }
+    int count = 0;
     
     /** This function is called once when autonomous is enabled. */
     @Override
