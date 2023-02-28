@@ -23,6 +23,7 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public void execute() {
+        //finishedCounts < 50, copy stuff similar to DriveToBalance but with 50 x 20 milliseconds
         intake.Grab(false);
     }
 
