@@ -19,10 +19,7 @@ public class IntakeMove extends CommandBase{
     }
 
     @Override
-    public void initialize() {
-        angleOffset = -intake.getPivotAngle() + intake.optimalIntakeAngle();
-        pieceMode = Robot.getGamePieceMode();
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
@@ -39,15 +36,12 @@ public class IntakeMove extends CommandBase{
         } else {
             intake.setIntakeVolts(0);
         }
-        SmartDashboard.putNumber("Target Intake Angle", intake.optimalIntakeAngle() - angleOffset);
     }
-
 
     @Override
     public boolean isFinished() {
         return false;
     }
-
 
     @Override
     public void end(boolean interrupted) {

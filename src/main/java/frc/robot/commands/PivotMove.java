@@ -20,8 +20,7 @@ public class PivotMove extends CommandBase{
 
     @Override
     public void initialize() {
-        angleOffset = 0;
-        pivot.resetRotations();
+        angleOffset = -pivot.getPivotAngle() + pivot.optimalPivotAngle();
         pieceMode = Robot.getGamePieceMode();
     }
 
