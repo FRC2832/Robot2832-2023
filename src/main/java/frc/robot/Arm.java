@@ -27,8 +27,8 @@ public class Arm implements Subsystem{
         Logger.RegisterSensor("Elbow Angle", () -> getElbowAngle());
 
         shoulderPid = new PIDController(.1, 0.002, 0);
-        elbowPid = new ProfiledPIDController(.5, 0.002, 0,
-            new Constraints(120, 85));  //units are in deg/s and deg/s^2
+        elbowPid = new ProfiledPIDController(.2, 0.002, 0,
+            new Constraints(120, 120));  //units are in deg/s and deg/s^2
         elbowPid.setTolerance(2);
         elbowPid.reset(getElbowAngle());
     }
@@ -65,7 +65,7 @@ public class Arm implements Subsystem{
     public void setElbowAngle(double angleDeg) {
         elbowPid.setGoal(angleDeg);
         double ff = hardware.getFeedForward(getShoulderAngle());
-        double volts = elbowPid.calculate(getElbowAngle()) + ff;
+        double volts = -elbowPid.calculate(getElbowAngle()) + ff;
 
         //if(elbowPid.atSetpoint()){
         //    volts = 0;
