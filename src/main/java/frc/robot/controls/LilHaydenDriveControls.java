@@ -116,22 +116,22 @@ public class LilHaydenDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton GrabberUpRequested() {
+    public JoystickButton IntakeUpRequested() {
         return new JoystickButton(armCont, 23);
     }
 
     @Override
-    public JoystickButton GrabberDownRequested() {
+    public JoystickButton IntakeDownRequested() {
         return new JoystickButton(armCont, 24);
     }
 
     @Override
-    public JoystickButton GrabberSuckRequested() { //driver/operator will use this method
+    public JoystickButton IntakeSuckRequested() { //driver/operator will use this method
         return new JoystickButton(armCont, 26); //technically he wanted this button to be for cubes, 24 to intake cones
     }
 
     @Override
-    public JoystickButton GrabberSpitRequested() { //driver/operator will use this method
+    public JoystickButton IntakeSpitRequested() { //driver/operator will use this method
         return new JoystickButton(armCont, 27); //this should intake cones if he never switches game piece mode
     }
 

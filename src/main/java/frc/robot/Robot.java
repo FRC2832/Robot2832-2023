@@ -50,8 +50,8 @@ public class Robot extends TimedRobot {
     public static Odometry odometry;
     private IDriveControls controls;
     private IOperatorControls opControls;
-    private GrabberIntake grabber;
     private Intake intake;
+    private Pivot pivot;
     private Tail tail;
     private REVDigitBoard digit;
 
@@ -189,8 +189,8 @@ public class Robot extends TimedRobot {
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             SmartDashboard.putString("Robot", "Real");
         }
-        grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw(),arm);
+        intake = new Intake();
+        pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
         digit = new REVDigitBoard();
@@ -365,8 +365,8 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
+        pivot.setDefaultCommand(new PivotMove(opControls, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
-        grabber.setDefaultCommand(new GrabberMove(opControls, grabber));
 
         //set all the other commands
         opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
@@ -382,8 +382,8 @@ public class Robot extends TimedRobot {
         opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        opControls.GrabberSuckRequested().whileTrue(new GrabberMove(opControls, grabber));
-        opControls.GrabberSpitRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
+        opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().onTrue(new ChangeMode());
     }
 
