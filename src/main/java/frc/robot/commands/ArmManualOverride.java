@@ -26,7 +26,8 @@ public class ArmManualOverride extends CommandBase {
         elbow = controls.GetArmElbowPct() * RobotController.getBatteryVoltage();
         
         arm.setShoulderMotorVolts(shoulder);
-        arm.setElbowMotorVolts(elbow);        
+        arm.setElbowMotorVolts(elbow);
+        arm.resetPids();
     }
 
     @Override

@@ -250,6 +250,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        drive.setDriveMotorBrakeMode(true);
+        drive.setTurnMotorBrakeMode(true);
+        
         //force the sticky faults to clear at Autonomous
         SmartDashboard.putBoolean("Clear Faults", true);
 
