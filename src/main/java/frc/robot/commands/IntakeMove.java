@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.Intake;
 import frc.robot.Robot;
 import frc.robot.interfaces.IOperatorControls;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -20,8 +21,7 @@ public class IntakeMove extends CommandBase{
 
     @Override
     public void initialize() {
-        angleOffset = 0;
-        intake.resetRotations();
+        angleOffset = -intake.getPivotAngle() + intake.optimalIntakeAngle();
         pieceMode = Robot.getGamePieceMode();
     }
 
@@ -45,6 +45,7 @@ public class IntakeMove extends CommandBase{
         } else {
             intake.setPivotAngle(intake.optimalIntakeAngle() - angleOffset);
         }
+        SmartDashboard.putNumber("Target Intake Angle", intake.optimalIntakeAngle() - angleOffset);
     }
 
 
