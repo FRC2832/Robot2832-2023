@@ -94,6 +94,11 @@ public final class Constants {
     public static final double ArmToScoreTop_X = -40;
     public static final double ArmToScoreTop_Z = 42;
 
+    public static final double ArmToTransitionPoint_X = -3;
+    public static final double ArmToTransitionPoint_Z = 20;
+    public static final double ArmToTransitionPoint2_X = 5;
+    public static final double ArmToTransitionPoint2_Z = 30;
+
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;

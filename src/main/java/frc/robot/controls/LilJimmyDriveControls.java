@@ -127,6 +127,11 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
+    public JoystickButton ArmToTransitionPoint(){
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
+    }
+
+    @Override
     public Trigger IntakeUpRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getRightY() > Constants.STICK_DEADBAND);
     }
