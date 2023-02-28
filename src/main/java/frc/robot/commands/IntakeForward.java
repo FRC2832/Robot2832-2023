@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.GrabberIntake;
+import frc.robot.Intake;
 
 public class IntakeForward extends CommandBase{
-    
-    private GrabberIntake intake;
     private int finishedCounts;
+    private Intake intake;
 
-    public IntakeForward(GrabberIntake intake) { 
+    public IntakeForward(Intake intake) { 
         this.intake = intake;
         addRequirements(intake);
     }

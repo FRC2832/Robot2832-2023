@@ -5,6 +5,8 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
+import org.livoniawarriors.REVDigitBoard;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -27,6 +29,7 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 import frc.robot.simulation.TailSim;
+import frc.robot.commands.ChangeMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,9 +50,10 @@ public class Robot extends TimedRobot {
     public static Odometry odometry;
     private IDriveControls controls;
     private IOperatorControls opControls;
-    private GrabberIntake grabber;
     private Intake intake;
+    private Pivot pivot;
     private Tail tail;
+    private REVDigitBoard digit;
 
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -186,26 +190,29 @@ public class Robot extends TimedRobot {
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             SmartDashboard.putString("Robot", "Real");
         }
-        grabber = new GrabberIntake();
-        intake = new Intake(new IntakeHw(),arm);
+        intake = new Intake();
+        pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
+        digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
+
+        SmartDashboard.putData(new ChangeMode());
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
         SmartDashboard.putString("Error","Ok");
         SmartDashboard.putData(schedule);
 
-        driverChooser.setDefaultOption("Default Settings", kDefaultDriver);        
-        driverChooser.addOption("Mickey", kMickeyDriver); 
+        driverChooser.addOption("Default Settings", kDefaultDriver);        
+        driverChooser.setDefaultOption("Mickey", kMickeyDriver); 
         driverChooser.addOption("Jayden", kJaydenDriver); 
 
-        operatorChooser.setDefaultOption("Default Settings", kDefaultDriver);      
-        operatorChooser.addOption("James", kJamesOperator);
+        operatorChooser.addOption("Default Settings", kDefaultDriver);      
+        operatorChooser.setDefaultOption("James", kJamesOperator);
         operatorChooser.addOption("Hayden", kHaydenOperator);
         
         startPosChooser.setDefaultOption("No Obstacles", kNoObstacles);
@@ -231,7 +238,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-
+        digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
         if(getGamePieceMode() == CUBE_MODE){
@@ -245,6 +252,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        drive.setDriveMotorBrakeMode(true);
+        drive.setTurnMotorBrakeMode(true);
+        
         //force the sticky faults to clear at Autonomous
         SmartDashboard.putBoolean("Clear Faults", true);
 
@@ -373,8 +383,8 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
+        pivot.setDefaultCommand(new PivotMove(opControls, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
-        grabber.setDefaultCommand(new GrabberMove(opControls, grabber));
 
         //set all the other commands
         opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
@@ -390,8 +400,9 @@ public class Robot extends TimedRobot {
         opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        opControls.GrabberSuckRequested().whileTrue(new GrabberMove(opControls, grabber));
-        opControls.GrabberSpitRequested().whileTrue(new GrabberMove(opControls, grabber));
+        opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
+        opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
+        opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().onTrue(new ChangeMode());
     }
 
