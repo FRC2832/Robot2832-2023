@@ -148,7 +148,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public Trigger ChangePieceMode() {
-        return new Trigger(() -> operCont.getRightStickButton());
+        return new Trigger(() -> operCont.getLeftStickButton());
     }
 }
 
