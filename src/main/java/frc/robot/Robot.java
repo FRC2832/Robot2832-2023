@@ -29,6 +29,7 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 import frc.robot.simulation.TailSim;
+import frc.robot.commands.ChangeMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -197,6 +198,8 @@ public class Robot extends TimedRobot {
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
+
+        SmartDashboard.putData(new ChangeMode());
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
