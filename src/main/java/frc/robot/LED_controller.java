@@ -52,11 +52,7 @@ public static boolean send(cmds prefix){
         break;
     }
 
-    sp.writeString(cmd+"/n");
-    
-
-
-
+    sp.writeString(cmd+"\r\n");
     return true;
 }
 public static boolean send(cmds prefix, int num){
@@ -85,7 +81,7 @@ public static boolean send(cmds prefix, int num){
         break;
     }
 
-    sp.writeString(cmd+Integer.toString(num)+"/n");
+    sp.writeString(cmd+Integer.toString(num)+"\r\n");
     return true;
 }
 }

@@ -48,7 +48,7 @@ public final class Constants {
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
     public static final double MAX_AUTO_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
-    public static final double MAX_DRIVER_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
+    public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sed) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
 
@@ -91,8 +91,9 @@ public final class Constants {
     public static final double ArmToScoreMiddleFront_X = 50;
     public static final double ArmToScoreMiddleFront_Z = 30;
 
+    //level 3 back
     public static final double ArmToScoreTop_X = -40;
-    public static final double ArmToScoreTop_Z = 42;
+    public static final double ArmToScoreTop_Z = 44;
 
     public static final double ArmToTransitionPoint_X = -3;
     public static final double ArmToTransitionPoint_Z = 50;
@@ -102,7 +103,7 @@ public final class Constants {
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
-    public static final double TAIL_LOW_POINT = -8;
+    public static final double TAIL_LOW_POINT = -18;
     public static final double TAIL_HIGH_POINT = 105;
     
     //jumper values for different robots

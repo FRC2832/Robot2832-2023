@@ -37,7 +37,7 @@ public class DriveStick extends CommandBase {
     @Override
     public void execute() {
         boolean fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
-        boostSpeed = SmartDashboard.getNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
+        boostSpeed = SmartDashboard.getNumber("Boost Speed", 4);
         turtleSpeed = SmartDashboard.getNumber("Turtle Speed", 1);
         turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 4);
         

@@ -1,10 +1,10 @@
 package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.Intake;
+import frc.robot.LED_controller;
 import frc.robot.Robot;
+import frc.robot.LED_controller.cmds;
 import frc.robot.interfaces.IOperatorControls;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -33,6 +33,7 @@ public class IntakeMove extends CommandBase{
         }  
         else if(controls.IntakeSpitRequested().getAsBoolean()){
             intake.setIntakeVolts(Constants.IntakeVoltage * sign);
+            LED_controller.send(cmds.lightning);
         } else {
             intake.setIntakeVolts(0);
         }
