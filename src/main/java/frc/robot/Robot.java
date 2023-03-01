@@ -325,11 +325,11 @@ public class Robot extends TimedRobot {
 
             sequence = new DriveToPoint(drive,odometry,targetPoint);
         } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
-            if(CONE_MODE){
+            if(getGamePieceMode() == CONE_MODE){
                 sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
                     .andThen(new IntakeForward(intake))
                     .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-            }else if(CUBE_MODE){
+            } else {
                 sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
                     .andThen(new IntakeBackward(intake))
                     .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
