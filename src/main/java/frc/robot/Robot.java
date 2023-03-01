@@ -139,8 +139,9 @@ public class Robot extends TimedRobot {
     
     //Autonomus Chooser
     private static final String kNoObstacles = "No Obstacles";
-    private static final String kBalence = "Scale";
+    private static final String kBalance = "Scale";
     private static final String kCord = "Cord";
+    private static final String kL3Score = "L3 Score";
     private static final String kDoNothing = "Do Nothing";
     private String AutonomousStartPosition;
     private final SendableChooser<String> startPosChooser = new SendableChooser<>();;
@@ -215,8 +216,9 @@ public class Robot extends TimedRobot {
         operatorChooser.addOption("Hayden", kHaydenOperator);
         
         startPosChooser.addOption("No Obstacles", kNoObstacles);
-        startPosChooser.setDefaultOption("Scale", kBalence);
+        startPosChooser.setDefaultOption("Scale", kBalance);
         startPosChooser.addOption("Cord", kCord);
+        startPosChooser.addOption("L3 Score Left", kL3Score);
         startPosChooser.addOption("Do Nothing", kDoNothing);
 
         SmartDashboard.putData("Driver Select", driverChooser);
@@ -289,11 +291,14 @@ public class Robot extends TimedRobot {
             if(AutonomousStartPosition.equals(kNoObstacles)){
                 startPosition = Constants.START_BLUE_LEFT;
             }
-            else if(AutonomousStartPosition.equals(kBalence)){
+            else if(AutonomousStartPosition.equals(kBalance)){
                 startPosition = Constants.START_BLUE_MIDDLE;
             }
             else if(AutonomousStartPosition.equals(kCord)){
                 startPosition = Constants.START_BLUE_RIGHT;
+            } 
+            else if(AutonomousStartPosition.equals(kL3Score)){
+                startPosition = Constants.START_BLUE_LEFT;
             }
             else{
                 SmartDashboard.putString("Error", "No Position");
@@ -303,11 +308,14 @@ public class Robot extends TimedRobot {
             if(AutonomousStartPosition.equals(kNoObstacles)){
                 startPosition = Constants.START_RED_LEFT;
             }
-            else if(AutonomousStartPosition.equals(kBalence)){
+            else if(AutonomousStartPosition.equals(kBalance)){
                 startPosition = Constants.START_RED_MIDDLE;
             }
             else if(AutonomousStartPosition.equals(kCord)){
                 startPosition = Constants.START_RED_RIGHT;
+            }
+            else if(AutonomousStartPosition.equals(kL3Score)){
+                startPosition = Constants.START_RED_LEFT;
             }
             else{
                 SmartDashboard.putString("Error", "No Position");
@@ -325,7 +333,8 @@ public class Robot extends TimedRobot {
         schedule.cancelAll();
 
         Command sequence;
-        if (AutonomousStartPosition.equals(kBalence)) {
+
+        if (AutonomousStartPosition.equals(kBalance)) {
             //spend at max 1 sec straightening the wheels, then drive
             sequence = new WaitCommand(1).deadlineWith(new MoveWheelsStraight(drive))
                 .andThen(new DriveToScale(drive))
@@ -341,6 +350,16 @@ public class Robot extends TimedRobot {
             targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
 
             sequence = new DriveToPoint(drive,odometry,targetPoint);
+        } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
+            if(getGamePieceMode() == CONE_MODE){
+                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
+                    .andThen(new IntakeForward(intake))
+                    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+            } else {
+                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
+                    .andThen(new IntakeBackward(intake))
+                    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+            }
         } else {
             sequence = new MoveWheelsStraight(drive);
         }
