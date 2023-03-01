@@ -69,15 +69,12 @@ public class LilMickeyDriveControls implements IDriveControls {
         return driveCont.getLeftTriggerAxis();
     }
 
-    @Override
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(0) == 6) {
-            if(DriverStation.getStickButtonCount(0) >= 12) {
+            if(DriverStation.getStickButtonCount(0) >= 10) {
                 return true;
             }
         }
         return false;
     }
-
-    
 }

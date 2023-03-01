@@ -146,10 +146,9 @@ public class LilHaydenDriveControls implements IOperatorControls {
         return new JoystickButton(armCont, 21);
     }
 
-    @Override
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(2) == 6) {
-            if(DriverStation.getStickButtonCount(2) ==16) {
+            if(DriverStation.getStickButtonCount(2) == 26) {
                 return true;
             }
         }

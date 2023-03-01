@@ -77,8 +77,7 @@ public class DriveControls implements IDriveControls {
         return driveCont.getLeftTriggerAxis();
     }
 
-    @Override
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(0) == 6) {
             if(DriverStation.getStickButtonCount(0) >= 12) {
                 return true;
