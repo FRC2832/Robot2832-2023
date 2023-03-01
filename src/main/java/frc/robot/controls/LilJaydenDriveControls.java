@@ -79,8 +79,7 @@ public class LilJaydenDriveControls implements IDriveControls {
         }
     }
 
-    @Override
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(0) == 4 && DriverStation.getStickAxisCount(1) == 4) {
             if(DriverStation.getStickButtonCount(0) == 16 && DriverStation.getStickButtonCount(1) == 16) {
                 return true;

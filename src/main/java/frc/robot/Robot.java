@@ -245,32 +245,6 @@ public class Robot extends TimedRobot {
         else{
             LED_controller.send(cmds.cone);
         }
-
-        driverSelected = driverChooser.getSelected();
-        operatorSelected = operatorChooser.getSelected();
-
-        if(driverSelected.equals(kMickeyDriver)){
-            LilMickeyDriveControls Mickey = new LilMickeyDriveControls();
-            SmartDashboard.putBoolean("Controller Check", Mickey.checkController());
-        } else if(driverSelected.equals(kJaydenDriver)){
-            LilJaydenDriveControls Jayden = new LilJaydenDriveControls();
-            SmartDashboard.putBoolean("Controller Check", Jayden.checkController());
-        } else {
-            DriveControls generalDriverControl = new DriveControls();
-            SmartDashboard.putBoolean("Controller Check", generalDriverControl.checkController());
-            
-        }
-
-        if(operatorSelected.equals(kJamesOperator)){
-            LilJimmyDriveControls James = new LilJimmyDriveControls();
-            SmartDashboard.putBoolean("Controller Check", James.checkController());
-        } else if(operatorSelected.equals(kHaydenOperator)){
-            LilHaydenDriveControls Hayden = new LilHaydenDriveControls();
-            SmartDashboard.putBoolean("Controller Check", Hayden.checkController());
-        } else {
-            OperatorControls generalOpControl = new OperatorControls();
-            SmartDashboard.putBoolean("Controller Check", generalOpControl.checkController());
-        }
     }
     
     /** This function is called once when autonomous is enabled. */
@@ -432,6 +406,28 @@ public class Robot extends TimedRobot {
     /** This function is called periodically when disabled. */
     @Override
     public void disabledPeriodic() {
+        //check if the controllers are connected well
+        driverSelected = driverChooser.getSelected();
+        operatorSelected = operatorChooser.getSelected();
+
+        boolean valid;
+        if(driverSelected.equals(kMickeyDriver)){
+            valid = LilMickeyDriveControls.checkController();
+        } else if(driverSelected.equals(kJaydenDriver)){
+            valid = LilJaydenDriveControls.checkController();
+        } else {
+            valid = DriveControls.checkController();
+        }
+        SmartDashboard.putBoolean("Driver Check", valid);
+
+        if(operatorSelected.equals(kJamesOperator)){
+            valid = LilJimmyDriveControls.checkController();
+        } else if(operatorSelected.equals(kHaydenOperator)){
+            valid = LilHaydenDriveControls.checkController();
+        } else {
+            valid = OperatorControls.checkController();
+        }
+        SmartDashboard.putBoolean("Operator Check", valid);
     }
 
     /** This function is called once when test mode is enabled. */

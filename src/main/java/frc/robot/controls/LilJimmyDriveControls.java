@@ -157,10 +157,9 @@ public class LilJimmyDriveControls implements IOperatorControls {
         return new Trigger(() -> operCont.getLeftStickButton());
     }
 
-    @Override
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(2) == 6) {
-            if(DriverStation.getStickButtonCount(2) >= 12) {
+            if(DriverStation.getStickButtonCount(2) >= 10) {
                 return true;
             }
         }

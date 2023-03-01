@@ -138,9 +138,9 @@ public class OperatorControls implements IOperatorControls {
         return new JoystickButton(operCont, Saitek.Button.pinkTopRight.value);        
     }
 
-    public boolean checkController() {
+    public static boolean checkController() {
         if(DriverStation.getStickAxisCount(2) == 6) {
-            if(DriverStation.getStickButtonCount(2) >= 12) {
+            if(DriverStation.getStickButtonCount(2) >= 10) {
                 return true;
             }
         }
