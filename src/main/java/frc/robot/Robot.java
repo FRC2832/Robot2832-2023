@@ -215,8 +215,8 @@ public class Robot extends TimedRobot {
         operatorChooser.setDefaultOption("James", kJamesOperator);
         operatorChooser.addOption("Hayden", kHaydenOperator);
         
-        startPosChooser.setDefaultOption("No Obstacles", kNoObstacles);
-        startPosChooser.addOption("Scale", kBalance);
+        startPosChooser.addOption("No Obstacles", kNoObstacles);
+        startPosChooser.setDefaultOption("Scale", kBalance);
         startPosChooser.addOption("Cord", kCord);
         startPosChooser.addOption("L3 Score Left", kL3Score);
         startPosChooser.addOption("Do Nothing", kDoNothing);
@@ -326,9 +326,9 @@ public class Robot extends TimedRobot {
             sequence = new DriveToPoint(drive,odometry,targetPoint);
         } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
             if(CONE_MODE){
-                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)).andThen(new IntakeBackward(grabber)).andThen(new ArmAutonPoint(this.arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)).andThen(new IntakeBackward(intake)).andThen(new ArmAutonPoint(this.arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
             }else if(CUBE_MODE){
-                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)).andThen(new IntakeForward(grabber)).andThen(new ArmAutonPoint(this.arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
+                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)).andThen(new IntakeForward(intake)).andThen(new ArmAutonPoint(this.arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
             }
         } else {
             sequence = new MoveWheelsStraight(drive);
