@@ -7,7 +7,6 @@ package frc.robot;
 import org.livoniawarriors.Logger;
 import org.livoniawarriors.REVDigitBoard;
 
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
