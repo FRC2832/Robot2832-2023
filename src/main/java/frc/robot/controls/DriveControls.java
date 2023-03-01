@@ -2,6 +2,7 @@ package frc.robot.controls;
 
 import org.livoniawarriors.UtilFunctions;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
@@ -75,4 +76,15 @@ public class DriveControls implements IDriveControls {
     public double GetPercentLeftTriggerAxis() {
         return driveCont.getLeftTriggerAxis();
     }
+
+    @Override
+    public boolean checkController() {
+        if(DriverStation.getStickAxisCount(0) == 6) {
+            if(DriverStation.getStickButtonCount(0) >= 12) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.interfaces.IOperatorControls;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class LilJimmyDriveControls implements IOperatorControls {
     private XboxController operCont;
@@ -154,6 +155,16 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public Trigger ChangePieceMode() {
         return new Trigger(() -> operCont.getLeftStickButton());
+    }
+
+    @Override
+    public boolean checkController() {
+        if(DriverStation.getStickAxisCount(2) == 6) {
+            if(DriverStation.getStickButtonCount(2) >= 12) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

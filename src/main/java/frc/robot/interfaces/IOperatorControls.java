@@ -27,4 +27,5 @@ public interface IOperatorControls {
     Trigger IntakeSuckRequested();
     Trigger IntakeSpitRequested();
     Trigger ChangePieceMode();
+    boolean checkController();
 }

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Saitek;
 import frc.robot.interfaces.IOperatorControls;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class OperatorControls implements IOperatorControls {
     private Saitek operCont;
@@ -135,5 +136,14 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(operCont, Saitek.Button.pinkTopRight.value);        
+    }
+
+    public boolean checkController() {
+        if(DriverStation.getStickAxisCount(2) == 6) {
+            if(DriverStation.getStickButtonCount(2) >= 12) {
+                return true;
+            }
+        }
+        return false;
     }
 }

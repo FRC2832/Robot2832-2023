@@ -13,4 +13,5 @@ public interface IDriveControls {
     boolean IsFieldOrientedResetRequested();
     JoystickButton TailUpRequested();
     JoystickButton TailDownRequested();
+    boolean checkController();
 }

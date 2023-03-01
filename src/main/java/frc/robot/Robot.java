@@ -245,6 +245,32 @@ public class Robot extends TimedRobot {
         else{
             LED_controller.send(cmds.cone);
         }
+
+        driverSelected = driverChooser.getSelected();
+        operatorSelected = operatorChooser.getSelected();
+
+        if(driverSelected.equals(kMickeyDriver)){
+            LilMickeyDriveControls Mickey = new LilMickeyDriveControls();
+            SmartDashboard.putBoolean("Controller Check", Mickey.checkController());
+        } else if(driverSelected.equals(kJaydenDriver)){
+            LilJaydenDriveControls Jayden = new LilJaydenDriveControls();
+            SmartDashboard.putBoolean("Controller Check", Jayden.checkController());
+        } else {
+            DriveControls generalDriverControl = new DriveControls();
+            SmartDashboard.putBoolean("Controller Check", generalDriverControl.checkController());
+            
+        }
+
+        if(operatorSelected.equals(kJamesOperator)){
+            LilJimmyDriveControls James = new LilJimmyDriveControls();
+            SmartDashboard.putBoolean("Controller Check", James.checkController());
+        } else if(operatorSelected.equals(kHaydenOperator)){
+            LilHaydenDriveControls Hayden = new LilHaydenDriveControls();
+            SmartDashboard.putBoolean("Controller Check", Hayden.checkController());
+        } else {
+            OperatorControls generalOpControl = new OperatorControls();
+            SmartDashboard.putBoolean("Controller Check", generalOpControl.checkController());
+        }
     }
     
     /** This function is called once when autonomous is enabled. */

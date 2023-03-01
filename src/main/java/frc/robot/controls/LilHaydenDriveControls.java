@@ -3,6 +3,8 @@ package frc.robot.controls;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Saitek;
 import frc.robot.interfaces.IOperatorControls;
+import edu.wpi.first.wpilibj.DriverStation;
+
 
 
 public class LilHaydenDriveControls implements IOperatorControls {
@@ -143,5 +145,15 @@ public class LilHaydenDriveControls implements IOperatorControls {
     @Override
     public JoystickButton ChangePieceMode() {
         return new JoystickButton(armCont, 25);
+    }
+
+    @Override
+    public boolean checkController() {
+        if(DriverStation.getStickAxisCount(2) == 6) {
+            if(DriverStation.getStickButtonCount(2) ==16) {
+                return true;
+            }
+        }
+        return false;
     }
 }
