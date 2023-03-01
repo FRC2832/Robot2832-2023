@@ -38,6 +38,8 @@ public class ArmAutonPoint extends CommandBase{
             transitionPosToNeg = false;
             transitionNegToPos = false;
         }
+
+        arm.resetPids();
     }
 
     @Override
