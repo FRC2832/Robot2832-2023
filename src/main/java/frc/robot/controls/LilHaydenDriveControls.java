@@ -3,6 +3,7 @@ package frc.robot.controls;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Saitek;
 import frc.robot.interfaces.IOperatorControls;
+import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class LilHaydenDriveControls implements IOperatorControls {
@@ -72,7 +73,7 @@ public class LilHaydenDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupGroundCube(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 22); //dummy
+        return new JoystickButton(armCont, 30); //dummy, highest button on haydens is like 27
     }
 
     @Override
@@ -87,61 +88,70 @@ public class LilHaydenDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupHuman(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 19);
+        return new JoystickButton(armCont, 19); //second human pickup point on button 17
     }
    
     @Override
     public JoystickButton ArmToSecureLocation(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 21);
+        return new JoystickButton(armCont, 32);
     }
    
     @Override
     public JoystickButton ArmToScoreLow(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 6); //technically he wanted this button to be for cubes, 12 for cones
+        return new JoystickButton(armCont, 3); 
     }
    
     @Override
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 7); //technically he wanted this button to be for cubes, 14 for cones
+        return new JoystickButton(armCont, 2); 
     }
 
     @Override
     public JoystickButton ArmToScoreMiddleFront(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 12); 
+        return new JoystickButton(armCont, 7); 
     }
    
     @Override
     public JoystickButton ArmToScoreTop(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 8); //technically he wanted this button to be for cubes, 16 for cones
+        return new JoystickButton(armCont, 1); 
     }
 
     @Override
     public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(armCont, 30);
+        return new JoystickButton(armCont, 31);
     }
 
     @Override
     public JoystickButton IntakeUpRequested() {
-        return new JoystickButton(armCont, 23);
+        return new JoystickButton(armCont, 11);
     }
 
     @Override
     public JoystickButton IntakeDownRequested() {
-        return new JoystickButton(armCont, 24);
+        return new JoystickButton(armCont, 12);
     }
 
     @Override
     public JoystickButton IntakeSuckRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 26); //technically he wanted this button to be for cubes, 24 to intake cones
+        return new JoystickButton(armCont, 24); //technically he wanted this button to be for cubes, 24 to intake cones
     }
 
     @Override
     public JoystickButton IntakeSpitRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 27); //this should intake cones if he never switches game piece mode
+        return new JoystickButton(armCont, 23); //this should intake cones if he never switches game piece mode
     }
 
     @Override
     public JoystickButton ChangePieceMode() {
-        return new JoystickButton(armCont, 25);
+        return new JoystickButton(armCont, 21);
+    }
+
+    public static boolean checkController() {
+        if(DriverStation.getStickAxisCount(2) == 6) {
+            if(DriverStation.getStickButtonCount(2) == 26) {
+                return true;
+            }
+        }
+        return false;
     }
 }

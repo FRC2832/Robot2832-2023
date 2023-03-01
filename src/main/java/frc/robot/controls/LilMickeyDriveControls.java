@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.interfaces.IDriveControls;
+import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class LilMickeyDriveControls implements IDriveControls {
@@ -66,5 +67,14 @@ public class LilMickeyDriveControls implements IDriveControls {
     @Override
     public double GetPercentLeftTriggerAxis() {
         return driveCont.getLeftTriggerAxis();
+    }
+
+    public static boolean checkController() {
+        if(DriverStation.getStickAxisCount(0) == 6) {
+            if(DriverStation.getStickButtonCount(0) >= 10) {
+                return true;
+            }
+        }
+        return false;
     }
 }

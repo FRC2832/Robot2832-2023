@@ -6,10 +6,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.IArmControl;
 
-public class Arm implements Subsystem{
+public class Arm extends SubsystemBase{
     private IArmControl hardware;
     private double shoulderAng;
     private double elbowAng;
@@ -20,6 +20,7 @@ public class Arm implements Subsystem{
     boolean elbowPIDRan;
 
     public Arm(IArmControl hardware) {
+        super();
         this.hardware = hardware;
         hardware.updateInputs();
 

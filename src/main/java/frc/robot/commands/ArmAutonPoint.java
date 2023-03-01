@@ -10,10 +10,9 @@ public class ArmAutonPoint extends CommandBase{
     private Arm arm;
     private double x, z;
     private double zOrig;
-    private double xError, zError;
+    private double xError, zError, distError;
     private boolean transitionPosToNeg; //add transition from L3 to Tail because that is NOT working currently
     private boolean transitionNegToPos; 
-
     
     public ArmAutonPoint(Arm arm, double x, double z) {
         this.arm = arm;
@@ -39,6 +38,8 @@ public class ArmAutonPoint extends CommandBase{
             transitionPosToNeg = false;
             transitionNegToPos = false;
         }
+
+        arm.resetPids();
     }
 
     @Override
@@ -62,7 +63,8 @@ public class ArmAutonPoint extends CommandBase{
     public boolean isFinished() {
         xError = Math.abs(x - arm.getArmXPosition());
         zError = Math.abs(z - arm.getArmZPosition());
-        boolean fin = (xError < Constants.ARM_ACCEPT_ERROR) && (zError < Constants.ARM_ACCEPT_ERROR);
+        distError = Math.sqrt((xError * xError) + (zError * zError));
+        boolean fin = (distError < Constants.ARM_ACCEPT_ERROR);
         return fin; 
     }
 
