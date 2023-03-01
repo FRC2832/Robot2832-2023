@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.T16000M;
 import frc.robot.interfaces.IDriveControls;
+import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class LilJaydenDriveControls implements IDriveControls {
@@ -76,5 +77,15 @@ public class LilJaydenDriveControls implements IDriveControls {
         } else {
             return 0.0;
         }
+    }
+
+    @Override
+    public boolean checkController() {
+        if(DriverStation.getStickAxisCount(0) == 4 && DriverStation.getStickAxisCount(1) == 4) {
+            if(DriverStation.getStickButtonCount(0) == 16 && DriverStation.getStickButtonCount(1) == 16) {
+                return true;
+            }
+        }
+        return false;
     }
 }
