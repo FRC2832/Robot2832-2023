@@ -96,9 +96,9 @@ public final class Constants {
     public static final double ArmToScoreTop_Z = 44;
 
     public static final double ArmToTransitionPoint_X = -3;
-    public static final double ArmToTransitionPoint_Z = 30;
+    public static final double ArmToTransitionPoint_Z = 40;
     public static final double ArmToTransitionPoint2_X = 5;
-    public static final double ArmToTransitionPoint2_Z = 30;
+    public static final double ArmToTransitionPoint2_Z = 40;
 
     public static final double ScoreCubeOffset = 4;
 

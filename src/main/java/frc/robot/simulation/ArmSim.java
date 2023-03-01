@@ -2,6 +2,7 @@ package frc.robot.simulation;
 
 import org.livoniawarriors.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -63,7 +64,7 @@ public class ArmSim implements IArmControl {
         shoulderBar.setAngle(Rotation2d.fromDegrees(shoulderDeg));
         elbowBar.setAngle(Rotation2d.fromDegrees(elbowDeg - shoulderBar.getAngle()));
 
-        elbowDeg += elbowVolts * Constants.LOOP_TIME / kV_Elbow;
+        elbowDeg -= elbowVolts * Constants.LOOP_TIME / kV_Elbow;
         elbowVolts = 0;
 
         shoulderDeg += shoulderVolts * Constants.LOOP_TIME / kV_Shoulder;
@@ -82,12 +83,12 @@ public class ArmSim implements IArmControl {
 
     @Override
     public double getElbowAngle() {
-        return elbowDeg - shoulderDeg;
+        return MathUtil.inputModulus(elbowDeg - shoulderDeg, -180, 180);
     }
 
     @Override
     public double getShoulderAngle() {
-        return shoulderDeg;
+        return MathUtil.inputModulus(shoulderDeg, -90, 270);
     }
 
     @Override

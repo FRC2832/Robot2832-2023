@@ -14,7 +14,7 @@ public class Arm implements Subsystem{
     private double shoulderAng;
     private double elbowAng;
     
-    PIDController shoulderPid;
+    ProfiledPIDController shoulderPid;
     ProfiledPIDController elbowPid;
     boolean shoulderPIDRan;
     boolean elbowPIDRan;
@@ -26,11 +26,13 @@ public class Arm implements Subsystem{
         Logger.RegisterSensor("Shoulder Angle", () -> getShoulderAngle());
         Logger.RegisterSensor("Elbow Angle", () -> getElbowAngle());
 
-        shoulderPid = new PIDController(.1, 0.002, 0);
+        shoulderPid = new ProfiledPIDController(.2, 0.002, 0, 
+            new Constraints(90, 90));
+        shoulderPid.setTolerance(0.5);
         elbowPid = new ProfiledPIDController(.2, 0.002, 0,
-            new Constraints(120, 120));  //units are in deg/s and deg/s^2
-        elbowPid.setTolerance(2);
-        elbowPid.reset(getElbowAngle());
+            new Constraints(150, 150));  //units are in deg/s and deg/s^2
+        elbowPid.setTolerance(0.5);
+        resetPids();
     }
 
     @Override
@@ -42,21 +44,9 @@ public class Arm implements Subsystem{
     }
 
     public void setShoulderAngle(double angleDeg) {
-        double shoulderAngle = getShoulderAngle();
-        double volts = shoulderPid.calculate(shoulderAngle, angleDeg);
-        double delta = Math.abs(shoulderAngle - angleDeg);
-        if(delta>4){
-            shoulderPIDRan = true;
-        }
-        if(delta < 2 && shoulderPIDRan){
-            shoulderPIDRan = false;
-        }
-        if(Math.abs(volts) > 4){
-            volts = Math.signum(volts) * 4;
-        }
-        if(!shoulderPIDRan){
-            volts = 0;
-        }
+        shoulderPid.setGoal(angleDeg);
+        double volts = shoulderPid.calculate(getShoulderAngle());
+
         setShoulderMotorVolts(volts);
         SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
         SmartDashboard.putNumber("Shoulder Volts Command", volts);
@@ -96,7 +86,7 @@ public class Arm implements Subsystem{
 
     public void resetPids() {
         elbowPid.reset(getElbowAngle());
-        shoulderPid.reset();
+        shoulderPid.reset(getShoulderAngle());
     }
 
     //this one will become not good once we figure out the equation for an arm with two segments of different lengths
