@@ -7,6 +7,7 @@ import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
+    final static double FLIP_TOLERANCE = 20 / 2;    //tolerance is +/- value, so halve the total distance you want
     private Arm arm;
     private double x, z;
     private double zOrig;
@@ -46,12 +47,12 @@ public class ArmAutonPoint extends CommandBase{
     public void execute() {
         if(transitionPosToNeg){
             arm.calcAngles(Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z);
-            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint_X - 3 && arm.getArmXPosition() < Constants.ArmToTransitionPoint_X + 3){
+            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint_X + FLIP_TOLERANCE){
                 transitionPosToNeg = false;
             }
         } else if(transitionNegToPos){
             arm.calcAngles(Constants.ArmToTransitionPoint2_X, Constants.ArmToTransitionPoint2_Z);
-            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint2_X - 3 && arm.getArmXPosition() < Constants.ArmToTransitionPoint2_X + 3){
+            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint2_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint2_X + FLIP_TOLERANCE){
                 transitionNegToPos = false;
             }
         } else{

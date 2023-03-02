@@ -15,6 +15,7 @@ public class IntakeBackward extends CommandBase{
     @Override
     public void initialize() {
         finishedCounts = 0;
+        intake.resetTimer();
     }
 
     @Override
