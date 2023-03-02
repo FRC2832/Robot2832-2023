@@ -199,7 +199,7 @@ public class Robot extends TimedRobot {
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
-        SmartDashboard.putData(new ChangeMode());
+        SmartDashboard.putData(new ChangeMode(opControls));
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -424,7 +424,7 @@ public class Robot extends TimedRobot {
         opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
-        opControls.ChangePieceMode().onTrue(new ChangeMode());
+        opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
     }
 
     /** This function is called periodically during operator control. */
