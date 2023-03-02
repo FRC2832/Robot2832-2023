@@ -29,7 +29,6 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.ArmSim;
 import frc.robot.simulation.SwerveDriveSim;
 import frc.robot.simulation.TailSim;
-import frc.robot.commands.ChangeMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -200,7 +199,7 @@ public class Robot extends TimedRobot {
         odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
-        SmartDashboard.putData(new ChangeMode());
+        SmartDashboard.putData(new ChangeMode(opControls));
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -315,10 +314,16 @@ public class Robot extends TimedRobot {
         Command sequence;
 
         if (AutonomousStartPosition.equals(kBalance)) {
-            //spend at max 1 sec straightening the wheels, then drive
-            sequence = new WaitCommand(1).deadlineWith(new MoveWheelsStraight(drive))
-                .andThen(new DriveToScale(drive))
-                .andThen(new DriveToBalance(drive));
+            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+                .deadlineWith(new MoveWheelsStraight(drive));
+            if(getGamePieceMode() == CUBE_MODE){
+                sequence = sequence.andThen(new IntakeBackward(intake));
+            } else {
+                sequence = sequence.andThen(new IntakeForward(intake));
+            }
+            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToScale(drive)).andThen(new DriveToBalance(drive))
+                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
+
         } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
             Pose2d targetPoint;
             double offset;
@@ -328,18 +333,24 @@ public class Robot extends TimedRobot {
                 offset = 4;
             }
             targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
-
-            sequence = new DriveToPoint(drive,odometry,targetPoint);
-        } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
-            if(getGamePieceMode() == CONE_MODE){
-                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
-                    .andThen(new IntakeForward(intake))
-                    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+            
+            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+                .deadlineWith(new MoveWheelsStraight(drive));
+            if(getGamePieceMode() == CUBE_MODE){
+                sequence = sequence.andThen(new IntakeBackward(intake));
             } else {
-                sequence = (new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z))
-                    .andThen(new IntakeBackward(intake))
-                    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+                sequence = sequence.andThen(new IntakeForward(intake));
             }
+            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToPoint(drive,odometry,targetPoint))
+                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
+        } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
+            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
+            if(getGamePieceMode() == CUBE_MODE){
+                sequence = sequence.andThen(new IntakeBackward(intake));
+            } else {
+                sequence = sequence.andThen(new IntakeForward(intake));
+            }
+            sequence = sequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         } else {
             sequence = new MoveWheelsStraight(drive);
         }
@@ -413,7 +424,7 @@ public class Robot extends TimedRobot {
         opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
-        opControls.ChangePieceMode().onTrue(new ChangeMode());
+        opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
     }
 
     /** This function is called periodically during operator control. */

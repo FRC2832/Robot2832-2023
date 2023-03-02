@@ -45,13 +45,16 @@ public class DriveStick extends CommandBase {
         double ySpeed = cont.GetYDrivePct();
         double turn   = cont.GetTurnPct();
 
-        if(cont.BoostTriggerRequested()){
-            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * cont.GetPercentRightTriggerAxis() * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * cont.GetPercentRightTriggerAxis() * Math.signum(ySpeed));
+        double boost = cont.GetBoostTriggerRequest();
+        double turtle = cont.GetPrecisionTriggerRequest();
+
+        if(boost > 0.1){
+            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(xSpeed));
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(ySpeed));
             turn = turn * Constants.MAX_DRIVER_OMEGA;
-        } else if(cont.PrecisionTriggerRequested()) {
-            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * cont.GetPercentLeftTriggerAxis() * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * cont.GetPercentLeftTriggerAxis() * Math.signum(ySpeed));
+        } else if(turtle > 0.1) {
+            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(xSpeed));
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(ySpeed));
             turn = turn * turtleTurnSpeed;
         } else {
             xSpeed = xSpeed * Constants.MAX_DRIVER_SPEED;

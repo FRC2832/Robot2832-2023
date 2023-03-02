@@ -40,16 +40,6 @@ public class LilMickeyDriveControls implements IDriveControls {
     }
 
     @Override
-    public boolean BoostTriggerRequested() { //driver/operator will use this method
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() { //driver/operator will use this method
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-
-    @Override
     public JoystickButton TailUpRequested() { 
         return new JoystickButton(driveCont, XboxController.Button.kY.value);
     }
@@ -60,12 +50,12 @@ public class LilMickeyDriveControls implements IDriveControls {
     }
     
     @Override
-    public double GetPercentRightTriggerAxis() {
+    public double GetPrecisionTriggerRequest() {
         return driveCont.getRightTriggerAxis();
     }
 
     @Override
-    public double GetPercentLeftTriggerAxis() {
+    public double GetBoostTriggerRequest() {
         return driveCont.getLeftTriggerAxis();
     }
 

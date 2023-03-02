@@ -39,16 +39,6 @@ public class DriveControls implements IDriveControls {
         return -UtilFunctions.deadband(driveCont.getRightX(), Constants.STICK_DEADBAND);
     }
 
-    @Override
-    public boolean BoostTriggerRequested() {
-        return driveCont.getRightTriggerAxis() > .1;
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() {
-        return driveCont.getLeftTriggerAxis() > .1;
-    }
-
     public double GetArmKinXCommand() {
         return armCont.getxAxis1();
     }
@@ -68,12 +58,12 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetPercentRightTriggerAxis() {
+    public double GetBoostTriggerRequest() {
         return driveCont.getRightTriggerAxis();
     }
 
     @Override
-    public double GetPercentLeftTriggerAxis() {
+    public double GetPrecisionTriggerRequest() {
         return driveCont.getLeftTriggerAxis();
     }
 
@@ -85,5 +75,5 @@ public class DriveControls implements IDriveControls {
         }
         return false;
     }
-    
+   
 }
