@@ -13,4 +13,7 @@ public interface IDriveControls {
     boolean IsFieldOrientedResetRequested();
     JoystickButton TailUpRequested();
     JoystickButton TailDownRequested();
+    JoystickButton ArmToPickupHuman_top();
+    JoystickButton ArmToPickupHuman_bottom();
+
 }

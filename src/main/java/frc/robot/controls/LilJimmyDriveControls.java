@@ -96,11 +96,15 @@ public class LilJimmyDriveControls implements IOperatorControls {
     public JoystickButton ArmToPickupTail(){ //driver/operator will use this method
         return new JoystickButton(operCont, XboxController.Button.kRightBumper.value);
     }
-
     @Override
-    public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(operCont, 16);
+    public JoystickButton ArmToPickupHuman_top(){
+        return new JoystickButton(operCont, XboxController.Button.kStart.value);
     }
+    @Override
+    public JoystickButton ArmToPickupHuman_bottom(){
+        return new JoystickButton(operCont, XboxController.Button.kBack.value);
+    }
+   
    
     @Override
     public JoystickButton ArmToSecureLocation(){

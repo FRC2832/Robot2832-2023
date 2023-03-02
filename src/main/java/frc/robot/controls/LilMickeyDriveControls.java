@@ -45,6 +45,16 @@ public class LilMickeyDriveControls implements IDriveControls {
     }
 
     @Override
+    public JoystickButton ArmToPickupHuman_top(){
+        return new JoystickButton(driveCont, XboxController.Button.kStart.value);
+    }
+    @Override
+    public JoystickButton ArmToPickupHuman_bottom(){
+        return new JoystickButton(driveCont, XboxController.Button.kBack.value);
+    }
+
+
+    @Override
     public boolean PrecisionTriggerRequested() { //driver/operator will use this method
         return driveCont.getLeftTriggerAxis() > .1;
     }
