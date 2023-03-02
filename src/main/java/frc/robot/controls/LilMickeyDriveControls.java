@@ -41,12 +41,12 @@ public class LilMickeyDriveControls implements IDriveControls {
 
     @Override
     public boolean BoostTriggerRequested() { //driver/operator will use this method
-        return driveCont.getRightTriggerAxis() > .1;
+        return driveCont.getLeftTriggerAxis() > .1;
     }
 
     @Override
     public boolean PrecisionTriggerRequested() { //driver/operator will use this method
-        return driveCont.getLeftTriggerAxis() > .1;
+        return driveCont.getRightTriggerAxis() > .1;
     }
 
     @Override
