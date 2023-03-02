@@ -18,6 +18,16 @@ public class DriveControls implements IDriveControls {
         driveCont = new XboxController(0);
         armCont = new Saitek(2);
     }
+    @Override
+    public JoystickButton ArmToPickupHuman_top(){
+        return new JoystickButton(driveCont, XboxController.Button.kStart.value);
+    }
+    @Override
+    public JoystickButton ArmToPickupHuman_bottom(){
+        return new JoystickButton(driveCont, XboxController.Button.kLeftBumper.value);
+    }
+   
+
    
     @Override
     public boolean IsFieldOrientedResetRequested() {

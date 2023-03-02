@@ -57,6 +57,16 @@ public class OperatorControls implements IOperatorControls {
     public Trigger ElbowPosRequested() {
         return new Trigger(() -> operCont.getOrangeTopRightButton());
     }
+    @Override
+    public JoystickButton ArmToPickupHuman_top(){
+        return new JoystickButton(operCont, Saitek.Button.pinkBottomLeft.value);
+    }
+    @Override
+    public JoystickButton ArmToPickupHuman_bottom(){
+        return new JoystickButton(operCont, Saitek.Button.pinkBottomLeft.value);
+    }
+   
+
 
     @Override
     public Trigger ElbowNegRequested() {
@@ -78,10 +88,10 @@ public class OperatorControls implements IOperatorControls {
         return new JoystickButton(operCont, Saitek.Button.yellowBottomLeft.value);
     }
 
-    @Override
-    public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(operCont, Saitek.Button.pinkBottomLeft.value);
-    }
+    // @Override
+    // public JoystickButton ArmToPickupHuman(){
+    //     return new JoystickButton(operCont, Saitek.Button.pinkBottomLeft.value);
+    // }
    
     @Override
     public JoystickButton ArmToSecureLocation(){

@@ -15,7 +15,8 @@ public interface IOperatorControls {
     JoystickButton ArmToPickupGroundCube(); //possibly need one for each game piece type
     JoystickButton ArmToPickupGroundCone(); //possibly need one for each game piece type
     JoystickButton ArmToPickupTail();
-    JoystickButton ArmToPickupHuman();
+    JoystickButton ArmToPickupHuman_top();
+    JoystickButton ArmToPickupHuman_bottom();
     JoystickButton ArmToSecureLocation();
     JoystickButton ArmToScoreLow();
     JoystickButton ArmToScoreMiddle();
