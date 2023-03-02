@@ -6,10 +6,8 @@ public interface IDriveControls {
     double GetXDrivePct();
     double GetYDrivePct();
     double GetTurnPct();
-    double GetPercentRightTriggerAxis();
-    double GetPercentLeftTriggerAxis();
-    boolean BoostTriggerRequested();
-    boolean PrecisionTriggerRequested();
+    double GetBoostTriggerRequest();
+    double GetPrecisionTriggerRequest();
     boolean IsFieldOrientedResetRequested();
     JoystickButton TailUpRequested();
     JoystickButton TailDownRequested();

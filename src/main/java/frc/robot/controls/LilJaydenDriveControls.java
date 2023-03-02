@@ -42,16 +42,6 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public boolean BoostTriggerRequested() { //driver/operator will use this method
-        return driveContRight.getTrigger();
-    }
-
-    @Override
-    public boolean PrecisionTriggerRequested() { //driver/operator will use this method
-        return driveContLeft.getTrigger();
-    }
-
-    @Override
     public JoystickButton TailUpRequested() { 
         return new JoystickButton(driveContRight, T16000M.Button.left.value);
     }
@@ -62,7 +52,7 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetPercentRightTriggerAxis() {
+    public double GetBoostTriggerRequest() {
         if(driveContRight.getTrigger()){
             return 1.0;
         } else {
@@ -71,7 +61,7 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public double GetPercentLeftTriggerAxis() {
+    public double GetPrecisionTriggerRequest() {
         if(driveContLeft.getTrigger()){
             return 1.0;
         } else {
