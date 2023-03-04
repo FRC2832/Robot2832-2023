@@ -2,6 +2,7 @@ package frc.robot.simulation;
 
 import org.livoniawarriors.Logger;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.interfaces.ITailControl;
 
@@ -33,6 +34,12 @@ public class TailSim implements ITailControl{
 
     @Override
     public void updateInputs() {
+        SmartDashboard.putNumber("Tail Volts", tailVolts);
+        if(Math.abs(tailVolts) > 0.1) {
+            tailVolts = tailVolts + 2;  //compensate for the surgical tube
+        } else {
+            tailVolts = 0;
+        }
         tailAngle -= tailVolts * Constants.LOOP_TIME / kV;
         tailVolts = 0;
     }

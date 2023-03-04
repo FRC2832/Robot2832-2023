@@ -1,6 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.ITailControl;
 
@@ -8,12 +9,17 @@ import frc.robot.interfaces.ITailControl;
 public class Tail extends SubsystemBase {
     private ITailControl hardware;
     double tailAngle;
-    PIDController tailPid;
+    ProfiledPIDController tailPid;
    
     public Tail(ITailControl hardware) {
         super();
         this.hardware = hardware;
-        tailPid = new PIDController(0.13, 0, 0);
+        tailPid = new ProfiledPIDController(0.23, 0.1, 0, 
+            new Constraints(420, 420));
+        hardware.updateInputs();
+        tailPid.reset(hardware.getTailAngle());
+        tailPid.setGoal(hardware.getTailAngle());
+        tailPid.setTolerance(3);
     }
 
     @Override
@@ -32,6 +38,13 @@ public class Tail extends SubsystemBase {
 
     public void setTailAngle(double angleDeg) {
         double volts = tailPid.calculate(tailAngle, angleDeg);
+        if(!tailPid.atSetpoint()) {
+            if(volts < 0) {
+                volts -= 2; //compensate for the surgical tubing
+            }
+        } else {
+            volts = 0;
+        }
         setTailVoltage(volts);
     }
 
