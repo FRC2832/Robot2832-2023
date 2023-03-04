@@ -159,8 +159,8 @@ public class Robot extends TimedRobot {
         opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
 
         //check to see what robot we are
-        jumper = new AnalogInput(0);
-        var jumperVolts = jumper.getVoltage();
+        //jumper = new AnalogInput(0);
+        var jumperVolts = 0;
 
         // initialize robot features
         if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {

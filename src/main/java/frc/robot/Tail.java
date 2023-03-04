@@ -40,10 +40,10 @@ public class Tail extends SubsystemBase {
         double volts = tailPid.calculate(tailAngle, angleDeg);
         if(!tailPid.atSetpoint()) {
             if(volts < 0) {
-                volts -= 2; //compensate for the surgical tubing
+                volts -= 3; //compensate for the surgical tubing
             }
         } else {
-            volts = 0;
+            volts = -1;
         }
         setTailVoltage(volts);
     }
