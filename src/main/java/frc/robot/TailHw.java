@@ -10,7 +10,6 @@ import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
@@ -21,7 +20,6 @@ public class TailHw implements ITailControl{
     TalonSRX tailMotor;
     DutyCycle tailEncoder;
     Rev2mDistanceSensor distSensor;
-    PIDController tailPid;
 
     double tailAngle;
     double distValue;
@@ -38,8 +36,6 @@ public class TailHw implements ITailControl{
         distSensor.setAutomaticMode(true);
         distSensor.setMeasurementPeriod(0.018);
 
-        tailPid = new PIDController(0.13, 0, 0);
-
         Logger.RegisterTalon("Tail", tailMotor);
         Logger.RegisterSensor("Tail Angle", () -> getTailAngle());
         Logger.RegisterSensor("Tail Dist", () -> getDistSensor());
@@ -52,8 +48,7 @@ public class TailHw implements ITailControl{
 
     @Override
     public void setTailAngle(double angleDeg) {
-        double volts = tailPid.calculate(tailAngle, angleDeg);
-        setTailVoltage(volts);
+
     }
 
     @Override

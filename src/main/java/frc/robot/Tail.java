@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.ITailControl;
 
@@ -7,10 +8,12 @@ import frc.robot.interfaces.ITailControl;
 public class Tail extends SubsystemBase {
     private ITailControl hardware;
     double tailAngle;
+    PIDController tailPid;
    
     public Tail(ITailControl hardware) {
         super();
         this.hardware = hardware;
+        tailPid = new PIDController(0.13, 0, 0);
     }
 
     @Override
@@ -28,7 +31,8 @@ public class Tail extends SubsystemBase {
     }
 
     public void setTailAngle(double angleDeg) {
-        hardware.setTailAngle(angleDeg);
+        double volts = tailPid.calculate(tailAngle, angleDeg);
+        setTailVoltage(volts);
     }
 
     public double getDistSensor() {
