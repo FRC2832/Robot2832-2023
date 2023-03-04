@@ -39,7 +39,7 @@ public class DriveStick extends CommandBase {
         boolean fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
         boostSpeed = SmartDashboard.getNumber("Boost Speed", 4);
         turtleSpeed = SmartDashboard.getNumber("Turtle Speed", 1);
-        turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 4);
+        turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 1);
         
         double xSpeed = cont.GetXDrivePct();
         double ySpeed = cont.GetYDrivePct();
