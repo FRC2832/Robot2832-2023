@@ -26,7 +26,7 @@ public class TailHw implements ITailControl{
     double tailAngle;
     double distValue;
 
-    final double TAIL_ZERO_OFFSET = -340+12;
+    final double TAIL_ZERO_OFFSET = -340+94;
     final double COUNTS_PER_DEGREE_TAIL = 101;
 
     public TailHw(){

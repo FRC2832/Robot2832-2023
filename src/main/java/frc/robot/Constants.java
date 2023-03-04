@@ -92,7 +92,7 @@ public final class Constants {
     public static final double ArmToScoreMiddleFront_Z = 30;
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -40;
+    public static final double ArmToScoreTop_X = -37;
     public static final double ArmToScoreTop_Z = 44;
 
     public static final double ArmToTransitionPoint_X = -3;
