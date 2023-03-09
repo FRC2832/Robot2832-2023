@@ -159,8 +159,8 @@ public class Robot extends TimedRobot {
         opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
 
         //check to see what robot we are
-        jumper = new AnalogInput(0);
-        var jumperVolts = jumper.getVoltage();
+        //jumper = new AnalogInput(0);
+        var jumperVolts = 0;
 
         // initialize robot features
         if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
@@ -196,7 +196,7 @@ public class Robot extends TimedRobot {
         digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
-        odometry = new Odometry(drive,controls);
+        odometry = new Odometry(drive,controls, arm, tail);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
         SmartDashboard.putData(new ChangeMode(opControls));
@@ -394,11 +394,6 @@ public class Robot extends TimedRobot {
         } else {
             opControls = new OperatorControls();
         }
-        
-        //Reassigning subsystems and default commands with selected driver profiles
-        var pose = odometry.getPose();
-        odometry = new Odometry(drive, controls);
-        odometry.resetPose(pose);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, controls));

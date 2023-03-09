@@ -92,7 +92,7 @@ public final class Constants {
     public static final double ArmToScoreMiddleFront_Z = 30;
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -40;
+    public static final double ArmToScoreTop_X = -37;
     public static final double ArmToScoreTop_Z = 44;
 
     public static final double ArmToTransitionPoint_X = -3;
@@ -103,8 +103,8 @@ public final class Constants {
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
-    public static final double TAIL_LOW_POINT = -18;
-    public static final double TAIL_HIGH_POINT = 105;
+    public static final double TAIL_LOW_POINT = -11;
+    public static final double TAIL_HIGH_POINT = 95;
     
     //jumper values for different robots
     public static final double BuzzVoltage = 1.11;

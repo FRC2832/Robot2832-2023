@@ -7,7 +7,7 @@ import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
-    final static double FLIP_TOLERANCE = 20 / 2;    //tolerance is +/- value, so halve the total distance you want
+    final static double FLIP_TOLERANCE = 10 / 2;    //tolerance is +/- value, so halve the total distance you want
     private Arm arm;
     private double x, z;
     private double zOrig;

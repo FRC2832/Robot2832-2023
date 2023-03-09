@@ -41,12 +41,12 @@ public class LilMickeyDriveControls implements IDriveControls {
 
     @Override
     public JoystickButton TailUpRequested() { 
-        return new JoystickButton(driveCont, XboxController.Button.kY.value);
+        return new JoystickButton(driveCont, XboxController.Button.kRightBumper.value);
     }
 
     @Override
     public JoystickButton TailDownRequested() { 
-        return new JoystickButton(driveCont, XboxController.Button.kX.value);
+        return new JoystickButton(driveCont, XboxController.Button.kLeftBumper.value);
     }
     
     @Override
