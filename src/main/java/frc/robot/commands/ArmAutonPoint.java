@@ -7,20 +7,15 @@ import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
-    final static double FLIP_TOLERANCE = 10 / 2;    //tolerance is +/- value, so halve the total distance you want
     private Arm arm;
     private double x, z;
     private double zOrig;
     private double xError, zError, distError;
-    private boolean transitionPosToNeg; //add transition from L3 to Tail because that is NOT working currently
-    private boolean transitionNegToPos; 
     
     public ArmAutonPoint(Arm arm, double x, double z) {
         this.arm = arm;
         this.x = x;
         zOrig = z;
-        transitionPosToNeg = false;
-        transitionNegToPos = false;
         addRequirements(arm);
     }
 
@@ -31,31 +26,22 @@ public class ArmAutonPoint extends CommandBase{
         } else {
             z = zOrig;
         }
-        if(Math.signum(arm.getArmXPosition()) == 1 && Math.signum(x) == -1){
-            transitionPosToNeg = true;
-        } else if(Math.signum(arm.getArmXPosition()) == -1 && Math.signum(x) == 1){
-            transitionNegToPos = true;
-        } else {
-            transitionPosToNeg = false;
-            transitionNegToPos = false;
-        }
 
         arm.resetPids();
     }
 
     @Override
     public void execute() {
-        if(transitionPosToNeg){
-            arm.calcAngles(Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z);
-            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint_X + FLIP_TOLERANCE){
-                transitionPosToNeg = false;
+        if(Math.signum(arm.getArmXPosition()) != Math.signum(x)) {
+            double shoulderAng = arm.getShoulderAngle();
+            arm.calcAngles(x, z);
+            if(Math.abs(shoulderAng - 90) < 35) {
+                arm.setElbowMotorVolts(0);
+                arm.setShoulderAngle(90 - (Math.signum(shoulderAng - 90) * 40));
+            } else {
+                arm.setShoulderMotorVolts(0);
             }
-        } else if(transitionNegToPos){
-            arm.calcAngles(Constants.ArmToTransitionPoint2_X, Constants.ArmToTransitionPoint2_Z);
-            if (arm.getArmXPosition() > Constants.ArmToTransitionPoint2_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint2_X + FLIP_TOLERANCE){
-                transitionNegToPos = false;
-            }
-        } else{
+        } else {
             arm.calcAngles(x, z);
         }
     }
