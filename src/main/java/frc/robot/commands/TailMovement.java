@@ -30,14 +30,14 @@ public class TailMovement extends CommandBase{
         double tailDist = tail.getDistSensor();
 
         if(arm.getArmXPosition() <= -10) {
-            tail.setTailAngle(Constants.TAIL_HIGH_POINT);
+            tail.setTailAngle(Constants.TAIL_STOW_POINT);
         } else if(controls.TailUpRequested().getAsBoolean()){
             //tail.setTailVoltage(3);
             tail.setTailAngle(Constants.TAIL_HIGH_POINT);
         } else if(controls.TailDownRequested().getAsBoolean()){
             tail.setTailAngle(Constants.TAIL_LOW_POINT);
             //tail.setTailVoltage(-5);
-        } else if(controls.TailDownRequested().getAsBoolean()){
+        } else if(controls.TailStowRequested().getAsBoolean()){
             tail.setTailAngle(Constants.TAIL_STOW_POINT);
         } else if(tailDist > 0 && tailDist < 5.3 && !tailUpOverride) {
             tail.setTailAngle(Constants.TAIL_HIGH_POINT);
