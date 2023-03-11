@@ -7,6 +7,7 @@ import frc.robot.LED_controller.cmds;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class IntakeMove extends CommandBase{
@@ -27,19 +28,23 @@ public class IntakeMove extends CommandBase{
     @Override
     public void execute() {
         var sign = 1;
+        double intakeVolts = 0.0;
         if(Robot.getGamePieceMode() == Robot.CUBE_MODE) {
             sign = -1;
         }
         
         if(controls.IntakeSuckRequested().getAsBoolean()){
-            intake.setIntakeVolts(-Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign);
+            intakeVolts = -Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign;
+            intake.setIntakeVolts(intakeVolts);
         }  
         else if(controls.IntakeSpitRequested().getAsBoolean()){
-            intake.setIntakeVolts(Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign);
+            intakeVolts = Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign;
+            intake.setIntakeVolts(intakeVolts);
             LED_controller.send(cmds.lightning);
         } else {
             intake.setIntakeVolts(0);
         }
+        SmartDashboard.putNumber("Intake Voltage", intakeVolts);
     }
 
     @Override
