@@ -12,9 +12,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
@@ -133,17 +131,11 @@ public class Robot extends TimedRobot {
     private static final String kJaydenDriver = "Jayden";
     private String driverSelected;
     private String operatorSelected;
-    private final SendableChooser<String> driverChooser = new SendableChooser<>();;
-    private final SendableChooser<String> operatorChooser = new SendableChooser<>();;
+    private final SendableChooser<String> driverChooser = new SendableChooser<>();
+    private final SendableChooser<String> operatorChooser = new SendableChooser<>();
     
     //Autonomus Chooser
-    private static final String kNoObstacles = "No Obstacles";
-    private static final String kBalance = "Scale";
-    private static final String kCord = "Cord";
-    private static final String kL3Score = "L3 Score";
-    private static final String kDoNothing = "Do Nothing";
-    private String AutonomousStartPosition;
-    private final SendableChooser<String> startPosChooser = new SendableChooser<>();;
+    private AutonChooser auton;
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -213,17 +205,13 @@ public class Robot extends TimedRobot {
         operatorChooser.addOption("Default Settings", kDefaultDriver);      
         operatorChooser.setDefaultOption("James", kJamesOperator);
         operatorChooser.addOption("Hayden", kHaydenOperator);
-        
-        startPosChooser.addOption("No Obstacles", kNoObstacles);
-        startPosChooser.setDefaultOption("Scale", kBalance);
-        startPosChooser.addOption("Cord", kCord);
-        startPosChooser.addOption("L3 Score Left", kL3Score);
-        startPosChooser.addOption("Do Nothing", kDoNothing);
 
         SmartDashboard.putData("Driver Select", driverChooser);
         SmartDashboard.putData("Operator Select", operatorChooser);
-        SmartDashboard.putData("StartPos Select", startPosChooser);
         SmartDashboard.putBoolean("Field Oriented", false);
+
+        //Construct auton thing
+        auton = new AutonChooser(drive, odometry, intake, arm);
         
         logger.start();
     }
@@ -242,7 +230,7 @@ public class Robot extends TimedRobot {
         // else (cone mode): call cone LED's
 
         //run once a second
-        if( count % 5 == 0) {
+        if(count % 5 == 0) {
             if(getGamePieceMode() == CUBE_MODE){
                 LED_controller.send(cmds.cube);
             }
@@ -263,47 +251,6 @@ public class Robot extends TimedRobot {
         //force the sticky faults to clear at Autonomous
         SmartDashboard.putBoolean("Clear Faults", true);
 
-        var alliance = DriverStation.getAlliance();
-        AutonomousStartPosition = startPosChooser.getSelected();
-
-        if (alliance == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
-            if(AutonomousStartPosition.equals(kNoObstacles)){
-                startPosition = Constants.START_BLUE_LEFT;
-            }
-            else if(AutonomousStartPosition.equals(kBalance)){
-                startPosition = Constants.START_BLUE_MIDDLE;
-            }
-            else if(AutonomousStartPosition.equals(kCord)){
-                startPosition = Constants.START_BLUE_RIGHT;
-            } 
-            else if(AutonomousStartPosition.equals(kL3Score)){
-                startPosition = Constants.START_BLUE_LEFT;
-            }
-            else{
-                SmartDashboard.putString("Error", "No Position");
-            }
-        }
-        else if(alliance == DriverStation.Alliance.Red){
-            if(AutonomousStartPosition.equals(kNoObstacles)){
-                startPosition = Constants.START_RED_LEFT;
-            }
-            else if(AutonomousStartPosition.equals(kBalance)){
-                startPosition = Constants.START_RED_MIDDLE;
-            }
-            else if(AutonomousStartPosition.equals(kCord)){
-                startPosition = Constants.START_RED_RIGHT;
-            }
-            else if(AutonomousStartPosition.equals(kL3Score)){
-                startPosition = Constants.START_RED_LEFT;
-            }
-            else{
-                SmartDashboard.putString("Error", "No Position");
-            }
-        }
-        else{
-            SmartDashboard.putString("Error", "No Team");
-        }
-
         //set out position to the auto starting position
         odometry.resetHeading();
         odometry.resetPose(startPosition);
@@ -311,52 +258,8 @@ public class Robot extends TimedRobot {
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
 
-        Command sequence;
-
-        if (AutonomousStartPosition.equals(kBalance)) {
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-                .deadlineWith(new MoveWheelsStraight(drive));
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToScale(drive)).andThen(new DriveToBalance(drive))
-                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
-
-        } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
-            Pose2d targetPoint;
-            double offset;
-            if (alliance == DriverStation.Alliance.Red) {
-                offset = -4;
-            } else {
-                offset = 4;
-            }
-            targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
-            
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-                .deadlineWith(new MoveWheelsStraight(drive));
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToPoint(drive,odometry,targetPoint))
-                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
-        } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        } else {
-            sequence = new MoveWheelsStraight(drive);
-        }
-
-        //schedule this command for our autonomous
-        schedule.schedule(sequence);
+        //schedule the command for our autonomous
+        schedule.schedule(auton.getAuton());
     }
 
     /** This function is called periodically during autonomous. */
