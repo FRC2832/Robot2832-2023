@@ -6,15 +6,18 @@ import frc.robot.Robot;
 import frc.robot.LED_controller.cmds;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.XboxController;
 
 
 public class IntakeMove extends CommandBase{
     private Intake intake;
     private IOperatorControls controls;
+    private XboxController operCont;
 
     public IntakeMove(IOperatorControls controls, Intake intake){
         this.intake = intake;
         this.controls = controls;
+        operCont = new XboxController(2);
         addRequirements(intake);
     }
 
@@ -29,10 +32,10 @@ public class IntakeMove extends CommandBase{
         }
         
         if(controls.IntakeSuckRequested().getAsBoolean()){
-            intake.setIntakeVolts(-Constants.IntakeVoltage * sign);
+            intake.setIntakeVolts(-Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign);
         }  
         else if(controls.IntakeSpitRequested().getAsBoolean()){
-            intake.setIntakeVolts(Constants.IntakeVoltage * sign);
+            intake.setIntakeVolts(Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign);
             LED_controller.send(cmds.lightning);
         } else {
             intake.setIntakeVolts(0);
