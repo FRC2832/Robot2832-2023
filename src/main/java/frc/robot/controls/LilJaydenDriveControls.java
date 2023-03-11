@@ -40,7 +40,10 @@ public class LilJaydenDriveControls implements IDriveControls {
     public double GetTurnPct() { //driver/operator will use this method
         return -UtilFunctions.deadband(driveContLeft.getxAxis1(), Constants.STICK_DEADBAND);
     }
-
+    @Override
+    public JoystickButton TailStowRequested(){
+        return new JoystickButton(driveContRight, T16000M.Button.right.value);
+    }
     @Override
     public JoystickButton TailUpRequested() { 
         return new JoystickButton(driveContRight, T16000M.Button.left.value);

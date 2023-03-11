@@ -13,6 +13,7 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
       "/SmartDashboard/Brakes:": "String Chooser",
+      "/SmartDashboard/ChangeMode": "Command",
       "/SmartDashboard/DriveToPoint": "Command",
       "/SmartDashboard/Driver Select": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
@@ -22,6 +23,11 @@
       "/SmartDashboard/StartPos Select": "String Chooser"
     },
     "windows": {
+      "/SmartDashboard/Arm Sim": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "image": "2023-field.png",
         "window": {
