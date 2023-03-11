@@ -20,8 +20,10 @@ public class DriveToPoint extends CommandBase {
 
     private double distX;
     private double distY;
+    private double distRot;
     private double distLeft;
     private double scale;
+    private double scaleRot;
 
     public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest) {
         this.drive = drive;
@@ -40,16 +42,18 @@ public class DriveToPoint extends CommandBase {
         Pose2d currentPose = odometry.getPose();
         distX = dest.getX() - currentPose.getX();
         distY = dest.getY() - currentPose.getY();
+        distRot = dest.getRotation().getDegrees() - (currentPose.getRotation().getDegrees());
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
         if(distLeft > TARGET_ERROR) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = Constants.MAX_AUTO_SPEED / distLeft;
+            scaleRot = Constants.MAX_AUTO_TURN_SPEED / (distLeft * 2);
             drive.SwerveDrive(
                 distX  * scale, 
                 distY  * scale, 
-                0, //TODO: Fix Me!
+                distRot * scaleRot, //TODO: Fix Me! might be fixed?
                 true);
         } else {
             //we are at our spot, stop

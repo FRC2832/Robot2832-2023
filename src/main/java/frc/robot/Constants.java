@@ -48,6 +48,7 @@ public final class Constants {
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
     public static final double MAX_AUTO_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
+    public static final double MAX_AUTO_TURN_SPEED = .5;                //Max speed (meters/sed) the robot can rotate
     public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sed) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
@@ -70,24 +71,35 @@ public final class Constants {
     public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
+    //pickup ground front
     public static final double ArmToPickupGround_X = 40.8;
     public static final double ArmToPickupGround_Z = -3;
+    
+    //pickup ground back
+    public static final double ArmToPickupGroundBack_X = -20;
+    public static final double ArmToPickupGroundBack_Z = 2;
 
+    //pickup from tail
     public static final double ArmToPickupTail_X = 21;
     public static final double ArmToPickupTail_Z = 15;
 
+    //pickup from human player station
     public static final double ArmToPickupHuman_X = 30;
     public static final double ArmToPickupHuman_Z = 20;
 
+    //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;
 
+    //level 1 back
     public static final double ArmToScoreLow_X = -29;
     public static final double ArmToScoreLow_Z = 2;
 
+    //level 2 back
     public static final double ArmToScoreMiddle_X = -25.5;
     public static final double ArmToScoreMiddle_Z = 30;
     
+    //level 2 Front
     public static final double ArmToScoreMiddleFront_X = 50;
     public static final double ArmToScoreMiddleFront_Z = 30;
 
