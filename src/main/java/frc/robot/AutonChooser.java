@@ -49,18 +49,18 @@ public class AutonChooser {
         startPosChooser.addOption("Do Nothing", kDoNothing);
 
         SmartDashboard.putData("StartPos Select", startPosChooser);
-        setStartPos();
 
-        alliance = DriverStation.getAlliance();
+        setStartPos();
     }
 
     public Command getAuton(){
-        AutonomousStartPosition = startPosChooser.getSelected();
-
+        setStartPos();
         if (AutonomousStartPosition.equals(kBalance)) {
             sequence = autoBalance();
         } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
             sequence = autoNoObstacles();
+        } else if (AutonomousStartPosition.equals(kCord)) {
+            sequence = autoCord();
         } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
             sequence = autoL3Score();
         } else {
@@ -146,6 +146,8 @@ public class AutonChooser {
     }
 
     public void setStartPos(){
+        AutonomousStartPosition = startPosChooser.getSelected();
+        alliance = DriverStation.getAlliance();
         if (alliance == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
             if(AutonomousStartPosition.equals(kNoObstacles)){
                 startPosition = Constants.START_BLUE_LEFT;
