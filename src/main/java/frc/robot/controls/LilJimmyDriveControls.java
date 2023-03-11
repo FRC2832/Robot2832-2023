@@ -99,7 +99,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(operCont, 16);
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
    
     @Override
