@@ -314,10 +314,10 @@ public class Robot extends TimedRobot {
         opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
         opControls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z));
-        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
-        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z, arm)));
+        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z, arm)));
+        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z, arm)));
+        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z, arm)));
         opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
