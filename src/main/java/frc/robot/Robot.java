@@ -54,7 +54,6 @@ public class Robot extends TimedRobot {
 
     private PneumaticHub pneumatics;
     private Arm arm;
-    public Pose2d startPosition;
     private AnalogInput jumper;
 
     private static boolean pieceMode;
@@ -253,7 +252,7 @@ public class Robot extends TimedRobot {
 
         //set out position to the auto starting position
         odometry.resetHeading();
-        odometry.resetPose(startPosition);
+        odometry.resetPose(auton.getStartPos());
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();

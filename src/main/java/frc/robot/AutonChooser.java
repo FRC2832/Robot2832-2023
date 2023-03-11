@@ -69,6 +69,10 @@ public class AutonChooser {
         return sequence;
     }
 
+    public Pose2d getStartPos(){
+        return startPosition;
+    }
+
     public Command autoBalance(){
         Command tempSequence;
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
