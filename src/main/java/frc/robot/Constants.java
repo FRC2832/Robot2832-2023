@@ -65,7 +65,7 @@ public final class Constants {
     //sensor offsets
     public static final double SHOULDER_OFFSET = 347;
     public static final double ELBOW_OFFSET = 135;
-    public static final double INTAKE_OFFSET = -41;
+    public static final double INTAKE_OFFSET = 110;
 
     public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
