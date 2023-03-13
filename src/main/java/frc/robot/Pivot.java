@@ -38,10 +38,10 @@ public class Pivot extends SubsystemBase {
 
     public double optimalPivotAngle(){
         double value;
-        if(Robot.getGamePieceMode()) { //pieceMode true is cube
+        if(Robot.getGamePieceMode() == Robot.CONE_MODE) { 
             value =  arm.getElbowAngle() + arm.getShoulderAngle();
         }
-        else { //pieceMode false is cone
+        else { 
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
         }
 
