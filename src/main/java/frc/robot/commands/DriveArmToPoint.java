@@ -9,6 +9,7 @@ public class DriveArmToPoint extends CommandBase{
     private Arm arm;
     private IOperatorControls controls;
     private double xPos, zPos;
+    private boolean running;
  
     public DriveArmToPoint(Arm arm, IOperatorControls controls) {
         this.arm = arm;
@@ -22,12 +23,24 @@ public class DriveArmToPoint extends CommandBase{
         xPos = arm.getArmXPosition();
         zPos = arm.getArmZPosition();
         arm.resetPids();
+        running = false;
     }
 
     @Override
     public void execute() {
-            xPos += controls.GetArmKinXCommand()*.3;
-            zPos += controls.GetArmKinZCommand()*-.3;
+            if(Math.abs(controls.GetArmKinXCommand()) > 0.1 || Math.abs(controls.GetArmKinZCommand()) > 0.1) {
+                xPos += controls.GetArmKinXCommand()*.3;
+                zPos += controls.GetArmKinZCommand()*-.3;
+                running = true;
+            } else if(running == true) {
+                xPos = arm.getArmXPosition();
+                zPos = arm.getArmZPosition();
+                arm.resetPids();
+                running = false;
+            } else {
+                //hold position we were at
+            }
+            
             arm.calcAngles(xPos, zPos);
     }
 
