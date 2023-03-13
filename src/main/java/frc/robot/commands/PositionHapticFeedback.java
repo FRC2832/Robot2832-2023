@@ -1,26 +1,25 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
-import frc.robot.controls.LilJimmyDriveControls;
+import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.Timer;
 
 public class PositionHapticFeedback extends CommandBase {
     private double xPos;
     private double zPos;
-    private XboxController cont;
+    private IOperatorControls cont;
     private Arm arm;
     private Timer timer;
 
-    public PositionHapticFeedback(double xPos, double zPos, Arm arm){
+    public PositionHapticFeedback(double xPos, double zPos, Arm arm, IOperatorControls cont){
         this.xPos = xPos;
         this.zPos = zPos;
         this.arm = arm;
         this.timer = new Timer();
-        cont = LilJimmyDriveControls.operCont;
+        this.cont = cont;
     }
 
     @Override
@@ -37,16 +36,16 @@ public class PositionHapticFeedback extends CommandBase {
         if(fin){
             timer.start();
             // vibrate operator controller
-            cont.setRumble(RumbleType.kLeftRumble, 1.0);
-            cont.setRumble(RumbleType.kRightRumble, 1.0);
+            cont.getCont().setRumble(RumbleType.kLeftRumble, 1.0);
+            cont.getCont().setRumble(RumbleType.kRightRumble, 1.0);
         }
     }
 
     @Override
     public boolean isFinished() {
         if(timer.hasElapsed(1.0)) {
-            cont.setRumble(RumbleType.kLeftRumble, 0);
-            cont.setRumble(RumbleType.kRightRumble, 0);
+            cont.getCont().setRumble(RumbleType.kLeftRumble, 0);
+            cont.getCont().setRumble(RumbleType.kRightRumble, 0);
             return true;
         }
         return false;

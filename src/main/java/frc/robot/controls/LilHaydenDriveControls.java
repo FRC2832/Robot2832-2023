@@ -1,157 +1,173 @@
 package frc.robot.controls;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Saitek;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.DriverStation;
 
-
 public class LilHaydenDriveControls implements IOperatorControls {
-    private Saitek armCont;
+    private XboxController operCont;
 
-    public LilHaydenDriveControls() {
-        armCont = new Saitek(2); //WARNING: HE USES THE CONTROLLER UPSIDE DOWN; port 2 since Jayden has 2 controllers technically
+    public LilHaydenDriveControls(){
+        operCont = new XboxController(2);
     }
    
-    public double GetArmKinXCommand() {
-        return armCont.getxAxis1();
+    @Override
+    public double GetArmKinXCommand() { //driver/operator will use this method
+        if(operCont.getPOV() == 90){
+            return 1.0;
+        }
+        else if(operCont.getPOV() == 270){
+            return -1.0;
+        }
+        else{
+            return 0.0;
+        }
     }
 
-    public double GetArmKinZCommand() {
-        return armCont.getyAxis1();
+    @Override
+    public double GetArmKinZCommand() { //driver/operator will use this method
+        if(operCont.getPOV() == 180){
+            return 1.0;
+        }
+        else if(operCont.getPOV() == 0){
+            return -1.0;
+        }
+        else{
+            return 0.0;
+        }
     }
 
     @Override
     public double GetArmShoulderPct() { //driver/operator will use this method
-        if(armCont.getyAxis1() > 0) { //if he moves controller up, y goes towards 1 not -1
-            return 0.3 * armCont.getyAxis1();//positive #
-        } else if (armCont.getyAxis1() < 0) { //if he moves controller down, y towards -1
-            return 0.3 * armCont.getyAxis1();//negative #
-        } else if(armCont.getRawButton(10)) {
+        if(operCont.getPOV() == 0) {
             return 0.3;
-        } else if (armCont.getRawButton(5)) {
+        } else if (operCont.getPOV() == 180) {
             return -0.3;
         } else {
-            return 0;
+            return 0.0;
         }
     }
 
     @Override
-    public double GetArmElbowPct() {  //driver/operator will use this method
-        if(armCont.getxAxis1() > 0) { //if he moves controller left, y goes towards 1 not -1
-            return 0.3 * armCont.getxAxis1();//positive #
-        } else if (armCont.getxAxis1() < 0) { //if he moves controller right, y towards -1
-            return 0.3 * armCont.getxAxis1();//negative #
-        } else if(armCont.getRawButton(9)) {
+    public double GetArmElbowPct() { //driver/operator will use this method
+        if(operCont.getPOV() == 90) {
             return -0.3;
-        } else if (armCont.getRawButton(4)) {
+        } else if (operCont.getPOV() == 270) {
             return 0.3;
         } else {
-            return 0;
+            return 0.0;
         }
     }
 
     @Override
-    public JoystickButton ShoulderPosRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 10);
+    public Trigger ShoulderPosRequested() {
+        return new Trigger(() -> operCont.getPOV() == 90);
     }
 
     @Override
-    public JoystickButton ShoulderNegRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 5);
+    public Trigger ShoulderNegRequested() {
+        return new Trigger(() -> operCont.getPOV() == 270);
     }
 
     @Override
-    public JoystickButton ElbowPosRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 9);
+    public Trigger ElbowPosRequested() {
+        return new Trigger(() -> operCont.getPOV() == 0);
     }
 
     @Override
-    public JoystickButton ElbowNegRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 4);
+    public Trigger ElbowNegRequested() {
+        return new Trigger(() -> operCont.getPOV() == 180);
     }
 
     @Override
-    public JoystickButton ArmToPickupGroundCube(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 30); //dummy, highest button on haydens is like 27
+    public JoystickButton ArmToPickupGroundCube(){
+        return new JoystickButton(operCont, 16);
     }
 
     @Override
-    public JoystickButton ArmToPickupGroundCone(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 18);
+    public JoystickButton ArmToPickupGroundCone(){
+        return new JoystickButton(operCont, XboxController.Button.kA.value);
     }
    
     @Override
     public JoystickButton ArmToPickupTail(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 20);
+        return new JoystickButton(operCont, XboxController.Button.kRightBumper.value);
     }
 
     @Override
-    public JoystickButton ArmToPickupHuman(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 19); //second human pickup point on button 17
+    public JoystickButton ArmToPickupHuman(){
+        return new JoystickButton(operCont, 16);
     }
    
     @Override
-    public JoystickButton ArmToSecureLocation(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 32);
+    public JoystickButton ArmToSecureLocation(){
+        return new JoystickButton(operCont, 16);
     }
    
     @Override
     public JoystickButton ArmToScoreLow(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 3); 
+        return new JoystickButton(operCont, 16);
     }
    
     @Override
     public JoystickButton ArmToScoreMiddle(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 2); 
+        return new JoystickButton(operCont, XboxController.Button.kB.value);
     }
 
     @Override
-    public JoystickButton ArmToScoreMiddleFront(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 7); 
+    public JoystickButton ArmToScoreMiddleFront(){ 
+        return new JoystickButton(operCont, XboxController.Button.kX.value); 
     }
    
     @Override
     public JoystickButton ArmToScoreTop(){ //driver/operator will use this method
-        return new JoystickButton(armCont, 1); 
+        return new JoystickButton(operCont, XboxController.Button.kY.value);
     }
 
     @Override
     public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(armCont, 31);
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
 
     @Override
-    public JoystickButton IntakeUpRequested() {
-        return new JoystickButton(armCont, 11);
+    public Trigger IntakeUpRequested() { //driver/operator will use this method
+        return new Trigger(() -> operCont.getRightY() > Constants.STICK_DEADBAND);
     }
 
     @Override
-    public JoystickButton IntakeDownRequested() {
-        return new JoystickButton(armCont, 12);
+    public Trigger IntakeDownRequested() { //driver/operator will use this method
+        return new Trigger(() -> operCont.getRightY() < -Constants.STICK_DEADBAND);
     }
 
     @Override
-    public JoystickButton IntakeSuckRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 24); //technically he wanted this button to be for cubes, 24 to intake cones
+    public Trigger IntakeSuckRequested() { //driver/operator will use this method
+        return new Trigger(() -> operCont.getRightTriggerAxis() > Constants.STICK_DEADBAND);
     }
 
     @Override
-    public JoystickButton IntakeSpitRequested() { //driver/operator will use this method
-        return new JoystickButton(armCont, 23); //this should intake cones if he never switches game piece mode
+    public Trigger IntakeSpitRequested() { //driver/operator will use this method
+        return new Trigger(() -> operCont.getLeftTriggerAxis() > Constants.STICK_DEADBAND);
     }
 
     @Override
-    public JoystickButton ChangePieceMode() {
-        return new JoystickButton(armCont, 21);
+    public Trigger ChangePieceMode() {
+        return new Trigger(() -> operCont.getLeftStickButton());
     }
 
     public static boolean checkController() {
         if(DriverStation.getStickAxisCount(2) == 6) {
-            if(DriverStation.getStickButtonCount(2) == 26) {
+            if(DriverStation.getStickButtonCount(2) >= 10) {
                 return true;
             }
         }
         return false;
     }
+
+    public XboxController getCont(){
+        return operCont;
+    }
 }
+

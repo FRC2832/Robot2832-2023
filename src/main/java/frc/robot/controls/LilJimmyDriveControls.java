@@ -8,7 +8,7 @@ import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class LilJimmyDriveControls implements IOperatorControls {
-    public static XboxController operCont;
+    private XboxController operCont;
 
     public LilJimmyDriveControls(){
         operCont = new XboxController(2);
@@ -164,6 +164,10 @@ public class LilJimmyDriveControls implements IOperatorControls {
             }
         }
         return false;
+    }
+
+    public XboxController getCont(){
+        return operCont;
     }
 }
 
