@@ -75,5 +75,9 @@ public class DriveControls implements IDriveControls {
         }
         return false;
     }
+
+    public XboxController getCont(){
+        return driveCont;
+    }
    
 }

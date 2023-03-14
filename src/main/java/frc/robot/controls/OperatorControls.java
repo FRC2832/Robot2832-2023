@@ -65,11 +65,6 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToPickupGroundCube(){
-        return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
-    }
-
-    @Override
     public JoystickButton ArmToPickupGroundCone(){
         return new JoystickButton(operCont, Saitek.Button.yellowTopLeft.value);
     }

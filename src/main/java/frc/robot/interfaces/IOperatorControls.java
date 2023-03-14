@@ -13,7 +13,6 @@ public interface IOperatorControls {
     Trigger ShoulderNegRequested();
     Trigger ElbowPosRequested();
     Trigger ElbowNegRequested();
-    JoystickButton ArmToPickupGroundCube(); //possibly need one for each game piece type
     JoystickButton ArmToPickupGroundCone(); //possibly need one for each game piece type
     JoystickButton ArmToPickupTail();
     JoystickButton ArmToPickupHuman();

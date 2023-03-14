@@ -83,11 +83,6 @@ public class LilHaydenDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToPickupGroundCube(){
-        return new JoystickButton(operCont, 16);
-    }
-
-    @Override
     public JoystickButton ArmToPickupGroundCone(){
         return new JoystickButton(operCont, XboxController.Button.kA.value);
     }

@@ -32,6 +32,10 @@ public class Intake extends SubsystemBase {
     public void setIntakeVolts(double volts) {
         intakeMotor.setVoltage(volts);
     }
+
+    public double getCurrent(){
+        return intakeMotor.getOutputCurrent();
+    }
     
     public void Grab(boolean forward) {
         velocity = intakeMotor.getEncoder().getVelocity();
