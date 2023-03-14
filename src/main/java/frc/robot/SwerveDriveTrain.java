@@ -32,7 +32,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private InterpolatingTreeMap<Double, Double> speedReduction;
     private double gyroOffset = 0;
     private PIDController pidZero = new PIDController(0.1, 0.001, 0);
-    private PIDController[] wheelPid;
+    private PIDController[] drivePid;
+    private PIDController[] turnPid;
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         register();
@@ -45,9 +46,13 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //initialize the swerve states
         swerveStates = new SwerveModulePosition[Constants.NUM_WHEELS];
         swerveTargets = new SwerveModuleState[Constants.NUM_WHEELS];
+        drivePid = new PIDController[Constants.NUM_WHEELS];
+        turnPid = new PIDController[Constants.NUM_WHEELS];
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel] = new SwerveModulePosition();
             swerveTargets[wheel] = new SwerveModuleState();
+            drivePid[wheel] = new PIDController(0.5, 0.03, 0.0);
+            turnPid[wheel] = new PIDController(5,1.8,0);
         }
 
         //initialize the swerve offsets
@@ -59,7 +64,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         hardware.updateInputs();
         turnOffsets = new double[Constants.NUM_WHEELS];
-        wheelPid = new PIDController[Constants.NUM_WHEELS];
         for(int i=0; i<turnOffsets.length; i++) {
             double offset = (swerveOffsets[i] - hardware.getCornerAbsAngle(i));
             if (offset > 180) {
@@ -68,7 +72,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 offset += 360;
             }
             turnOffsets[i] = offset + hardware.getCornerAngle(i);
-            wheelPid[i] = new PIDController(5,1.8,0);
         }
         gyroOffset = getHeading().getDegrees();
 
@@ -104,7 +107,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             currentState[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
 
             if(DriverStation.isDisabled()) {
-                wheelPid[wheel].reset();
+                turnPid[wheel].reset();
             }
         }
 
@@ -155,9 +158,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
             else {
                 requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 
-                var volts = -wheelPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
-                hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
-                hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
+                var driveVolts = drivePid[i].calculate(hardware.getCornerSpeed(i),requestStates[i].speedMetersPerSecond);
+                var ff = requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED * RobotController.getBatteryVoltage();
+                driveVolts += ff;
+
+                var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
+                
+                hardware.setDriveCommand(i, ControlMode.PercentOutput, driveVolts / RobotController.getBatteryVoltage());
+                hardware.setTurnCommand(i, ControlMode.PercentOutput, turnVolts / RobotController.getBatteryVoltage());
             }
             swerveTargets = requestStates;
 
@@ -171,7 +179,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for(int i=0; i<requestStates.length; i++) {
             requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 
-            var volts = -wheelPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
+            var volts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
             hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
             hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
         }
