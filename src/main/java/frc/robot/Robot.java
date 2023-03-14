@@ -8,6 +8,7 @@ import org.livoniawarriors.Logger;
 import org.livoniawarriors.REVDigitBoard;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -308,7 +309,7 @@ public class Robot extends TimedRobot {
         opControls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
-        opControls.ArmToPickupGroundCone().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z));
+        opControls.ArmToPickupGroundCone().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z).alongWith(new PositionHapticFeedback(Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z, arm, opControls)));
         opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z).alongWith(new PositionHapticFeedback(Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z, arm, opControls)));
         opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
         opControls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
