@@ -45,11 +45,12 @@ public class DriveToPoint extends CommandBase {
         distRot = dest.getRotation().getDegrees() - (currentPose.getRotation().getDegrees());
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
-        if(distLeft > TARGET_ERROR) {
+        // if(distLeft > TARGET_ERROR) 
+        if(distLeft > TARGET_ERROR && Math.abs(distRot) > .5) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = Constants.MAX_AUTO_SPEED / distLeft;
-            scaleRot = Constants.MAX_AUTO_TURN_SPEED / (distLeft * 2);
+            scaleRot = Constants.MAX_AUTO_TURN_SPEED / (distRot);
             drive.SwerveDrive(
                 distX  * scale, 
                 distY  * scale, 
@@ -68,10 +69,8 @@ public class DriveToPoint extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
-
+    public void end(boolean interrupted) {}
+    
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
