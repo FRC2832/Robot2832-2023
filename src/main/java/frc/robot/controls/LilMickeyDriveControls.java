@@ -67,4 +67,8 @@ public class LilMickeyDriveControls implements IDriveControls {
         }
         return false;
     }
+
+    public XboxController getCont(){
+        return new XboxController(0);
+    }
 }

@@ -1,5 +1,6 @@
 package frc.robot.interfaces;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -12,7 +13,6 @@ public interface IOperatorControls {
     Trigger ShoulderNegRequested();
     Trigger ElbowPosRequested();
     Trigger ElbowNegRequested();
-    JoystickButton ArmToPickupGroundCube(); //possibly need one for each game piece type
     JoystickButton ArmToPickupGroundCone(); //possibly need one for each game piece type
     JoystickButton ArmToPickupTail();
     JoystickButton ArmToPickupHuman();
@@ -27,4 +27,5 @@ public interface IOperatorControls {
     Trigger IntakeSuckRequested();
     Trigger IntakeSpitRequested();
     Trigger ChangePieceMode();
+    XboxController getCont();
 }

@@ -8,7 +8,7 @@ import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class LilJimmyDriveControls implements IOperatorControls {
-    private XboxController operCont;
+    public XboxController operCont;
 
     public LilJimmyDriveControls(){
         operCont = new XboxController(2);
@@ -64,11 +64,6 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public Trigger ElbowNegRequested() {
         return new Trigger(() -> operCont.getPOV() == 180);
-    }
-
-    @Override
-    public JoystickButton ArmToPickupGroundCube(){
-        return new JoystickButton(operCont, 16);
     }
 
     @Override
@@ -148,6 +143,10 @@ public class LilJimmyDriveControls implements IOperatorControls {
             }
         }
         return false;
+    }
+
+    public XboxController getCont(){
+        return operCont;
     }
 }
 
