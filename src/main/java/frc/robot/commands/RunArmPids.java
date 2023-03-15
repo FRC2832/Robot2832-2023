@@ -3,22 +3,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RunArmPids extends CommandBase {
-    private boolean run; 
+    private static boolean run = false; 
 
     public RunArmPids() {
-        this.run = false;
+        addRequirements();
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        RunArmPids.run = !RunArmPids.run;
+    }
 
     @Override
-    public void execute() {
-        this.run = !this.run;
-    }
+    public void execute() {}
 
     public boolean getRun() {
-        return this.run;
+        return RunArmPids.run;
     }
 
     @Override

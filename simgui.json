@@ -31,7 +31,9 @@
         }
       },
       "/SmartDashboard/Field": {
-        "image": "2023-field.png",
+        "image": "2023-field.png"
+      },
+      "/SmartDashboard/RunArmPids": {
         "window": {
           "visible": true
         }
@@ -39,11 +41,11 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "SmartDashboard": {
+        "RunArmPids": {
+          "open": true
+        },
         "open": true
       }
     }
