@@ -66,7 +66,7 @@ public final class Constants {
     //sensor offsets
     public static final double SHOULDER_OFFSET = 347;
     public static final double ELBOW_OFFSET = 135;
-    public static final double INTAKE_OFFSET = -41;
+    public static final double INTAKE_OFFSET = 110;
 
     public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
@@ -84,8 +84,8 @@ public final class Constants {
     public static final double ArmToPickupTail_Z = 15;
 
     //pickup from human player station
-    public static final double ArmToPickupHuman_X = 30;
-    public static final double ArmToPickupHuman_Z = 20;
+    public static final double ArmToPickupHuman_X = 29;
+    public static final double ArmToPickupHuman_Z = 3.6;
 
     //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
@@ -115,7 +115,7 @@ public final class Constants {
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
-    public static final double TAIL_LOW_POINT = -11;
+    public static final double TAIL_LOW_POINT = 15;
     public static final double TAIL_HIGH_POINT = 95;
     
     //jumper values for different robots

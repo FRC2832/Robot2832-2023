@@ -9,44 +9,39 @@ public class DriveArmToPoint extends CommandBase{
     private Arm arm;
     private IOperatorControls controls;
     private double xPos, zPos;
-    private boolean isRunX, isRunZ;    
+    private boolean running;
+ 
     public DriveArmToPoint(Arm arm, IOperatorControls controls) {
         this.arm = arm;
         this.controls = controls;
-        this.isRunX = false;
-        this.isRunZ = false;
+
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
-        
+        xPos = arm.getArmXPosition();
+        zPos = arm.getArmZPosition();
+        arm.resetPids();
+        running = false;
     }
 
     @Override
     public void execute() {
-        xPos = arm.getArmXPosition();
-        zPos = arm.getArmZPosition();
-        
-        if(controls.GetArmKinXCommand() > 0.5 && !isRunX) {
-            xPos += controls.GetArmKinXCommand() + 3;
-            isRunX = true;
-        } else if(controls.GetArmKinXCommand() < 0.5 && !isRunX) {
-            isRunX = false;
-        }
-
-        if(controls.GetArmKinZCommand() > 0.5 && !isRunZ) {
-            zPos += controls.GetArmKinZCommand() + 3;
-            isRunZ = true;
-        } else if(controls.GetArmKinZCommand() < 0.5 && !isRunZ) {
-            isRunZ = false;
-        }        
-
-        if(isRunX || isRunZ) {
+            if(Math.abs(controls.GetArmKinXCommand()) > 0.1 || Math.abs(controls.GetArmKinZCommand()) > 0.1) {
+                xPos += controls.GetArmKinXCommand()*.3;
+                zPos += controls.GetArmKinZCommand()*-.3;
+                running = true;
+            } else if(running == true) {
+                xPos = arm.getArmXPosition();
+                zPos = arm.getArmZPosition();
+                arm.resetPids();
+                running = false;
+            } else {
+                //hold position we were at
+            }
+            
             arm.calcAngles(xPos, zPos);
-        } else {
-            //no command, don't move the arm
-        }
     }
 
     @Override
@@ -55,5 +50,7 @@ public class DriveArmToPoint extends CommandBase{
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        
+    }
 }

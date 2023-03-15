@@ -31,7 +31,7 @@ public class Arm extends SubsystemBase{
             new Constraints(90, 90));
         shoulderPid.setTolerance(0.5);
         elbowPid = new ProfiledPIDController(.2, 0.002, 0,
-            new Constraints(150, 150));  //units are in deg/s and deg/s^2
+            new Constraints(150, 100));  //units are in deg/s and deg/s^2
         elbowPid.setTolerance(0.5);
         resetPids();
     }

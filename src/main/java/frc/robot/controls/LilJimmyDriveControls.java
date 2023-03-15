@@ -16,28 +16,12 @@ public class LilJimmyDriveControls implements IOperatorControls {
    
     @Override
     public double GetArmKinXCommand() { //driver/operator will use this method
-        if(operCont.getPOV() == 90){
-            return 1.0;
-        }
-        else if(operCont.getPOV() == 270){
-            return -1.0;
-        }
-        else{
-            return 0.0;
-        }
+        return operCont.getLeftX();
     }
 
     @Override
     public double GetArmKinZCommand() { //driver/operator will use this method
-        if(operCont.getPOV() == 180){
-            return 1.0;
-        }
-        else if(operCont.getPOV() == 0){
-            return -1.0;
-        }
-        else{
-            return 0.0;
-        }
+        return operCont.getLeftY();
     }
 
     @Override
@@ -99,7 +83,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(operCont, 16);
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
    
     @Override
@@ -129,7 +113,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
+        return new JoystickButton(operCont, 16);
     }
 
     @Override
