@@ -46,7 +46,7 @@ public class DriveToPoint extends CommandBase {
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
         // if(distLeft > TARGET_ERROR) 
-        if(distLeft > TARGET_ERROR && Math.abs(distRot) > .5) {
+        if(distLeft > TARGET_ERROR){// && Math.abs(distRot) > .5) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = Constants.MAX_AUTO_SPEED / distLeft;
