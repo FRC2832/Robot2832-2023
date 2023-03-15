@@ -76,8 +76,8 @@ public final class Constants {
     public static final double ArmToPickupTail_X = 21;
     public static final double ArmToPickupTail_Z = 15;
 
-    public static final double ArmToPickupHuman_X = 30;
-    public static final double ArmToPickupHuman_Z = 20;
+    public static final double ArmToPickupHuman_X = 29;
+    public static final double ArmToPickupHuman_Z = 3.6;
 
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;

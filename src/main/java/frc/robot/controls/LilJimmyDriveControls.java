@@ -83,7 +83,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToPickupHuman(){
-        return new JoystickButton(operCont, 16);
+        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
     }
    
     @Override
@@ -113,7 +113,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
 
     @Override
     public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(operCont, XboxController.Button.kLeftBumper.value);
+        return new JoystickButton(operCont, 16);
     }
 
     @Override

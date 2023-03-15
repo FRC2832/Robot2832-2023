@@ -34,11 +34,11 @@ public class IntakeMove extends CommandBase{
         }
         
         if(controls.IntakeSuckRequested().getAsBoolean()){
-            intakeVolts = -Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign;
+            intakeVolts = Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign;
             intake.setIntakeVolts(intakeVolts);
         }  
         else if(controls.IntakeSpitRequested().getAsBoolean()){
-            intakeVolts = Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign;
+            intakeVolts = -Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign;
             intake.setIntakeVolts(intakeVolts);
             LED_controller.send(cmds.lightning);
         } else {

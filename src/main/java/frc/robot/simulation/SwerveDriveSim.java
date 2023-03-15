@@ -34,6 +34,8 @@ public class SwerveDriveSim implements ISwerveDriveIo {
     private FlywheelSim turnMotorSim[];
     private PIDController turningPIDController[];
 
+    private final double Kv_Turn = 0.006531;
+
     private Translation2d[] swervePositions = {
         new Translation2d(0.291, 0.291),
         new Translation2d(0.291, -0.291),
@@ -117,6 +119,12 @@ public class SwerveDriveSim implements ISwerveDriveIo {
                     turnAngle[i] += turnOutput;
                     absAngle[i] += turnOutput;
                 }
+            } else if (turnCommand[i] == ControlMode.PercentOutput) {
+                var turnOutput = -turnPower[i] * Constants.NOM_BATTERY_VOLTAGE * Constants.LOOP_TIME / Kv_Turn;
+                //update the sensor values
+                turnAngle[i] += turnOutput;
+                absAngle[i] += turnOutput;
+                turnPower[i] = 0;
             } else {
                 deltaAngle = 0;
             }
