@@ -21,6 +21,7 @@ import frc.robot.controls.LilJaydenDriveControls;
 import frc.robot.controls.LilJimmyDriveControls;
 import frc.robot.controls.LilMickeyDriveControls;
 import frc.robot.controls.OperatorControls;
+import frc.robot.commands.RunArmPids;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
@@ -209,6 +210,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Operator Select", operatorChooser);
         SmartDashboard.putBoolean("Field Oriented", false);
 
+        SmartDashboard.putData(new RunArmPids());
+        
         //Construct auton thing
         auton = new AutonChooser(drive, odometry, intake, arm);
         

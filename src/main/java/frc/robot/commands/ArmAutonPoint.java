@@ -42,9 +42,12 @@ public class ArmAutonPoint extends CommandBase{
 
         arm.resetPids();
     }
-
+    
     @Override
     public void execute() {
+        double elbowAngle = Math.toDegrees(arm.getElbowAngle());
+
+        /*
         if(transitionPosToNeg){
             arm.calcAngles(Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z);
             if (arm.getArmXPosition() > Constants.ArmToTransitionPoint_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint_X + FLIP_TOLERANCE){
@@ -58,6 +61,7 @@ public class ArmAutonPoint extends CommandBase{
         } else{
             arm.calcAngles(x, z);
         }
+        */
     }
 
     @Override

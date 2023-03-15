@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.RunArmPids;
 import frc.robot.interfaces.IArmControl;
 
 public class Arm extends SubsystemBase{
@@ -42,28 +43,30 @@ public class Arm extends SubsystemBase{
         SmartDashboard.putNumber("Arm X", getArmXPosition());
         SmartDashboard.putNumber("Arm Z", getArmZPosition());
         hardware.checkBrake();
+
+        RunArmPids runPids = new RunArmPids();
+        if(!shoulderPid.atGoal() && runPids.getRun()) {
+            double shoulderVolts = shoulderPid.calculate(shoulderPid.getGoal().position);
+            setShoulderMotorVolts(shoulderVolts);
+            SmartDashboard.putNumber("Shoulder Volts Command", shoulderVolts);
+        }
+        
+        if(!elbowPid.atGoal() && runPids.getRun()) {
+            double ff = hardware.getFeedForward(getShoulderAngle());
+            double elbowVolts = -elbowPid.calculate(elbowPid.getGoal().position) + ff;
+            setElbowMotorVolts(elbowVolts);
+            SmartDashboard.putNumber("Elbow Volts Command", elbowVolts);   
+        }
     }
 
     public void setShoulderAngle(double angleDeg) {
         shoulderPid.setGoal(angleDeg);
-        double volts = shoulderPid.calculate(getShoulderAngle());
-
-        setShoulderMotorVolts(volts);
         SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
-        SmartDashboard.putNumber("Shoulder Volts Command", volts);
     }
 
     public void setElbowAngle(double angleDeg) {
         elbowPid.setGoal(angleDeg);
-        double ff = hardware.getFeedForward(getShoulderAngle());
-        double volts = -elbowPid.calculate(getElbowAngle()) + ff;
-
-        //if(elbowPid.atSetpoint()){
-        //    volts = 0;
-        //}
-        setElbowMotorVolts(volts);
         SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
-        SmartDashboard.putNumber("Elbow Volts Command", volts);
     }
 
     

@@ -12,16 +12,24 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/ArmPidsCheck": "Command",
       "/SmartDashboard/Brakes:": "String Chooser",
+      "/SmartDashboard/ChangeMode": "Command",
       "/SmartDashboard/DriveToPoint": "Command",
       "/SmartDashboard/Driver Select": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/MoveWheelsStraight": "Command",
       "/SmartDashboard/Operator Select": "String Chooser",
+      "/SmartDashboard/RunArmPids": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/StartPos Select": "String Chooser"
     },
     "windows": {
+      "/SmartDashboard/ArmPidsCheck": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "image": "2023-field.png",
         "window": {
