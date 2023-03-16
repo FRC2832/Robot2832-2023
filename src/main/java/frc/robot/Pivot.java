@@ -43,8 +43,11 @@ public class Pivot extends SubsystemBase {
         }
         else { 
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
+            if(value >= 360){
+                value -= 360;
+            }
         }
-
+ 
         //flip offset based on arm position
         double offset;
         if(arm.getArmXPosition() > 0) {
