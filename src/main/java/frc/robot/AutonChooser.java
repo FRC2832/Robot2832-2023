@@ -171,7 +171,7 @@ public class AutonChooser {
         } else {
             offset = 4;
         }
-        targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());//.plus(Rotation2d.fromDegrees(180)));
+        targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
         
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
@@ -192,9 +192,11 @@ public class AutonChooser {
             tempSequence = tempSequence.andThen(new IntakeForward(intake));
         }
 
-        offset = 0;//-0.47;
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + offset, startPosition.getRotation()); //TODO: add rotation later
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
 
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        offset = -0.47;
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + offset, startPosition.getRotation());
         tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint))
             .andThen(new WaitCommand(0.5))
             .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
