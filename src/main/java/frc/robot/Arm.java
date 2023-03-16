@@ -61,11 +61,16 @@ public class Arm extends SubsystemBase{
 
     public void setShoulderAngle(double angleDeg) {
         shoulderPid.setGoal(angleDeg);
+        double shoulderVolts = shoulderPid.calculate(shoulderPid.getGoal().position);
+        setShoulderMotorVolts(shoulderVolts);
         SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
     }
 
     public void setElbowAngle(double angleDeg) {
         elbowPid.setGoal(angleDeg);
+        double ff = hardware.getFeedForward(getShoulderAngle());
+        double elbowVolts = -elbowPid.calculate(elbowPid.getGoal().position) + ff;
+        setElbowMotorVolts(elbowVolts);
         SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
     }
 
