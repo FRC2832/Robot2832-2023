@@ -96,6 +96,13 @@ public class Logger implements Runnable {
         notify.setName("Logging");
     }
 
+    public NetworkTable getFaults() {
+        return faultTable;
+    }
+
+    public NetworkTable getStickyFaults() {
+        return stickyTable;
+    }   
     public static void RegisterTalon(String name, BaseTalon talon) {
         items.put(name, talon);
     }

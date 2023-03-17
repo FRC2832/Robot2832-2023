@@ -6,6 +6,8 @@ package frc.robot;
 
 import org.livoniawarriors.Logger;
 import org.livoniawarriors.REVDigitBoard;
+import java.util.Set;
+import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
@@ -132,6 +134,7 @@ public class Robot extends TimedRobot {
     private String operatorSelected;
     private final SendableChooser<String> driverChooser = new SendableChooser<>();
     private final SendableChooser<String> operatorChooser = new SendableChooser<>();
+    public Logger logger = new Logger();
     
     //Autonomus Chooser
     private AutonChooser auton;
@@ -142,7 +145,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //internal logger class
-        var logger = new Logger();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
@@ -224,6 +226,35 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
+        Set<String> keys0 = logger.getFaults().getKeys();
+        Set<String> stickyKeys0 = logger.getStickyFaults().getKeys();
+        
+        String[] keys = new String[keys0.size()];
+        String[] stickyKeys = new String[stickyKeys0.size()];
+        
+        keys0.toArray(keys);
+        stickyKeys0.toArray(stickyKeys);
+       
+        ArrayList<String> faultValues = new ArrayList<>();
+        ArrayList<String> stickyValues = new ArrayList<>();
+        
+        for(String i: keys) {
+            faultValues.add(logger.getFaults().getEntry(i).getString("Error"));
+        }
+        
+        for(String i: stickyKeys) {
+            stickyValues.add(logger.getStickyFaults().getEntry(i).getString("Error"));
+        }
+        for(int i = 0; i < faultValues.size(); i++) {
+            while(!(faultValues.get(i).equals("Ok"))) {
+                digit.display(keys[i].substring(0, 3) + "S");
+            }
+        }
+        for(int i = 0; i < stickyValues.size(); i++) {
+            while(!(stickyValues.get(i).equals("Ok"))) {
+                digit.display(stickyKeys[i].substring(0, 3) + "S");
+            }
+        }
         digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
@@ -322,6 +353,8 @@ public class Robot extends TimedRobot {
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
+
+       
     }
 
     /** This function is called periodically during operator control. */
@@ -334,6 +367,9 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drive.setDriveMotorBrakeMode(false);
         drive.setTurnMotorBrakeMode(false);
+
+        
+        
     }
 
     /** This function is called periodically when disabled. */
@@ -360,7 +396,7 @@ public class Robot extends TimedRobot {
         } else {
             valid = OperatorControls.checkController();
         }
-        SmartDashboard.putBoolean("Operator Check", valid);
+        SmartDashboard.putBoolean("Operator Check", valid);   
     }
 
     /** This function is called once when test mode is enabled. */
