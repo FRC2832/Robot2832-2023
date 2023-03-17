@@ -333,6 +333,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drive.setDriveMotorBrakeMode(false);
         drive.setTurnMotorBrakeMode(false);
+        opControls.setBothRumble(0.0);
     }
 
     /** This function is called periodically when disabled. */

@@ -6,6 +6,7 @@ import frc.robot.Saitek;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class OperatorControls implements IOperatorControls {
     private Saitek operCont;
@@ -146,5 +147,20 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public XboxController getCont() {
         return new XboxController(7);
+    }
+
+    @Override
+    public void setBothRumble(double val){
+        operCont.setRumble(RumbleType.kBothRumble, val);
+    }
+
+    @Override
+    public void setLeftRumble(double val){
+        operCont.setRumble(RumbleType.kLeftRumble, val);
+    }
+
+    @Override
+    public void setRightRumble(double val){
+        operCont.setRumble(RumbleType.kRightRumble, val);
     }
 }

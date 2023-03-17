@@ -28,4 +28,7 @@ public interface IOperatorControls {
     Trigger IntakeSpitRequested();
     Trigger ChangePieceMode();
     XboxController getCont();
+    void setBothRumble(double val);
+    void setLeftRumble(double val);
+    void setRightRumble(double val);
 }
