@@ -33,8 +33,8 @@ public class AutonChooser {
     private static final String kNoObstacles = "No Obstacles";
     private static final String kBalance = "Scale";
     private static final String kCord = "Cord";
-    private static final String kOnePiece = "L3 Score";
     private static final String kDoNothing = "Do Nothing";
+    private static final String kOnePiece = "L3 Score";
     private static final String kTwoPiece = "Score Two";
     private static final String kThreePiece = "Score Three";
 
@@ -48,11 +48,11 @@ public class AutonChooser {
 
         sequence = new DriveToPoint(drive, odometry, odometry.getPose()); //if no sequence gets loaded it'll go to where it is (do nothing)
 
-        startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.setDefaultOption("Scale", kBalance);
+        startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.addOption("Cord", kCord);
-        startPosChooser.addOption("Score One", kOnePiece);
         startPosChooser.addOption("Do Nothing", kDoNothing);
+        startPosChooser.addOption("Score One", kOnePiece);
         startPosChooser.addOption("Score Two", kTwoPiece);
         startPosChooser.addOption("Score Three", kThreePiece);
         
@@ -84,15 +84,14 @@ public class AutonChooser {
         return startPosition;
     }
 
+    //ALL AUTON SEQUENCES
     public Command autoBalance(){ //drive over charge station out of community then come back in and balance - untested
         Command tempSequence;
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-                .deadlineWith(new MoveWheelsStraight(drive));
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+            .deadlineWith(new MoveWheelsStraight(drive));
+            
+        tempSequence = tempSequence.andThen(spit());
+
         tempSequence = tempSequence.andThen(new WaitCommand(0.5)
             .andThen(new DriveToScale(drive)).withTimeout(2.9)
             .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
@@ -105,21 +104,14 @@ public class AutonChooser {
     public Command autoNoObstacles(){
         Command tempSequence;
         Pose2d targetPoint;
-        double offset;
-        if (alliance == DriverStation.Alliance.Red) {
-            offset = -4;
-        } else {
-            offset = 4;
-        }
-        targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
+        
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation());
             
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+            
+        tempSequence = tempSequence.andThen(spit());
+
         tempSequence = tempSequence.andThen(new WaitCommand(0.5)
             .andThen(new DriveToPoint(drive,odometry,targetPoint))
             .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
@@ -129,21 +121,14 @@ public class AutonChooser {
     public Command autoCord(){
         Command tempSequence;
         Pose2d targetPoint;
-        double offset;
-        if (alliance == DriverStation.Alliance.Red) {
-            offset = -4;
-        } else {
-            offset = 4;
-        }
-        targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
+        
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation());
             
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+        
+        tempSequence = tempSequence.andThen(spit());
+        
         tempSequence = tempSequence.andThen(new WaitCommand(0.5)
             .andThen(new DriveToPoint(drive,odometry,targetPoint))
             .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
@@ -153,11 +138,7 @@ public class AutonChooser {
     public Command autoL3Score(){
         Command tempSequence;
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+        tempSequence = tempSequence.andThen(spit());
         tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
         return tempSequence;
     }
@@ -165,48 +146,36 @@ public class AutonChooser {
     public Command autoTwoPiece(){
         Command tempSequence;
         Pose2d targetPoint;
-        double offset;
-        if (alliance == DriverStation.Alliance.Red) {
-            offset = -4;
-        } else {
-            offset = 4;
-        }
-        targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
-        
+        //Put arm in scoring position
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
         
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+        //score 1st piece
+        tempSequence = tempSequence.andThen(spit());
         
-        tempSequence = tempSequence.andThen(new WaitCommand(0.5)
+        //drive to next piece and lower arm
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        tempSequence = tempSequence.andThen(new WaitCommand(0.5))
             .andThen(new DriveToPoint(drive,odometry,targetPoint))
-            .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z)));
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
         
-        if(Robot.getGamePieceMode() == Robot.CONE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
-
+        //pickup 2nd piece
+        tempSequence = tempSequence.andThen(suck());
+        
+        //drive back into community
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-
         tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
-        offset = -0.47;
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + offset, startPosition.getRotation());
+        
+        //drive to scoring position
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.36, startPosition.getRotation());
         tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint))
             .andThen(new WaitCommand(0.5))
             .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        
+        //score 2nd piece
+        tempSequence = tempSequence.andThen(spit());
 
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
-
+        //try to put arm back over tail
         tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
 
         return tempSequence;
@@ -214,16 +183,78 @@ public class AutonChooser {
 
     public Command autoThreePiece(){
         Command tempSequence;
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            tempSequence = tempSequence.andThen(new IntakeBackward(intake));
-        } else {
-            tempSequence = tempSequence.andThen(new IntakeForward(intake));
-        }
+        Pose2d targetPoint;
+        //Put arm in scoring position
+        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+            .deadlineWith(new MoveWheelsStraight(drive));
+        
+        //score 1st piece
+        tempSequence = tempSequence.andThen(spit());
+        
+        //drive to next piece and lower arm
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        tempSequence = tempSequence.andThen(new WaitCommand(0.5))
+            .andThen(new DriveToPoint(drive,odometry,targetPoint))
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        
+        //pickup 2nd piece
+        tempSequence = tempSequence.andThen(suck());
+        
+        //drive back into community
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        
+        //drive to scoring position
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.36, startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint))
+            .andThen(new WaitCommand(0.5))
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+        
+        //score 2nd piece
+        tempSequence = tempSequence.andThen(spit());
+
+        //try to put arm back to pickup
+        tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+
+        //move back to lane
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        
+        //move to pieces
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+
+        //move to next piece
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 1.2, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+
+        //pickup 3rd piece
+        tempSequence = tempSequence.andThen(suck());
+
+        //move to lane
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+
+        //back to community
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+
+        //drive to scoring position
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.8, startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint))
+            .andThen(new WaitCommand(0.5))
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+
+        //score 3rd piece
+        tempSequence = tempSequence.andThen(spit());
+
+        //try to put arm back to tail
         tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
+
         return tempSequence;
     }
 
+    //START POSITION SETTER (FROM SHUFFLEBOARD INPUT)    
     public void setStartPos(){
         AutonomousStartPosition = startPosChooser.getSelected();
         alliance = DriverStation.getAlliance();
@@ -276,5 +307,36 @@ public class AutonChooser {
         else{
             SmartDashboard.putString("Error", "No Team");
         }
+    }
+
+    //CUSTOM FUNCTIONS
+    private Command suck(){
+        Command tempCommand;
+        if(Robot.getGamePieceMode() == Robot.CONE_MODE){
+            tempCommand = new IntakeBackward(intake);
+        } else {
+            tempCommand = new IntakeForward(intake);
+        }
+        return tempCommand;
+    }
+    
+    private Command spit(){
+        Command tempCommand;
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
+            tempCommand = new IntakeBackward(intake);
+        } else {
+            tempCommand = new IntakeForward(intake);
+        }
+        return tempCommand;
+    }
+
+    private double offsetX(double offset){
+        double result;
+        if (alliance == DriverStation.Alliance.Red) {
+            result = -offset;
+        } else {
+            result = offset;
+        }
+        return result;
     }
 }
