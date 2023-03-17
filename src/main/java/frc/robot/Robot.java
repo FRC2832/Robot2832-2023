@@ -247,7 +247,7 @@ public class Robot extends TimedRobot {
         }
         for(int i = 0; i < faultValues.size(); i++) {
             while(!(faultValues.get(i).equals("Ok"))) {
-                digit.display(keys[i].substring(0, 3) + "S");
+                digit.display(keys[i].substring(0, 3) + "F");
             }
         }
         for(int i = 0; i < stickyValues.size(); i++) {
