@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     private Pivot pivot;
     private Tail tail;
     private REVDigitBoard digit;
-
+    public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
     private AnalogInput jumper;
@@ -143,6 +143,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //internal logger class
+        SmartDashboard.putString("Serial Number", RobotController.getSerialNumber());
+        SerialNumber = RobotController.getSerialNumber();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
@@ -154,22 +156,24 @@ public class Robot extends TimedRobot {
         var jumperVolts = 0;
 
         // initialize robot features
-        if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
+        if (isSimulation() || (SerialNumber.equals("031b525b"))) {
             //either buzz or simulation
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
             Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Simulation/Buzz");
-        } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
+        } else if (SerialNumber.equals("031e3219")) { 
             //practice chassis
+            SmartDashboard.putString("Robot", "Practice");
             drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
             Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
-            SmartDashboard.putString("Robot", "Practice");
+            
         } else {
             //real robot
+            SmartDashboard.putString("Robot", "Real");
             pneumatics = new PneumaticHub();
             pneumatics.enableCompressorDigital();
             Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
@@ -178,7 +182,7 @@ public class Robot extends TimedRobot {
             arm = new Arm(new ArmHw());
             tail = new Tail(new TailHw());
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
-            SmartDashboard.putString("Robot", "Real");
+            
         }
         intake = new Intake();
         pivot = new Pivot(new PivotHw(),arm);
