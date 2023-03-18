@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.interfaces.IDriveControls;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
 public class LilMickeyDriveControls implements IDriveControls {
@@ -68,7 +69,18 @@ public class LilMickeyDriveControls implements IDriveControls {
         return false;
     }
 
-    public XboxController getCont(){
-        return new XboxController(0);
+    @Override
+    public void setBothRumble(double val){
+        driveCont.setRumble(RumbleType.kBothRumble, val);
+    }
+
+    @Override
+    public void setLeftRumble(double val){
+        driveCont.setRumble(RumbleType.kLeftRumble, val);
+    }
+
+    @Override
+    public void setRightRumble(double val){
+        driveCont.setRumble(RumbleType.kRightRumble, val);
     }
 }

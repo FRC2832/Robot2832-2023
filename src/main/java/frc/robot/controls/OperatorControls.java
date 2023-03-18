@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Saitek;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class OperatorControls implements IOperatorControls {
@@ -145,11 +144,6 @@ public class OperatorControls implements IOperatorControls {
     }
 
     @Override
-    public XboxController getCont() {
-        return new XboxController(7);
-    }
-
-    @Override
     public void setBothRumble(double val){
         operCont.setRumble(RumbleType.kBothRumble, val);
     }
@@ -162,10 +156,5 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public void setRightRumble(double val){
         operCont.setRumble(RumbleType.kRightRumble, val);
-    }
-
-    @Override
-    public JoystickButton rumble(){
-        return new JoystickButton(operCont, XboxController.Button.kStart.value);
     }
 }

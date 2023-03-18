@@ -8,7 +8,6 @@ import frc.robot.Constants;
 import frc.robot.T16000M;
 import frc.robot.interfaces.IDriveControls;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 
 
 public class LilJaydenDriveControls implements IDriveControls {
@@ -80,8 +79,14 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
-    public XboxController getCont() {
-        // TODO Auto-generated method stub
-        return null;
+    public void setBothRumble(double val){
+    }
+
+    @Override
+    public void setLeftRumble(double val){
+    }
+
+    @Override
+    public void setRightRumble(double val){
     }
 }

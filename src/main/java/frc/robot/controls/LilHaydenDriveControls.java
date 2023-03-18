@@ -163,11 +163,6 @@ public class LilHaydenDriveControls implements IOperatorControls {
     }
 
     @Override
-    public XboxController getCont(){
-        return operCont;
-    }
-
-    @Override
     public void setBothRumble(double val){
         operCont.setRumble(RumbleType.kBothRumble, val);
     }
@@ -180,11 +175,6 @@ public class LilHaydenDriveControls implements IOperatorControls {
     @Override
     public void setRightRumble(double val){
         operCont.setRumble(RumbleType.kRightRumble, val);
-    }
-
-    @Override
-    public JoystickButton rumble(){
-        return new JoystickButton(operCont, XboxController.Button.kStart.value);
     }
 }
 

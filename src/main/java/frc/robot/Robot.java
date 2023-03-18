@@ -8,7 +8,6 @@ import org.livoniawarriors.Logger;
 import org.livoniawarriors.REVDigitBoard;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -321,7 +320,6 @@ public class Robot extends TimedRobot {
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake).alongWith(new PickUpHapticFeedback(opControls, controls, intake)));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
-        opControls.rumble().whileTrue(new RumbleSequence(opControls));
     }
 
     /** This function is called periodically during operator control. */
