@@ -99,6 +99,7 @@ public class LED_controller{
     public static void periodic(Arm arm, Intake intake){
         // if(Logger.isFaultSet()){
         //     send(cmds.fault);
+        //     send something to ronyboard
         // }
         if(checkArm){
             send(cmds.lightning); //change the command later
