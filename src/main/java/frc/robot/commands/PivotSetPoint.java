@@ -15,6 +15,10 @@ public class PivotSetPoint extends CommandBase{
 
     @Override
     public void initialize() {
+        double presentPivotAngle = pivot.getPivotAngle();
+        if(Math.abs(presentPivotAngle) > 360){
+            angleDeg += (int)(presentPivotAngle/360)*360.0;
+        }
     }
 
     @Override
