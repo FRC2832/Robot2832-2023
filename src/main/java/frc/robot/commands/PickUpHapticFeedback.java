@@ -6,6 +6,7 @@ import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.Timer; 
 import frc.robot.Intake;
+import frc.robot.LED_controller;
 
 public class PickUpHapticFeedback extends CommandBase {
     private IOperatorControls operatorCont;
@@ -36,6 +37,8 @@ public class PickUpHapticFeedback extends CommandBase {
 
             // vibrate driver controller (right side)
             RumbleSequence(driverCont);
+            
+            LED_controller.setHasPiece(true);
         }
     }
 
@@ -51,6 +54,7 @@ public class PickUpHapticFeedback extends CommandBase {
     public void end(boolean interrupted) {
         operatorCont.setBothRumble(0.0);
         driverCont.setBothRumble(0.0);
+        LED_controller.setHasPiece(false);
     }
 
     private void RumbleSequence(IDriveControls cont){

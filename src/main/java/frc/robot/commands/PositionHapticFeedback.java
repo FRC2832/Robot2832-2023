@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
+import frc.robot.LED_controller;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -39,6 +40,7 @@ public class PositionHapticFeedback extends CommandBase {
             // vibrate operator controller
             RumbleSequence();
         }
+        LED_controller.setArmAtPoint(fin);
     }
 
     @Override
@@ -52,6 +54,7 @@ public class PositionHapticFeedback extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         cont.setBothRumble(0.0);
+        LED_controller.setArmAtPoint(false);
     }
 
     private void RumbleSequence(){

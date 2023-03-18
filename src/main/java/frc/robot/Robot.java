@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -224,19 +223,7 @@ public class Robot extends TimedRobot {
         //run the command schedule no matter what mode we are in
         schedule.run();
         digit.display("Rony");
-        // if cube mode: call cube LED's 
-        // else (cone mode): call cone LED's
-
-        //run once a second
-        if(count % 5 == 0) {
-            if(getGamePieceMode() == CUBE_MODE){
-                LED_controller.send(cmds.cube);
-            }
-            else{
-                LED_controller.send(cmds.cone);
-            }
-        }
-        count++;
+        LED_controller.periodic(arm, intake);
     }
     int count = 0;
     

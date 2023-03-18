@@ -111,5 +111,5 @@ public final class Constants {
     public static final double PracticeVoltage = 2.38;
     public static final double JumperError = 0.1;
 
-    public static final double INTAKE_CURRENT_THRESHOLD = 0; // TODO: Determine volt threshold to vibrate controllers
+    public static final double INTAKE_CURRENT_THRESHOLD = 9.0; // TODO: Determine CURRENT threshold to vibrate controllers
 }
