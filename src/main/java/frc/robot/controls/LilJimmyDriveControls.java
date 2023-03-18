@@ -104,7 +104,7 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
    
     @Override
-    public JoystickButton ArmToScoreLow(){ //driver/operator will use this method
+    public JoystickButton ArmToScoreLow(){ //driver/operator will use this method   
         return new JoystickButton(operCont, 16);
     }
    
@@ -180,6 +180,11 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public void setRightRumble(double val){
         operCont.setRumble(RumbleType.kRightRumble, val);
+    }
+
+    @Override
+    public JoystickButton rumble(){
+        return new JoystickButton(operCont, XboxController.Button.kStart.value);
     }
 }
 

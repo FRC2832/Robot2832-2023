@@ -31,4 +31,5 @@ public interface IOperatorControls {
     void setBothRumble(double val);
     void setLeftRumble(double val);
     void setRightRumble(double val);
+    JoystickButton rumble();
 }

@@ -321,6 +321,7 @@ public class Robot extends TimedRobot {
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake).alongWith(new PickUpHapticFeedback(opControls, controls, intake)));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
+        opControls.rumble().whileTrue(new RumbleSequence(opControls));
     }
 
     /** This function is called periodically during operator control. */

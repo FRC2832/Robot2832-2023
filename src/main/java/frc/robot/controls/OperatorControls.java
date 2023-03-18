@@ -163,4 +163,9 @@ public class OperatorControls implements IOperatorControls {
     public void setRightRumble(double val){
         operCont.setRumble(RumbleType.kRightRumble, val);
     }
+
+    @Override
+    public JoystickButton rumble(){
+        return new JoystickButton(operCont, XboxController.Button.kStart.value);
+    }
 }
