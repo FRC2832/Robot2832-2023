@@ -1,7 +1,9 @@
 package org.livoniawarriors;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.ErrorCode;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import org.livoniawarriors.REVDigitBoard;
 
 public class Logger implements Runnable {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
@@ -50,9 +53,11 @@ public class Logger implements Runnable {
     private NetworkTable tempTable;
     private NetworkTable faultTable;
     private NetworkTable stickyTable;
+    private NetworkTable clearStickyTable;
     private NetworkTable sensorTable;
     private NetworkTable canStatusTable;
     private static NetworkTable taskTimings;
+    private REVDigitBoard digit;
     //solenoids, compressor
 
     public Logger() {
@@ -61,6 +66,7 @@ public class Logger implements Runnable {
         // Record both DS control and joystick data
         var log = DataLogManager.getLog();
         DriverStation.startDataLog(log);
+        digit = new REVDigitBoard();
 
         //create our logging table references
         canStatusTable = NetworkTableInstance.getDefault().getTable("CAN_Status");
@@ -69,6 +75,7 @@ public class Logger implements Runnable {
         commandTable = NetworkTableInstance.getDefault().getTable("Device_Commands");
         faultTable = NetworkTableInstance.getDefault().getTable("Device_Faults");
         stickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
+        clearStickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
         sensorTable = NetworkTableInstance.getDefault().getTable("Sensors");
         taskTimings = NetworkTableInstance.getDefault().getTable("Task_Timings_ms");
         SmartDashboard.putBoolean("Clear Faults", false);
@@ -270,6 +277,47 @@ public class Logger implements Runnable {
         sensorTable.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
 
         checkClearFaults();
+
+        Set<String> keys0 = getFaults().getKeys();
+        Set<String> stickyKeys0 = getStickyFaults().getKeys();
+
+        String[] keys = new String[keys0.size()];
+        String[] stickyKeys = new String[stickyKeys0.size()];
+        
+        keys0.toArray(keys);
+        stickyKeys0.toArray(stickyKeys);
+       
+        ArrayList<String> faultValues = new ArrayList<>();
+        ArrayList<String> stickyValues = new ArrayList<>();
+        ArrayList<String> resetStickyValues = new ArrayList<>();
+        String error = "";
+        
+        for(String i: keys) {
+            faultValues.add(getFaults().getEntry(i).getString("EROR"));
+        }
+        
+        for(String i: stickyKeys) {
+            stickyValues.add(getStickyFaults().getEntry(i).getString("EROR"));
+        }
+        for(int i = 0; i < faultValues.size(); i++) {
+            while(!(faultValues.get(0).equals("Ok"))) {
+                digit.display("FLT");
+                error = keys[i].substring(0, 3) + "F";
+                SmartDashboard.putString("Error Code", error);
+            }
+        }
+        for(int i = 0; i < stickyValues.size(); i++) {
+            while(!(stickyValues.get(i).equals("Ok"))) {
+                digit.display("SFLT");
+                error = stickyKeys[i].substring(0, 3) + "S";
+                SmartDashboard.putString("Error Code", error);
+            }
+        }
+        digit.display("Rony");
+        if(digit.getButtonA()) {
+            stickyValues = resetStickyValues;
+            stickyTable = clearStickyTable;
+        }
     }
 
     private void readTalon(String name, BaseTalon talon) {
