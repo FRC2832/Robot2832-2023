@@ -302,14 +302,14 @@ public class Logger implements Runnable {
         for(int i = 0; i < faultValues.size(); i++) {
             while(!(faultValues.get(0).equals("Ok"))) {
                 digit.display("FLT");
-                error = keys[i].substring(0, 3) + "F";
+                error = keys[i].substring(0, 2) + "F";
                 SmartDashboard.putString("Error Code", error);
             }
         }
         for(int i = 0; i < stickyValues.size(); i++) {
             while(!(stickyValues.get(i).equals("Ok"))) {
                 digit.display("SFLT");
-                error = stickyKeys[i].substring(0, 3) + "S";
+                error = stickyKeys[i].substring(0, 2) + "S";
                 SmartDashboard.putString("Error Code", error);
             }
         }
