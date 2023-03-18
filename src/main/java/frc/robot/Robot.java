@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
     private AnalogInput jumper;
 
     private static boolean pieceMode;
+    private static boolean runArmPidsAllTime;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
@@ -394,5 +395,13 @@ public class Robot extends TimedRobot {
 
     public static void setGamePieceMode(boolean mode){
         pieceMode = mode;
+    }
+
+    public static boolean getRunArmPidsAllTime() {
+        return runArmPidsAllTime;
+    }
+
+    public static void setRunArmPidsAllTime(boolean runArmPids) {
+        runArmPidsAllTime = runArmPids;
     }
 }

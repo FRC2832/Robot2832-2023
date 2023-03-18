@@ -31,7 +31,15 @@
         }
       },
       "/SmartDashboard/Field": {
-        "image": "2023-field.png"
+        "image": "2023-field.png",
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Operator Select": {
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/RunArmPids": {
         "window": {

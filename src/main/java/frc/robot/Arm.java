@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.RunArmPids;
 import frc.robot.interfaces.IArmControl;
+import frc.robot.Robot;
 
 public class Arm extends SubsystemBase{
     private IArmControl hardware;
@@ -44,14 +45,14 @@ public class Arm extends SubsystemBase{
         SmartDashboard.putNumber("Arm Z", getArmZPosition());
         hardware.checkBrake();
 
-        RunArmPids runPids = new RunArmPids();
-        if(!shoulderPid.atGoal() && runPids.getRun()) {
+        boolean runArmPidsAllTime = Robot.getRunArmPidsAllTime();
+        if(!shoulderPid.atGoal() && runArmPidsAllTime) {
             double shoulderVolts = shoulderPid.calculate(shoulderPid.getGoal().position);
             setShoulderMotorVolts(shoulderVolts);
             SmartDashboard.putNumber("Shoulder Volts Command", shoulderVolts);
         }
         
-        if(!elbowPid.atGoal() && runPids.getRun()) {
+        if(!elbowPid.atGoal() && runArmPidsAllTime) {
             double ff = hardware.getFeedForward(getShoulderAngle());
             double elbowVolts = -elbowPid.calculate(elbowPid.getGoal().position) + ff;
             setElbowMotorVolts(elbowVolts);
