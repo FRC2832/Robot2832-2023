@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.interfaces.IOperatorControls;
 
 public class RumbleSequence extends CommandBase {
@@ -16,6 +14,7 @@ public class RumbleSequence extends CommandBase {
 
     @Override
     public void initialize() {
+        count = 0;
     }
 
     @Override
