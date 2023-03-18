@@ -7,7 +7,7 @@ import frc.robot.LED_controller;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj.Timer;
 
-public class PositionHapticFeedback extends CommandBase {
+public class PositionFeedback extends CommandBase {
     private double xPos;
     private double zPos;
     private IOperatorControls cont;
@@ -15,7 +15,7 @@ public class PositionHapticFeedback extends CommandBase {
     private Timer timer;
     private double count;
 
-    public PositionHapticFeedback(double xPos, double zPos, Arm arm, IOperatorControls cont){
+    public PositionFeedback(double xPos, double zPos, Arm arm, IOperatorControls cont){
         this.xPos = xPos;
         this.zPos = zPos;
         this.arm = arm;

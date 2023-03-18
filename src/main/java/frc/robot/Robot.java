@@ -295,15 +295,15 @@ public class Robot extends TimedRobot {
         opControls.ShoulderNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
         opControls.ElbowNegRequested().whileTrue(new ArmManualOverride(arm, opControls));
-        opControls.ArmToPickupGroundCone().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z).alongWith(new PositionHapticFeedback(Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z, arm, opControls)));
-        opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z).alongWith(new PositionHapticFeedback(Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z, arm, opControls)));
-        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z).alongWith(new PositionHapticFeedback(Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z, arm, opControls)));
+        opControls.ArmToPickupGroundCone().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z).alongWith(new PositionFeedback(Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z, arm, opControls)));
+        opControls.ArmToPickupTail().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z).alongWith(new PositionFeedback(Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z, arm, opControls)));
+        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z).alongWith(new PositionFeedback(Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z, arm, opControls)));
         opControls.ArmToSecureLocation().whileTrue(new ArmAutonPoint(arm, Constants.ArmToSecureLocation_X, Constants.ArmToSecureLocation_Z));
-        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z, arm, opControls)));
-        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z, arm, opControls)));
-        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z, arm, opControls)));
-        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z).alongWith(new PositionHapticFeedback(Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z, arm, opControls)));
-        opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake).alongWith(new PickUpHapticFeedback(opControls, controls, intake)));
+        opControls.ArmToScoreLow().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z).alongWith(new PositionFeedback(Constants.ArmToScoreLow_X, Constants.ArmToScoreLow_Z, arm, opControls)));
+        opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z).alongWith(new PositionFeedback(Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z, arm, opControls)));
+        opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z).alongWith(new PositionFeedback(Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z, arm, opControls)));
+        opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z).alongWith(new PositionFeedback(Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z, arm, opControls)));
+        opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake).alongWith(new PickUpFeedback(opControls, controls, intake)));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
     }

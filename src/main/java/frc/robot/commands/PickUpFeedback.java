@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Intake;
 import frc.robot.LED_controller;
 
-public class PickUpHapticFeedback extends CommandBase {
+public class PickUpFeedback extends CommandBase {
     private IOperatorControls operatorCont;
     private IDriveControls driverCont;
     private Timer timer;
     private Intake intake;
     private int count;
 
-    public PickUpHapticFeedback(IOperatorControls operatorCont, IDriveControls driverCont, Intake intake){
+    public PickUpFeedback(IOperatorControls operatorCont, IDriveControls driverCont, Intake intake){
         this.timer = new Timer();
         this.operatorCont = operatorCont;
         this.driverCont = driverCont;
