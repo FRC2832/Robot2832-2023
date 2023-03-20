@@ -300,7 +300,7 @@ public class Logger implements Runnable {
             stickyValues.add(getStickyFaults().getEntry(i).getString("EROR"));
         }
         for(int i = 0; i < faultValues.size(); i++) {
-            while(!(faultValues.get(0).equals("Ok"))) {
+            while(!(faultValues.get(i).equals("Ok"))) {
                 digit.display("FLT");
                 error = keys[i].substring(0, 2) + "F";
                 SmartDashboard.putString("Error Code", error);
