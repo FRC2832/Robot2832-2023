@@ -308,6 +308,7 @@ public class Robot extends TimedRobot {
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         pivot.setDefaultCommand(new PivotMove(opControls, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
+        odometry.setDriverControls(controls);
 
         //set all the other commands
         opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
