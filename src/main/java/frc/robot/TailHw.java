@@ -38,7 +38,7 @@ public class TailHw implements ITailControl{
         distSensor.setAutomaticMode(true);
         distSensor.setMeasurementPeriod(0.018);
 
-        tailPid = new PIDController(0.13, 0, 0);
+        tailPid = new PIDController(0.10, 0, 0);
 
         Logger.RegisterTalon("Tail", tailMotor);
         Logger.RegisterSensor("Tail Angle", () -> getTailAngle());

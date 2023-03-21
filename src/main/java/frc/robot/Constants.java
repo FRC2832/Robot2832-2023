@@ -104,8 +104,9 @@ public final class Constants {
     public static final double ScoreCubeOffset = 4;
 
     public static final double IntakeVoltage = 12.5;
-    public static final double TAIL_LOW_POINT = 15;
+    public static final double TAIL_LOW_POINT = 5;
     public static final double TAIL_HIGH_POINT = 95;
+    public static final double TAIL_STOW_POINT = 150;
     
     public static final double CTRE_P_RES = 1024 / 12;
 }

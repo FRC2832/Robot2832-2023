@@ -58,6 +58,11 @@ public class DriveControls implements IDriveControls {
     }
 
     @Override
+    public JoystickButton TailStowRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kA.value);
+    }
+
+    @Override
     public double GetBoostTriggerRequest() {
         return driveCont.getRightTriggerAxis();
     }
@@ -74,6 +79,5 @@ public class DriveControls implements IDriveControls {
             }
         }
         return false;
-    }
-   
+    }   
 }
