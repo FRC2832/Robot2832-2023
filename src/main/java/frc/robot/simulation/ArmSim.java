@@ -62,4 +62,16 @@ public class ArmSim implements IArmControl {
     public double getFeedForward(double offset) {
         return 0;
     }
+
+    @Override
+    public void setElbowAngle(double angleDeg) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setShoulderAngle(double angleDeg) {
+        // TODO Auto-generated method stub
+        
+    }
 }

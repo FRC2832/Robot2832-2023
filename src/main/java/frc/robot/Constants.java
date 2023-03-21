@@ -67,14 +67,14 @@ public final class Constants {
     public static final double ELBOW_OFFSET = 135;
     public static final double INTAKE_OFFSET = 110;
 
-    public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
+    public static final double ARM_ACCEPT_ERROR = 1;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
     public static final double ArmToPickupGround_X = 40.8;
     public static final double ArmToPickupGround_Z = -3;
 
     public static final double ArmToPickupTail_X = 21;
-    public static final double ArmToPickupTail_Z = 15;
+    public static final double ArmToPickupTail_Z = 17;
 
     public static final double ArmToPickupHuman_X = 29;
     public static final double ArmToPickupHuman_Z = 3.6;
@@ -85,15 +85,16 @@ public final class Constants {
     public static final double ArmToScoreLow_X = -29;
     public static final double ArmToScoreLow_Z = 2;
 
-    public static final double ArmToScoreMiddle_X = -25.5;
-    public static final double ArmToScoreMiddle_Z = 30;
+    //level 2 back
+    public static final double ArmToScoreMiddle_X = -27.6;
+    public static final double ArmToScoreMiddle_Z = 31.2;
     
-    public static final double ArmToScoreMiddleFront_X = 50;
-    public static final double ArmToScoreMiddleFront_Z = 30;
+    public static final double ArmToScoreMiddleFront_X = 52.6;
+    public static final double ArmToScoreMiddleFront_Z = 22.4;
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -37;
-    public static final double ArmToScoreTop_Z = 44;
+    public static final double ArmToScoreTop_X = -38.8;
+    public static final double ArmToScoreTop_Z = 44.7;
 
     public static final double ArmToTransitionPoint_X = -3;
     public static final double ArmToTransitionPoint_Z = 50;
@@ -106,8 +107,5 @@ public final class Constants {
     public static final double TAIL_LOW_POINT = 15;
     public static final double TAIL_HIGH_POINT = 95;
     
-    //jumper values for different robots
-    public static final double BuzzVoltage = 1.11;
-    public static final double PracticeVoltage = 2.38;
-    public static final double JumperError = 0.1;
+    public static final double CTRE_P_RES = 1024 / 12;
 }
