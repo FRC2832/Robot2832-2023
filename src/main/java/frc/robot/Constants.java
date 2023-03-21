@@ -47,11 +47,12 @@ public final class Constants {
     public static final double NOM_BATTERY_VOLTAGE = 12.5;
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
-    public static final double MAX_AUTO_SPEED = 1.5;                //Max speed (meters/sed) the driver can go
-    public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sed) the driver can go
+    public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sec) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
-
+    public static final double MAX_AUTO_SPEED = 1.0;//2.5;                //Max speed (meters/sec) the robot can go in auton
+    public static final double MAX_AUTO_TURN_SPEED = 3 * Math.PI;                //Max speed (rad/sec) the robot can rotate
+    
     public static final Pose2d START_BLUE_LEFT = new Pose2d(2.5,4.75,Rotation2d.fromDegrees(0));  //starting positions for Auton
     public static final Pose2d START_BLUE_MIDDLE = new Pose2d(2.5,2.75,Rotation2d.fromDegrees(0)); 
     public static final Pose2d START_BLUE_RIGHT = new Pose2d(2.5,1.15,Rotation2d.fromDegrees(0)); 
@@ -70,18 +71,27 @@ public final class Constants {
     public static final double ARM_ACCEPT_ERROR = 1;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
+    //pickup ground front
     public static final double ArmToPickupGround_X = 40.8;
     public static final double ArmToPickupGround_Z = -3;
+    
+    //pickup ground back
+    public static final double ArmToPickupGroundBack_X = -20;
+    public static final double ArmToPickupGroundBack_Z = 2;
 
+    //pickup from tail
     public static final double ArmToPickupTail_X = 21;
     public static final double ArmToPickupTail_Z = 17;
 
+    //pickup from human player station
     public static final double ArmToPickupHuman_X = 29;
     public static final double ArmToPickupHuman_Z = 3.6;
 
+    //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;
 
+    //level 1 back
     public static final double ArmToScoreLow_X = -29;
     public static final double ArmToScoreLow_Z = 2;
 
@@ -89,6 +99,7 @@ public final class Constants {
     public static final double ArmToScoreMiddle_X = -27.6;
     public static final double ArmToScoreMiddle_Z = 31.2;
     
+    //level 2 front
     public static final double ArmToScoreMiddleFront_X = 52.6;
     public static final double ArmToScoreMiddleFront_Z = 22.4;
 
