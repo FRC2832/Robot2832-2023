@@ -24,11 +24,24 @@ public class DriveToPoint extends CommandBase {
     private double distLeft;
     private double scale;
     private double speedRot;
+    private double speedMod;
+    private double rotMod;
 
     public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest) {
         this.drive = drive;
         this.odometry = odometry;
         this.dest = dest;
+        speedMod = 1;
+        rotMod = 1;
+        addRequirements(drive);
+    }
+
+    public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest, double speedMod, double rotMod) {
+        this.drive = drive;
+        this.odometry = odometry;
+        this.dest = dest;
+        this.speedMod = speedMod;
+        this.rotMod = rotMod;
         addRequirements(drive);
     }
 
@@ -48,8 +61,9 @@ public class DriveToPoint extends CommandBase {
         if(distLeft > TARGET_ERROR || Math.abs(distRot) > 2) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
-            scale = Constants.MAX_AUTO_SPEED / distLeft;
-            speedRot = (distRot * .015) + (.125 * Math.signum(distRot));//Constants.MAX_AUTO_TURN_SPEED * (Math.signum(distRot));
+            scale = (Constants.MAX_AUTO_SPEED * speedMod)/ distLeft;
+            speedRot = (distRot * .03 * rotMod) + (.05 * Math.signum(distRot));//(.1 * Math.signum(distRot));//Constants.MAX_AUTO_TURN_SPEED * (Math.signum(distRot));
+            //          (distRot * .06 * rotMod)
             if(Math.abs(distRot) > 2){
                 drive.SwerveDrive(
                 distX  * scale, 

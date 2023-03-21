@@ -17,8 +17,8 @@ public class ArmSim implements IArmControl {
     private final double kV_Shoulder = 0.07832;     //4v for 1.6 sec/81.765*
 
     public ArmSim() {
-        shoulderDeg = 60;
-        elbowDeg = -60;
+        shoulderDeg = 45;
+        elbowDeg = 120;
 
         Logger.RegisterSensor("Shoulder Angle", () -> getShoulderAngle());
         Logger.RegisterSensor("Elbow Angle", () -> getElbowAngle());

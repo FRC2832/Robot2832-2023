@@ -47,12 +47,12 @@ public final class Constants {
     public static final double NOM_BATTERY_VOLTAGE = 12.5;
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
-    public static final double MAX_AUTO_SPEED = 1.0;                //Max speed (meters/sec) the robot can go in auton
-    public static final double MAX_AUTO_TURN_SPEED = 0.5;                //Max speed (rad/sec) the robot can rotate
     public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sec) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
-
+    public static final double MAX_AUTO_SPEED = 1.0;//2.5;                //Max speed (meters/sec) the robot can go in auton
+    public static final double MAX_AUTO_TURN_SPEED = 3 * Math.PI;                //Max speed (rad/sec) the robot can rotate
+    
     public static final Pose2d START_BLUE_LEFT = new Pose2d(2.5,4.75,Rotation2d.fromDegrees(0));  //starting positions for Auton
     public static final Pose2d START_BLUE_MIDDLE = new Pose2d(2.5,2.75,Rotation2d.fromDegrees(0)); 
     public static final Pose2d START_BLUE_RIGHT = new Pose2d(2.5,1.15,Rotation2d.fromDegrees(0)); 

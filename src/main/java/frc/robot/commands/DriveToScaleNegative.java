@@ -33,7 +33,7 @@ public class DriveToScaleNegative extends CommandBase {
     public void execute() {
         drive.SwerveDrive(-Constants.MAX_AUTO_SPEED, 0, 0, false);
 
-        if(drive.getPitch() > 0) {
+        if(drive.getPitch() < 0) {
             finishedCounts++;
         } else {
             finishedCounts = 0;
