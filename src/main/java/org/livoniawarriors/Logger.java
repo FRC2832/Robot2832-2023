@@ -58,6 +58,9 @@ public class Logger implements Runnable {
     private NetworkTable canStatusTable;
     private static NetworkTable taskTimings;
     private REVDigitBoard digit;
+    private int count;
+    private int errorCount;
+    private boolean kill = false;
     //solenoids, compressor
 
     public Logger() {
@@ -291,33 +294,46 @@ public class Logger implements Runnable {
         ArrayList<String> stickyValues = new ArrayList<>();
         ArrayList<String> resetStickyValues = new ArrayList<>();
         String error = "";
-        
-        for(String i: keys) {
-            faultValues.add(getFaults().getEntry(i).getString("EROR"));
-        }
-        
-        for(String i: stickyKeys) {
-            stickyValues.add(getStickyFaults().getEntry(i).getString("EROR"));
-        }
-        for(int i = 0; i < faultValues.size(); i++) {
-            while(!(faultValues.get(0).equals("Ok"))) {
-                digit.display("FLT");
-                error = keys[i].substring(0, 2) + "F";
-                SmartDashboard.putString("Error Code", error);
+        if(!kill) {
+            for(String i: keys) {
+                faultValues.add(getFaults().getEntry(i).getString("EROR"));
+            }
+            
+            for(String i: stickyKeys) {
+                stickyValues.add(getStickyFaults().getEntry(i).getString("EROR"));
+            }
+            if(count < faultValues.size()) {
+                if(!(faultValues.get(count).equals("Ok"))) {
+                    digit.display("FLT");
+                    error = keys[count].substring(0, 2) + "F";
+                    SmartDashboard.putString("Error Code", error);
+                    errorCount ++;
+                }
+            }
+            else if(count >= faultValues.size() && count < faultValues.size() + stickyValues.size() - 1) {
+                if(!(stickyValues.get(count - faultValues.size()).equals("Ok"))) {
+                    digit.display("SFLT");
+                    error = stickyKeys[count].substring(0, 2) + "S";
+                    SmartDashboard.putString("Error Code", error);
+                    errorCount++;
+                }
+            }
+            else if(count == faultValues.size() + stickyValues.size() - 1 && errorCount == 0) {
+                kill = true;
+            }
+            else {
+                count = 0;
             }
         }
-        for(int i = 0; i < stickyValues.size(); i++) {
-            while(!(stickyValues.get(i).equals("Ok"))) {
-                digit.display("SFLT");
-                error = stickyKeys[i].substring(0, 2) + "S";
-                SmartDashboard.putString("Error Code", error);
-            }
+        else {
+            digit.display("Rony");
         }
-        digit.display("Rony");
+        
         if(digit.getButtonA()) {
             stickyValues = resetStickyValues;
             stickyTable = clearStickyTable;
         }
+        count++;
     }
 
     private void readTalon(String name, BaseTalon talon) {
