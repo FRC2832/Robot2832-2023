@@ -323,6 +323,7 @@ public class Logger implements Runnable {
             }
             else {
                 count = 0;
+                errorCount = 0;
             }
         }
         else {
