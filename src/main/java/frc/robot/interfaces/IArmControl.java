@@ -9,6 +9,9 @@ public interface IArmControl {
 
     double getShoulderAngle();
 
+    void setElbowAngle(double angleDeg);
+    void setShoulderAngle(double angleDeg);
+
     void checkBrake();
 
     void updateInputs();

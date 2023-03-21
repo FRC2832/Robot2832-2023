@@ -2,7 +2,6 @@ package frc.robot;
 
 import org.livoniawarriors.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,25 +44,27 @@ public class Arm extends SubsystemBase{
     }
 
     public void setShoulderAngle(double angleDeg) {
-        shoulderPid.setGoal(angleDeg);
-        double volts = shoulderPid.calculate(getShoulderAngle());
+        //shoulderPid.setGoal(angleDeg);
+        //double volts = shoulderPid.calculate(getShoulderAngle());
 
-        setShoulderMotorVolts(volts);
+        //setShoulderMotorVolts(volts);
+        hardware.setShoulderAngle(angleDeg);
         SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
-        SmartDashboard.putNumber("Shoulder Volts Command", volts);
+        //SmartDashboard.putNumber("Shoulder Volts Command", volts);
     }
 
     public void setElbowAngle(double angleDeg) {
-        elbowPid.setGoal(angleDeg);
-        double ff = hardware.getFeedForward(getShoulderAngle());
-        double volts = -elbowPid.calculate(getElbowAngle()) + ff;
+        //elbowPid.setGoal(angleDeg);
+        //double ff = hardware.getFeedForward(getShoulderAngle());
+        //double volts = -elbowPid.calculate(getElbowAngle()) + ff;
 
         //if(elbowPid.atSetpoint()){
         //    volts = 0;
         //}
-        setElbowMotorVolts(volts);
+        //setElbowMotorVolts(volts);
+        hardware.setElbowAngle(angleDeg);
         SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
-        SmartDashboard.putNumber("Elbow Volts Command", volts);
+        //SmartDashboard.putNumber("Elbow Volts Command", volts);
     }
 
     

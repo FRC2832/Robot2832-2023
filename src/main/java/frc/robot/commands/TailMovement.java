@@ -32,12 +32,15 @@ public class TailMovement extends CommandBase{
         if(arm.getArmXPosition() <= -10) {
             tail.setTailAngle(Constants.TAIL_HIGH_POINT);
         } else if(controls.TailUpRequested().getAsBoolean()){
-            tail.setTailVoltage(4);
-            //tail.setTailAngle(Constants.TAIL_HIGH_POINT);
+            //tail.setTailVoltage(4);
+            tail.setTailAngle(Constants.TAIL_HIGH_POINT);
         } else if(controls.TailDownRequested().getAsBoolean()){
-            //tail.setTailAngle(Constants.TAIL_LOW_POINT);
-            tail.setTailVoltage(-4);
-        }  else if(tailDist > 0 && tailDist < 5.3 && !tailUpOverride) {
+            tail.setTailAngle(Constants.TAIL_LOW_POINT);
+            //tail.setTailVoltage(-4);
+        } else if(controls.TailStowRequested().getAsBoolean()){
+            tail.setTailAngle(Constants.TAIL_STOW_POINT);
+            //tail.setTailVoltage(-4);
+        } else if(tailDist > 0 && tailDist < 5.3 && !tailUpOverride) {
             tail.setTailAngle(Constants.TAIL_HIGH_POINT);
         } else {
             tail.setTailVoltage(0);

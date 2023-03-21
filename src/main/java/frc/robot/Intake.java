@@ -20,6 +20,7 @@ public class Intake extends SubsystemBase {
         intakeMotor = new CANSparkMax(48,MotorType.kBrushless);
         intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor.setSmartCurrentLimit(15);
         timer = new Timer();
 
         Logger.RegisterCanSparkMax("Intake", intakeMotor);
