@@ -62,7 +62,7 @@ public class DriveToPoint extends CommandBase {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = (Constants.MAX_AUTO_SPEED * speedMod)/ distLeft;
-            speedRot = (distRot * .03 * rotMod) + (.05 * Math.signum(distRot));//(.1 * Math.signum(distRot));//Constants.MAX_AUTO_TURN_SPEED * (Math.signum(distRot));
+            speedRot = (distRot * .03 * rotMod) + (.06 * Math.signum(distRot));//(.1 * Math.signum(distRot));//Constants.MAX_AUTO_TURN_SPEED * (Math.signum(distRot));
             //          (distRot * .06 * rotMod)
             if(Math.abs(distRot) > 2){
                 drive.SwerveDrive(
