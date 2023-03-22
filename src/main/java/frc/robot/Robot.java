@@ -5,7 +5,6 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
-import org.livoniawarriors.REVDigitBoard;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
@@ -50,7 +49,6 @@ public class Robot extends TimedRobot {
     private Intake intake;
     private Pivot pivot;
     private Tail tail;
-    private REVDigitBoard digit;
     public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -188,7 +186,6 @@ public class Robot extends TimedRobot {
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
-        digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls, arm, tail);
