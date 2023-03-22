@@ -1,5 +1,14 @@
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -8,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.DriveToBalance;
@@ -39,6 +49,7 @@ public class AutonChooser {
     private static final String kOnePiece = "L3 Score";
     private static final String kTwoPiece = "Score Two";
     private static final String kThreePiece = "Score Three";
+    private static final String kPathPlan = "Drive Around Balance";
 
     private String AutonomousStartPosition;
 
@@ -58,6 +69,7 @@ public class AutonChooser {
         startPosChooser.addOption("Score One", kOnePiece);
         startPosChooser.addOption("Score Two", kTwoPiece);
         startPosChooser.addOption("Score Three", kThreePiece);
+        startPosChooser.addOption(kPathPlan, kPathPlan);
         
         SmartDashboard.putData("StartPos Select", startPosChooser);
 
@@ -77,6 +89,8 @@ public class AutonChooser {
             sequence = autoTwoPiece();
         } else if (AutonomousStartPosition.equals(kThreePiece)){ //score three somewhere
             sequence = autoThreePiece();
+        } else if (AutonomousStartPosition.equals(kPathPlan)){ //path plan
+            sequence = autoPathPlanner();
         } else {
             sequence = new MoveWheelsStraight(drive);
         }
@@ -311,6 +325,44 @@ public class AutonChooser {
         //tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
 
         return tempSequence;
+    }
+
+    public Command autoPathPlanner() {
+        // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+        // for every path in the group
+        ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("DriveAroundStation", new PathConstraints(4, 3));
+
+        // This is just an example event map. It would be better to have a constant, global event map
+        // in your code that will be used by all path following commands.
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+        //eventMap.put("intakeDown", new IntakeDown());
+
+        // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+        SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+            odometry::getPose, // Pose2d supplier
+            this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
+            drive.getKinematics(), // SwerveDriveKinematics
+            new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+            drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
+            eventMap,
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            drive // The drive subsystem. Used to properly set the requirements of path following commands
+        );
+
+        return autoBuilder.fullAuto(pathGroup);
+    }
+
+    public void setStartPos(Pose2d startPos) {
+        if(DriverStation.getAlliance() == Alliance.Red) {
+            //flip the orientation because Path Planner thinks the bottom left corner is always the starting position, but won't flip the field2d object
+            Pose2d newPos = new Pose2d(15.98-startPos.getX(), 8.21-startPos.getY(),startPos.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+            startPosition = newPos;
+        } else {
+            startPosition = startPos;
+        }
+        odometry.resetPose(startPosition);
     }
 
     //START POSITION SETTER (FROM SHUFFLEBOARD INPUT)    
