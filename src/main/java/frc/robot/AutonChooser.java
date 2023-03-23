@@ -50,6 +50,7 @@ public class AutonChooser {
     private static final String kTwoPiece = "Score Two";
     private static final String kThreePiece = "Score Three";
     private static final String kPathPlan = "Drive Around Balance";
+    private static final String kPlan3P = "3 piece pathplan";
 
     private String AutonomousStartPosition;
 
@@ -70,6 +71,7 @@ public class AutonChooser {
         startPosChooser.addOption("Score Two", kTwoPiece);
         startPosChooser.addOption("Score Three", kThreePiece);
         startPosChooser.addOption(kPathPlan, kPathPlan);
+        startPosChooser.addOption(kPlan3P, kPlan3P);
         
         SmartDashboard.putData("StartPos Select", startPosChooser);
 
@@ -79,6 +81,8 @@ public class AutonChooser {
     public Command getAuton(){
         if (AutonomousStartPosition.equals(kBalance)) {
             sequence = autoBalance();
+        } else if (AutonomousStartPosition.equals(kMobility)) {
+            sequence = autoBalanceAndOut();
         } else if (AutonomousStartPosition.equals(kNoObstacles)) {
             sequence = autoNoObstacles();
         } else if (AutonomousStartPosition.equals(kCord)) {
@@ -91,6 +95,8 @@ public class AutonChooser {
             sequence = autoThreePiece();
         } else if (AutonomousStartPosition.equals(kPathPlan)){ //path plan
             sequence = autoPathPlanner();
+        } else if (AutonomousStartPosition.equals(kPlan3P)){ //path plan 3 piece
+            sequence = autoPlanThreePiece();
         } else {
             sequence = new MoveWheelsStraight(drive);
         }
@@ -354,6 +360,39 @@ public class AutonChooser {
         return autoBuilder.fullAuto(pathGroup);
     }
 
+    public Command autoPlanThreePiece() {
+        // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+        // for every path in the group
+        ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("3PieceLow", new PathConstraints(4, 3));
+
+        // This is just an example event map. It would be better to have a constant, global event map
+        // in your code that will be used by all path following commands.
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("spitFirst", spit());
+        eventMap.put("suckSecond", suck());
+        eventMap.put("spitSecond", spit());
+        eventMap.put("suckThird", suck());
+        eventMap.put("spitThird", spit());
+        
+        //eventMap.put("intakeDown", new IntakeDown());
+
+        // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+        SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+            odometry::getPose, // Pose2d supplier
+            this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
+            drive.getKinematics(), // SwerveDriveKinematics
+            new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+            drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
+            eventMap,
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            drive // The drive subsystem. Used to properly set the requirements of path following commands
+        );
+
+        return autoBuilder.fullAuto(pathGroup);
+    }
+
     public void setStartPos(Pose2d startPos) {
         if(DriverStation.getAlliance() == Alliance.Red) {
             //flip the orientation because Path Planner thinks the bottom left corner is always the starting position, but won't flip the field2d object
@@ -391,6 +430,12 @@ public class AutonChooser {
             else if(AutonomousStartPosition.equals(kThreePiece)){
                 startPosition = Constants.START_BLUE_LEFT;
             }
+            else if(AutonomousStartPosition.equals(kPathPlan)){
+                startPosition = Constants.START_BLUE_RIGHT;
+            }
+            else if(AutonomousStartPosition.equals(kPlan3P)){
+                startPosition = Constants.START_BLUE_LEFT;
+            }
             else{
                 SmartDashboard.putString("Error", "No Position");
             }
@@ -415,6 +460,12 @@ public class AutonChooser {
                 startPosition = Constants.START_RED_LEFT;
             }
             else if(AutonomousStartPosition.equals(kThreePiece)){
+                startPosition = Constants.START_RED_LEFT;
+            }
+            else if(AutonomousStartPosition.equals(kPathPlan)){
+                startPosition = Constants.START_RED_RIGHT;
+            }
+            else if(AutonomousStartPosition.equals(kPlan3P)){
                 startPosition = Constants.START_RED_LEFT;
             }
             else{
