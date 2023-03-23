@@ -25,10 +25,13 @@ public class ArmHw implements IArmControl {
     double elbowAngleParallel;
     ArmBrakes brakes;
 
-    final double COUNTS_PER_DEGREE_SHOULDER = 1050.58;
-    final double COUNTS_PER_DEGREE_SHOULDER_V = 105.058;
-    final double COUNTS_PER_DEGREE_ELBOW = 1484.0;
-    final double COUNTS_PER_DEGREE_ELBOW_V = 148.40;
+    //75:1 gearbox, 72/30 shoulder gear, 2048 pulses per rev
+    final double COUNTS_PER_DEGREE_SHOULDER = 75/1 * 72/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_SHOULDER_V = COUNTS_PER_DEGREE_SHOULDER / 10;
+
+    //75:1 gearbox, 60:30 pulley, 2048 pulses per rev
+    final double COUNTS_PER_DEGREE_ELBOW = 75/1 * 60/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_ELBOW_V = COUNTS_PER_DEGREE_ELBOW / 10;
 
     private final double kF_ELBOW = 0.716; //12.55 bat * 6.5% power to keep flat
     private final double kF_SHOULDER = 0.952; //12.8 * 9% to keep arm up
