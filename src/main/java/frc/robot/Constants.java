@@ -72,32 +72,32 @@ public final class Constants {
     
     //Arm set point constants 
     //pickup ground front
-    public static final double ArmToPickupGround_X = 40.8;
-    public static final double ArmToPickupGround_Z = -3;
+    public static final double ArmToPickupGround_X = 31.1;
+    public static final double ArmToPickupGround_Z = -0.9;
     
     //pickup ground back
     public static final double ArmToPickupGroundBack_X = -20;
     public static final double ArmToPickupGroundBack_Z = 2;
 
     //pickup from tail
-    public static final double ArmToPickupTail_X = 21;
-    public static final double ArmToPickupTail_Z = 17;
+    public static final double ArmToPickupTail_X = 29.1;
+    public static final double ArmToPickupTail_Z = 114.6;
 
     //pickup from human player station
-    public static final double ArmToPickupHuman_X = 29;
-    public static final double ArmToPickupHuman_Z = 3.6;
+    public static final double ArmToPickupHuman_X = 23.8;
+    public static final double ArmToPickupHuman_Z = 3.0;
 
     //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;
 
     //level 1 back
-    public static final double ArmToScoreLow_X = -29;
-    public static final double ArmToScoreLow_Z = 2;
+    public static final double ArmToScoreLow_X = -26.6;
+    public static final double ArmToScoreLow_Z = 6;
 
     //level 2 back
-    public static final double ArmToScoreMiddle_X = -27.6;
-    public static final double ArmToScoreMiddle_Z = 31.2;
+    public static final double ArmToScoreMiddle_X = -20.8;
+    public static final double ArmToScoreMiddle_Z = 42.7;
     
     //level 2 front
     public static final double ArmToScoreMiddleFront_X = 52.6;
