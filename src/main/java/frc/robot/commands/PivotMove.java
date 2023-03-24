@@ -24,7 +24,6 @@ public class PivotMove extends CommandBase{
         pieceMode = Robot.getGamePieceMode();
     }
 
-
     @Override
     public void execute() {  
         //reset the offset angle when the piece mode changed

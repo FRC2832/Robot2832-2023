@@ -7,7 +7,6 @@ package frc.robot;
 import org.livoniawarriors.Logger;
 import org.livoniawarriors.REVDigitBoard;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -54,7 +53,6 @@ public class Robot extends TimedRobot {
     public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
-    private AnalogInput jumper;
 
     private static boolean pieceMode;
 
@@ -150,10 +148,6 @@ public class Robot extends TimedRobot {
         // initialize robot parts and locations where they are
         controls = new DriveControls();
         opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
-
-        //check to see what robot we are
-        //jumper = new AnalogInput(0);
-        var jumperVolts = 0;
 
         // initialize robot features
         if (isSimulation() || (SerialNumber.equals("031b525b"))) {
@@ -325,7 +319,7 @@ public class Robot extends TimedRobot {
         opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z));
+        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z).alongWith(new PivotSetPoint(pivot, Constants.PivotToPickupHuman)));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
