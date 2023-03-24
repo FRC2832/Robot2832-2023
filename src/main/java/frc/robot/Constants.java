@@ -72,10 +72,10 @@ public final class Constants {
     
     //Arm set point constants 
     //pickup ground front
-    public static final double ArmToPickupGround_X = 31.1;
-    public static final double ArmToPickupGround_Z = -0.9;
+    public static final double ArmToPickupGround_X = 37.1;
+    public static final double ArmToPickupGround_Z = -3.6;
     
-    //pickup ground back
+    //pickup ground back (only used in auto)
     public static final double ArmToPickupGroundBack_X = -20;
     public static final double ArmToPickupGroundBack_Z = 2;
 
@@ -84,8 +84,9 @@ public final class Constants {
     public static final double ArmToPickupTail_Z = 114.6;
 
     //pickup from human player station
-    public static final double ArmToPickupHuman_X = 23.8;
-    public static final double ArmToPickupHuman_Z = 3.0;
+    public static final double ArmToPickupHuman_X = 25.6;
+    public static final double ArmToPickupHuman_Z = 2.1;
+    public static final double PivotToPickupHuman = 145;
 
     //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
@@ -101,18 +102,18 @@ public final class Constants {
     
     //level 2 front
     public static final double ArmToScoreMiddleFront_X = 52.6;
-    public static final double ArmToScoreMiddleFront_Z = 22.4;
+    public static final double ArmToScoreMiddleFront_Z = 22.9;
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -38.8;
-    public static final double ArmToScoreTop_Z = 44.7;
+    public static final double ArmToScoreTop_X = -24.0;
+    public static final double ArmToScoreTop_Z = 38.0;
 
     public static final double ArmToTransitionPoint_X = -3;
     public static final double ArmToTransitionPoint_Z = 50;
     public static final double ArmToTransitionPoint2_X = 5;
     public static final double ArmToTransitionPoint2_Z = 50;
 
-    public static final double ScoreCubeOffset = 4;
+    public static final double ScoreCubeOffset = 9;
 
     public static final double IntakeVoltage = 12.5;
     public static final double TAIL_LOW_POINT = 5;

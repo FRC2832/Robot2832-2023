@@ -32,6 +32,7 @@ public class DriveStick extends CommandBase {
         SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
         SmartDashboard.putNumber("Turtle Speed", 1);
         SmartDashboard.putNumber("Turtle Turn Speed", 4);
+        drive.SwerveDrive(0, 0, 0, false);
     }
 
     @Override

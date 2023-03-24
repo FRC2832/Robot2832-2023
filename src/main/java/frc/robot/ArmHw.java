@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IArmControl;
 
 public class ArmHw implements IArmControl {
@@ -50,14 +51,17 @@ public class ArmHw implements IArmControl {
 
         shoulderMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.12 / COUNTS_PER_DEGREE_SHOULDER * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 0;    //TODO: Try later... 0.08 / COUNTS_PER_DEGREE_SHOULDER;
+        allConfigs.slot0.kI = 1.603e-5;    //TODO: Try later... 0.08 / COUNTS_PER_DEGREE_SHOULDER;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
-        allConfigs.slot0.integralZone = 0;
+        allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_SHOULDER;
         allConfigs.slot0.allowableClosedloopError = 0;
-        allConfigs.motionCruiseVelocity = 50 * COUNTS_PER_DEGREE_SHOULDER_V;
-        allConfigs.motionAcceleration = 50 * COUNTS_PER_DEGREE_SHOULDER_V;
+        allConfigs.motionCruiseVelocity = 80 * COUNTS_PER_DEGREE_SHOULDER_V;
+        allConfigs.motionAcceleration = 70 * COUNTS_PER_DEGREE_SHOULDER_V;
         shoulderMotor.configAllSettings(allConfigs);
+        shoulderMotor.getIntegralAccumulator();
+        shoulderMotor.getErrorDerivative();
+        shoulderMotor.getClosedLoopError();
 
         elbowMotor = new TalonFX(45);
         //motors MUST be reset every powerup!!!
@@ -67,13 +71,13 @@ public class ArmHw implements IArmControl {
 
         elbowMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.2 / COUNTS_PER_DEGREE_ELBOW * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 0;
+        allConfigs.slot0.kI = 1.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
-        allConfigs.slot0.integralZone = 0;
+        allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_ELBOW;
         allConfigs.slot0.allowableClosedloopError = 0;
         allConfigs.motionCruiseVelocity = 100 * COUNTS_PER_DEGREE_ELBOW_V;
-        allConfigs.motionAcceleration = 150 * COUNTS_PER_DEGREE_ELBOW_V;
+        allConfigs.motionAcceleration = 200 * COUNTS_PER_DEGREE_ELBOW_V;
         elbowMotor.configAllSettings(allConfigs);
 
         shoulderEncoder = new DutyCycle(new DigitalInput(0));
@@ -146,6 +150,13 @@ public class ArmHw implements IArmControl {
             shoulderMotor.setSelectedSensorPosition(shoulderAngle * COUNTS_PER_DEGREE_SHOULDER);
             elbowMotor.setSelectedSensorPosition(elbowAngle * COUNTS_PER_DEGREE_ELBOW);
         }
+
+        SmartDashboard.putNumber("Shoulder Error I",shoulderMotor.getIntegralAccumulator());
+        SmartDashboard.putNumber("Shoulder Error D",shoulderMotor.getErrorDerivative());
+        SmartDashboard.putNumber("Shoulder Error P",shoulderMotor.getClosedLoopError());
+        SmartDashboard.putNumber("Elbow Error I",elbowMotor.getIntegralAccumulator());
+        SmartDashboard.putNumber("Elbow Error D",elbowMotor.getErrorDerivative());
+        SmartDashboard.putNumber("Elbow Error P",elbowMotor.getClosedLoopError());
     }
     
     @Override

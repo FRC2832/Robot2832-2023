@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
@@ -62,10 +64,17 @@ public class ArmAutonPoint extends CommandBase{
 
     @Override
     public boolean isFinished() {
+        boolean fin;
         xError = Math.abs(x - arm.getArmXPosition());
         zError = Math.abs(z - arm.getArmZPosition());
         distError = Math.sqrt((xError * xError) + (zError * zError));
-        boolean fin = (distError < Constants.ARM_ACCEPT_ERROR);
+        SmartDashboard.putNumber("Arm Dist Error", distError);
+
+        if(DriverStation.isAutonomous()) {
+            fin = (distError < Constants.ARM_ACCEPT_ERROR);
+        } else {
+            fin = false;
+        }
         return fin; 
     }
 
