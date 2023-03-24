@@ -5,7 +5,6 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
-import org.livoniawarriors.REVDigitBoard;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -49,7 +48,6 @@ public class Robot extends TimedRobot {
     private Intake intake;
     private Pivot pivot;
     private Tail tail;
-    private REVDigitBoard digit;
     public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
@@ -130,6 +128,7 @@ public class Robot extends TimedRobot {
     private String operatorSelected;
     private final SendableChooser<String> driverChooser = new SendableChooser<>();
     private final SendableChooser<String> operatorChooser = new SendableChooser<>();
+    public Logger logger = new Logger();
     
     //Autonomus Chooser
     private AutonChooser auton;
@@ -142,7 +141,6 @@ public class Robot extends TimedRobot {
         //internal logger class
         SmartDashboard.putString("Serial Number", RobotController.getSerialNumber());
         SerialNumber = RobotController.getSerialNumber();
-        var logger = new Logger();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
@@ -182,7 +180,6 @@ public class Robot extends TimedRobot {
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
-        digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls, arm, tail);
@@ -222,8 +219,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        
-        digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
 
@@ -323,6 +318,8 @@ public class Robot extends TimedRobot {
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
+
+       
     }
 
     /** This function is called periodically during operator control. */
@@ -335,6 +332,9 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drive.setDriveMotorBrakeMode(false);
         drive.setTurnMotorBrakeMode(false);
+
+        
+        
     }
 
     /** This function is called periodically when disabled. */
@@ -361,7 +361,7 @@ public class Robot extends TimedRobot {
         } else {
             valid = OperatorControls.checkController();
         }
-        SmartDashboard.putBoolean("Operator Check", valid);
+        SmartDashboard.putBoolean("Operator Check", valid);   
     }
 
     /** This function is called once when test mode is enabled. */
