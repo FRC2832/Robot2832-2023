@@ -81,7 +81,7 @@ public final class Constants {
 
     //pickup from tail
     public static final double ArmToPickupTail_X = 29.1;
-    public static final double ArmToPickupTail_Z = 114.6;
+    public static final double ArmToPickupTail_Z = 14.6;
 
     //pickup from human player station
     public static final double ArmToPickupHuman_X = 25.6;
@@ -105,8 +105,8 @@ public final class Constants {
     public static final double ArmToScoreMiddleFront_Z = 22.9;
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -24.0;
-    public static final double ArmToScoreTop_Z = 38.0;
+    public static final double ArmToScoreTop_X = -36.0;
+    public static final double ArmToScoreTop_Z = 43.0;
 
     public static final double ArmToTransitionPoint_X = -3;
     public static final double ArmToTransitionPoint_Z = 50;
