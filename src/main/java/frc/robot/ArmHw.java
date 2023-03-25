@@ -27,11 +27,11 @@ public class ArmHw implements IArmControl {
     ArmBrakes brakes;
 
     //75:1 gearbox, 72/30 shoulder gear, 2048 pulses per rev
-    final double COUNTS_PER_DEGREE_SHOULDER = 75/1 * 72/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_SHOULDER = 64/1 * 76/30 * 2048 / 360;
     final double COUNTS_PER_DEGREE_SHOULDER_V = COUNTS_PER_DEGREE_SHOULDER / 10;
 
     //75:1 gearbox, 60:30 pulley, 2048 pulses per rev
-    final double COUNTS_PER_DEGREE_ELBOW = 75/1 * 60/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_ELBOW = 60/1 * 60/30 * 2048 / 360;
     final double COUNTS_PER_DEGREE_ELBOW_V = COUNTS_PER_DEGREE_ELBOW / 10;
 
     private final double kF_ELBOW = 0.716; //12.55 bat * 6.5% power to keep flat
@@ -89,6 +89,9 @@ public class ArmHw implements IArmControl {
 
         Logger.RegisterSensor("Shoulder Motor Degrees", () -> shoulderMotor.getSelectedSensorPosition() / COUNTS_PER_DEGREE_SHOULDER);
         Logger.RegisterSensor("Elbow Motor Degrees", () -> elbowMotor.getSelectedSensorPosition() / COUNTS_PER_DEGREE_ELBOW);
+
+        Logger.RegisterSensor("Shoulder Sensor Degrees", () -> shoulderAngle);
+        Logger.RegisterSensor("Elbow Sensor Degrees", () -> elbowAngle);
 
         Logger.RegisterSensor("Shoulder Motor Velocity", () -> shoulderMotor.getSelectedSensorVelocity() / COUNTS_PER_DEGREE_SHOULDER_V);
         Logger.RegisterSensor("Elbow Motor Velocity", () -> elbowMotor.getSelectedSensorVelocity() / COUNTS_PER_DEGREE_ELBOW_V);
