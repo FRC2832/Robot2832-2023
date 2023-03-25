@@ -13,7 +13,7 @@ public class PivotResetAfterHuman extends CommandBase {
     public PivotResetAfterHuman(Arm arm, double scoreX, double scoreZ){
         this.scoreX = scoreX;
         this.scoreZ = scoreZ;
-        resetAngle = 0;
+        resetAngle = Constants.PivotToPickupHuman;
     }
 
     @Override
