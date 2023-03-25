@@ -7,7 +7,7 @@ import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
-    final static double FLIP_TOLERANCE = 1;
+    final static double FLIP_TOLERANCE = Constants.ARM_ACCEPT_ERROR;
     private Arm arm;
     private double x, z;
     private double zOrig;
