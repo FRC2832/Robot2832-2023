@@ -115,7 +115,7 @@ public class Odometry extends SubsystemBase {
         pivotBase.append(shoulderBar);
         elbowBar = new MechanismLigament2d("Elbow", 28, -60, 15, new Color8Bit(Color.kGold));
         shoulderBar.append(elbowBar);
-        MechanismRoot2d heightLimit = m_mech2d.getRoot("Height Root", 0, 77); //6" below the limit to take care of intake
+        MechanismRoot2d heightLimit = m_mech2d.getRoot("Height Root", 0, 72); //6" below the limit to take care of intake
         heightLimit.append(new MechanismLigament2d("Height", 120, 0, 5, new Color8Bit(Color.kDarkRed)));    //32" robot frame + 3" for bumpers each side
 
         //tail

@@ -67,7 +67,7 @@ public final class Constants {
     public static final double ELBOW_OFFSET = 135;
     public static final double INTAKE_OFFSET = -41;
 
-    public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
+    public static final double ARM_ACCEPT_ERROR = 1;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
     public static final double ArmToPickupGround_X = 40.8;
@@ -95,10 +95,10 @@ public final class Constants {
     public static final double ArmToScoreTop_X = -37;
     public static final double ArmToScoreTop_Z = 44;
 
-    public static final double ArmToTransitionPoint_X = -3;
-    public static final double ArmToTransitionPoint_Z = 50;
-    public static final double ArmToTransitionPoint2_X = 5;
-    public static final double ArmToTransitionPoint2_Z = 50;
+    public static final double ArmToTransitionPoint_X = 48;
+    public static final double ArmToTransitionPoint_Z = 31.5;
+    public static final double ArmToTransitionPoint2_X = -2.078;
+    public static final double ArmToTransitionPoint2_Z = 31.278;
 
     public static final double ScoreCubeOffset = 4;
 
