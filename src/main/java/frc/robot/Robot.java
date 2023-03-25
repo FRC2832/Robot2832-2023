@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     private IDriveControls controls;
     private IOperatorControls opControls;
     private Intake intake;
-    private Pivot pivot;
+    public static Pivot pivot;
     private Tail tail;
     public static String SerialNumber;
     private PneumaticHub pneumatics;

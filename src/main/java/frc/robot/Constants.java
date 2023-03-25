@@ -121,4 +121,10 @@ public final class Constants {
     public static final double TAIL_STOW_POINT = 150;
     
     public static final double CTRE_P_RES = 1024 / 12;
+
+    public static final double PivotResetAngleScoreTop = 0; // TODO: Determine "reset" pivot angle to score Top
+    public static final double PivotResetAngleScoreMiddle = 0; // TODO: Determine "reset" pivot angle to score Middle
+    public static final double PivotResetAngleScoreMiddleFront = 0; // TODO: Determine "reset" pivot angle to score MiddleFront
+    public static final double PivotResetAngleScoreLow = 0; // TODO: Determine "reset" pivot angle to score Low
+    
 }

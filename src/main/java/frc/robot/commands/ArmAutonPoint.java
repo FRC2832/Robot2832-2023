@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.commands.PivotResetAfterHuman;
 
 
 public class ArmAutonPoint extends CommandBase{
@@ -58,6 +59,7 @@ public class ArmAutonPoint extends CommandBase{
                 transitionNegToPos = false;
             }
         } else{
+            new PivotResetAfterHuman(arm, x, z);
             arm.calcAngles(x, z);
         }
     }
