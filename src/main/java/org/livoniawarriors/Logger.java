@@ -284,7 +284,6 @@ public class Logger implements Runnable {
        
         ArrayList<String> faultValues = new ArrayList<>();
         ArrayList<String> stickyValues = new ArrayList<>();
-        ArrayList<String> resetStickyValues = new ArrayList<>();
         
         String error = "";
         
@@ -295,41 +294,51 @@ public class Logger implements Runnable {
         for(String i: stickyKeys) {
             stickyValues.add(stickyTable.getEntry(i).getString("EROR"));
         }
-        for(int i = 0; i < faultValues.size(); i++) {
-            if(!(faultValues.get(i).equals("Ok"))) {
-                digit.display("FLT");
-                error = keys[i].substring(0, 2) + " FLT";
-                SmartDashboard.putString("Error Code", error);
-                timer.start();
-                while(!timer.hasElapsed(5.0))
-                    timeCount ++;
-                timer.stop();
-                timer.reset();
+
+
+        if(faultValues.size()>0)
+        {
+            digit.display("FLT");
+            timer.start();
+            if(timer.hasElapsed(2.0))
+            {timeCount ++;
+                if(timeCount>=keys.length)
+                {
+                    timeCount=0;
+                }
+
+            timer.stop();
+            timer.reset();
             }
+            error = keys[timeCount] + " FLT";
+            SmartDashboard.putString("Error Code", error);    
+  
+            return;
         }
-        
-        for(int j = 0; j < stickyValues.size(); j++) {
-            if(!(stickyValues.get(j).equals("Ok"))) {
-                digit.display("SFLT");
-                error = stickyKeys[j].substring(0, 2) + " SFLT";
-                SmartDashboard.putString("Error Code", error);
-                timer.start();
-                while(!timer.hasElapsed(5.0))
-                    timeCount ++;
-                timer.stop();
-                timer.reset();
+
+        if(stickyValues.size()>0)
+        {
+            digit.display("SFLT");
+            timer.start();
+            if(timer.hasElapsed(2.0))
+            {timeCount ++;
+                if(timeCount>=stickyKeys.length)
+                {
+                    timeCount=0;
+                }
+          
+            timer.stop();
+            timer.reset();
             }
+            error = stickyKeys[timeCount] + " SFLT";
+            SmartDashboard.putString("Error Code", error);    
+            return;
         }
-        if(timeCount == 0) {
             SmartDashboard.putString("Error Code", "Rony");
             digit.display("Rony");
-        }
-    
-        if(digit.getButtonA()) {
-            stickyValues = resetStickyValues;
-            stickyTable = clearStickyTable;
-        }
-        timeCount = 0;
+            timeCount=0;
+        
+
     }
 
     private void readTalon(String name, BaseTalon talon) {
@@ -424,7 +433,7 @@ public class Logger implements Runnable {
     public void checkClearFaults() {
         var clearFaults = SmartDashboard.getBoolean("Clear Faults", false);
 
-        if(clearFaults == false) {
+        if(clearFaults == false && !digit.getButtonA()) {
             return;
         }
         SmartDashboard.putBoolean("Clear Faults", false);
