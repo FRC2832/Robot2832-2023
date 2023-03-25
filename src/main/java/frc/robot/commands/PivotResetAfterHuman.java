@@ -21,14 +21,16 @@ public class PivotResetAfterHuman extends CommandBase {
 
     @Override
     public void execute() { 
+        boolean pieceMode = Robot.getGamePieceMode();
+
         if(scoreX == Constants.ArmToScoreTop_X && scoreZ == Constants.ArmToScoreTop_Z) {
-            resetAngle = Constants.PivotResetAngleScoreTop;
+            resetAngle = pieceMode ? Constants.CubePivotResetAngleScoreTop : Constants.ConePivotResetAngleScoreTop;
         } else if(scoreX == Constants.ArmToScoreMiddleFront_X && scoreZ == Constants.ArmToScoreMiddleFront_Z) {
-            resetAngle = Constants.PivotResetAngleScoreMiddleFront;
+            resetAngle = pieceMode ? Constants.CubePivotResetAngleScoreMiddleFront : Constants.ConePivotResetAngleScoreMiddleFront;
         } else if(scoreX == Constants.ArmToScoreMiddle_X && scoreZ == Constants.ArmToScoreMiddle_Z) {
-            resetAngle = Constants.PivotResetAngleScoreMiddle;
+            resetAngle = pieceMode ? Constants.CubePivotResetAngleScoreMiddle : Constants.ConePivotResetAngleScoreMiddle;
         } else {
-            resetAngle = Constants.PivotResetAngleScoreLow;
+            resetAngle = pieceMode ? Constants.CubePivotResetAngleScoreLow : Constants.ConePivotResetAngleScoreLow;
         }
         Robot.pivot.setPivotAngle(resetAngle);
     }
