@@ -50,7 +50,7 @@ public class Pivot extends SubsystemBase {
         if(arm.getArmXPosition() > 0) {
             offset = 35;
         } else {
-            offset = -35;
+            offset = -40;
         }
         return value - offset;  //optimum angle to "snowblower" the piece in
     }
