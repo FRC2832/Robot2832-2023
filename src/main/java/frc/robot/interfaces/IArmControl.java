@@ -6,8 +6,10 @@ public interface IArmControl {
     void setElbowMotorVolts(double volts);
 
     double getElbowAngle();
-
     double getShoulderAngle();
+
+    double getElbowAbsAngle();
+    double getShoulderAbsAngle();
 
     void setElbowAngle(double angleDeg);
     void setShoulderAngle(double angleDeg);

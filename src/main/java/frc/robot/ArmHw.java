@@ -31,7 +31,7 @@ public class ArmHw implements IArmControl {
     final double COUNTS_PER_DEGREE_SHOULDER_V = COUNTS_PER_DEGREE_SHOULDER / 10;
 
     //75:1 gearbox, 60:30 pulley, 2048 pulses per rev
-    final double COUNTS_PER_DEGREE_ELBOW = 60/1 * 60/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_ELBOW = 64/1 * 60/30 * 2048 / 360;
     final double COUNTS_PER_DEGREE_ELBOW_V = COUNTS_PER_DEGREE_ELBOW / 10;
 
     private final double kF_ELBOW = 0.716; //12.55 bat * 6.5% power to keep flat
@@ -51,7 +51,7 @@ public class ArmHw implements IArmControl {
 
         shoulderMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.12 / COUNTS_PER_DEGREE_SHOULDER * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 1.603e-5;    //TODO: Try later... 0.08 / COUNTS_PER_DEGREE_SHOULDER;
+        allConfigs.slot0.kI = 2.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
         allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_SHOULDER;
@@ -71,7 +71,7 @@ public class ArmHw implements IArmControl {
 
         elbowMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.2 / COUNTS_PER_DEGREE_ELBOW * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 1.603e-5;
+        allConfigs.slot0.kI = 2.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
         allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_ELBOW;
@@ -178,5 +178,15 @@ public class ArmHw implements IArmControl {
         var ff = Math.cos(Math.toRadians(shoulderAngle)) * kF_SHOULDER;
         shoulderMotor.set(ControlMode.MotionMagic, angleDeg * COUNTS_PER_DEGREE_SHOULDER,
             DemandType.ArbitraryFeedForward, ff/RobotController.getBatteryVoltage());
+    }
+
+    @Override
+    public double getElbowAbsAngle() {
+        return elbowAngle;
+    }
+
+    @Override
+    public double getShoulderAbsAngle() {
+        return shoulderAngle;
     }
 }
