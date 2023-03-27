@@ -18,6 +18,9 @@ public class Arm extends SubsystemBase{
     boolean shoulderPIDRan;
     boolean elbowPIDRan;
 
+    private double shoulderDelta;
+    private double elbowDelta;
+
     public Arm(IArmControl hardware) {
         super();
         this.hardware = hardware;
@@ -38,8 +41,18 @@ public class Arm extends SubsystemBase{
     @Override
     public void periodic() {
         hardware.updateInputs();
-        SmartDashboard.putNumber("Arm X", getArmXPosition());
-        SmartDashboard.putNumber("Arm Z", getArmZPosition());
+        SmartDashboard.putNumber("Abs Arm X", getArmXPosition());
+        SmartDashboard.putNumber("Abs Arm Z", getArmZPosition());
+
+        SmartDashboard.putNumber("Rel Arm X", getArmXPosition(hardware.getShoulderAngle(), hardware.getElbowAngle()));
+        SmartDashboard.putNumber("Rel Arm Z", getArmZPosition(hardware.getShoulderAngle(), hardware.getElbowAngle()));
+
+        shoulderDelta = hardware.getShoulderAbsAngle() - hardware.getShoulderAngle();
+        elbowDelta = hardware.getElbowAbsAngle() - hardware.getElbowAngle();
+
+        SmartDashboard.putNumber("Shoulder Delta", shoulderDelta);
+        SmartDashboard.putNumber("Elbow Delta", elbowDelta);
+
         hardware.checkBrake();
     }
 
@@ -48,22 +61,16 @@ public class Arm extends SubsystemBase{
         //double volts = shoulderPid.calculate(getShoulderAngle());
 
         //setShoulderMotorVolts(volts);
-        hardware.setShoulderAngle(angleDeg);
-        SmartDashboard.putNumber("Shoulder Angle Command", angleDeg);
+        var newAngle = angleDeg + shoulderDelta;
+        hardware.setShoulderAngle(newAngle);
+        SmartDashboard.putNumber("Shoulder Angle Command", newAngle);
         //SmartDashboard.putNumber("Shoulder Volts Command", volts);
     }
 
     public void setElbowAngle(double angleDeg) {
-        //elbowPid.setGoal(angleDeg);
-        //double ff = hardware.getFeedForward(getShoulderAngle());
-        //double volts = -elbowPid.calculate(getElbowAngle()) + ff;
-
-        //if(elbowPid.atSetpoint()){
-        //    volts = 0;
-        //}
-        //setElbowMotorVolts(volts);
-        hardware.setElbowAngle(angleDeg);
-        SmartDashboard.putNumber("Elbow Angle Command", angleDeg);
+        var newAngle = angleDeg - elbowDelta;
+        hardware.setElbowAngle(newAngle);
+        SmartDashboard.putNumber("Elbow Angle Command", newAngle);
         //SmartDashboard.putNumber("Elbow Volts Command", volts);
     }
 
@@ -131,16 +138,19 @@ public class Arm extends SubsystemBase{
         this.setShoulderAngle(shoulder);
     }
 
-    public double getArmXPosition(){// 20.416                                         10.156
-        double xPos = (Math.cos(Math.toRadians(getShoulderAngle()))*Constants.BICEP_LENGTH) + (Math.cos(Math.toRadians(getShoulderAngle()+getElbowAngle()))*Constants.FOREARM_LENGTH);
-        
-        return xPos;
+    public double getArmXPosition() {
+        return getArmXPosition(hardware.getShoulderAbsAngle(), hardware.getElbowAbsAngle());
     }
 
-    public double getArmZPosition(){
-        double zPos = (Math.sin(Math.toRadians(getShoulderAngle()))*Constants.BICEP_LENGTH) + (Math.sin(Math.toRadians(getShoulderAngle()+getElbowAngle()))*Constants.FOREARM_LENGTH);
-        
-        return zPos;
+    public double getArmZPosition() {
+        return getArmZPosition(hardware.getShoulderAbsAngle(), hardware.getElbowAbsAngle());
     }
 
+    public double getArmXPosition(double shoulderAngle, double elbowAngle) {
+        return (Math.cos(Math.toRadians(shoulderAngle))*Constants.BICEP_LENGTH) + (Math.cos(Math.toRadians(shoulderAngle + elbowAngle))*Constants.FOREARM_LENGTH);
+    }
+
+    public double getArmZPosition(double shoulderAngle, double elbowAngle) {
+        return (Math.sin(Math.toRadians(shoulderAngle))*Constants.BICEP_LENGTH) + (Math.sin(Math.toRadians(shoulderAngle + elbowAngle))*Constants.FOREARM_LENGTH);
+    }
 }

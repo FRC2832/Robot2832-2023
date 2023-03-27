@@ -74,4 +74,16 @@ public class ArmSim implements IArmControl {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public double getElbowAbsAngle() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getShoulderAbsAngle() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
