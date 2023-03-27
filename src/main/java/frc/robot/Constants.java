@@ -65,55 +65,59 @@ public final class Constants {
 
     //sensor offsets
     public static final double SHOULDER_OFFSET = 347;
-    public static final double ELBOW_OFFSET = 135;
+    public static final double ELBOW_OFFSET = 135-58;
     public static final double INTAKE_OFFSET = 110;
 
     public static final double ARM_ACCEPT_ERROR = 1;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
     //pickup ground front
-    public static final double ArmToPickupGround_X = 37.1;
-    public static final double ArmToPickupGround_Z = -3.6;
-    
-    //pickup ground back (only used in auto)
-    public static final double ArmToPickupGroundBack_X = -20;
-    public static final double ArmToPickupGroundBack_Z = 2;
+    public static final double ArmToPickupGround_X = 45.6;
+    public static final double ArmToPickupGround_Z = -0.5;
 
     //pickup from tail
     public static final double ArmToPickupTail_X = 29.1;
     public static final double ArmToPickupTail_Z = 14.6;
 
     //pickup from human player station
-    public static final double ArmToPickupHuman_X = 25.6;
-    public static final double ArmToPickupHuman_Z = 2.1;
-    public static final double PivotToPickupHuman = 145;
+    public static final double ArmToPickupHuman_X = 133.5;
+    public static final double ArmToPickupHuman_Z = 5.1;
+    public static final double PivotToPickupHuman = 162;
+
+    //level 2 back
+    public static final double ArmToScoreMiddle_X = -21.5;
+    public static final double ArmToScoreMiddle_Z = 27.3;
+    //223 pivot
+
+    //level 2 front
+    public static final double ArmToScoreMiddleFront_X = 51.1;
+    public static final double ArmToScoreMiddleFront_Z = 27.3;
+    //558 pivot
+
+    //level 3 back
+    public static final double ArmToScoreTop_X = -34.3;
+    public static final double ArmToScoreTop_Z = 41.6;
+    //575 pivot
+
+////////////////////////////////////////////////////////////////////////
+    //level 1 back
+    public static final double ArmToScoreLow_X = -26.6;
+    public static final double ArmToScoreLow_Z = 6;
 
     //stow arm inside frame
     public static final double ArmToSecureLocation_X = 20;
     public static final double ArmToSecureLocation_Z = 0;
 
-    //level 1 back
-    public static final double ArmToScoreLow_X = -26.6;
-    public static final double ArmToScoreLow_Z = 6;
-
-    //level 2 back
-    public static final double ArmToScoreMiddle_X = -20.8;
-    public static final double ArmToScoreMiddle_Z = 42.7;
-    
-    //level 2 front
-    public static final double ArmToScoreMiddleFront_X = 52.6;
-    public static final double ArmToScoreMiddleFront_Z = 22.9;
-
-    //level 3 back
-    public static final double ArmToScoreTop_X = -36.0;
-    public static final double ArmToScoreTop_Z = 43.0;
+    //pickup ground back (only used in auto)
+    public static final double ArmToPickupGroundBack_X = -20;
+    public static final double ArmToPickupGroundBack_Z = 2;
 
     public static final double ArmToTransitionPoint_X = -3;
     public static final double ArmToTransitionPoint_Z = 50;
     public static final double ArmToTransitionPoint2_X = 5;
     public static final double ArmToTransitionPoint2_Z = 50;
 
-    public static final double ScoreCubeOffset = 9;
+    public static final double ScoreCubeOffset = 8;
 
     public static final double IntakeVoltage = 12.5;
     public static final double TAIL_LOW_POINT = 5;
