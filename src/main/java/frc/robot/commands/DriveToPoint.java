@@ -20,13 +20,28 @@ public class DriveToPoint extends CommandBase {
 
     private double distX;
     private double distY;
+    private double distRot;
     private double distLeft;
     private double scale;
+    private double speedRot;
+    private double speedMod;
+    private double rotMod;
 
     public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest) {
         this.drive = drive;
         this.odometry = odometry;
         this.dest = dest;
+        speedMod = 1;
+        rotMod = 1;
+        addRequirements(drive);
+    }
+
+    public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest, double speedMod, double rotMod) {
+        this.drive = drive;
+        this.odometry = odometry;
+        this.dest = dest;
+        this.speedMod = speedMod;
+        this.rotMod = rotMod;
         addRequirements(drive);
     }
 
@@ -40,17 +55,29 @@ public class DriveToPoint extends CommandBase {
         Pose2d currentPose = odometry.getPose();
         distX = dest.getX() - currentPose.getX();
         distY = dest.getY() - currentPose.getY();
+        distRot = dest.getRotation().getDegrees() - (currentPose.getRotation().getDegrees());
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
-        if(distLeft > TARGET_ERROR) {
+        if(distLeft > TARGET_ERROR || Math.abs(distRot) > 2) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
-            scale = Constants.MAX_AUTO_SPEED / distLeft;
-            drive.SwerveDrive(
+            scale = (Constants.MAX_AUTO_SPEED * speedMod)/ distLeft;
+            speedRot = (distRot * .03 * rotMod) + (.06 * Math.signum(distRot));//(.1 * Math.signum(distRot));//Constants.MAX_AUTO_TURN_SPEED * (Math.signum(distRot));
+            //          (distRot * .06 * rotMod)
+            if(Math.abs(distRot) > 2){
+                drive.SwerveDrive(
                 distX  * scale, 
                 distY  * scale, 
-                0, //TODO: Fix Me!
+                speedRot, //TODO: Fix Me! might be fixed?
                 true);
+            }
+            else {
+                drive.SwerveDrive(
+                distX  * scale, 
+                distY  * scale, 
+                0, //TODO: Fix Me! might be fixed?
+                true);
+            }
         } else {
             //we are at our spot, stop
             drive.SwerveDrive(0, 0, 0, false);
@@ -64,10 +91,8 @@ public class DriveToPoint extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
-
+    public void end(boolean interrupted) {}
+    
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);

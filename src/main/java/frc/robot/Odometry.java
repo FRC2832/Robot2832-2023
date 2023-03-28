@@ -46,6 +46,10 @@ public class Odometry extends SubsystemBase {
 
         initArm();
     }
+
+    public void setDriverControls(IDriveControls controls) {
+        this.controls = controls;
+    }
     
     @Override
     public void periodic() {

@@ -1,7 +1,9 @@
 package org.livoniawarriors;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.ErrorCode;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Logger implements Runnable {
     private final double VOLTS_PER_PSI = 1.931/100; //2.431V at 100psi
@@ -50,9 +53,13 @@ public class Logger implements Runnable {
     private NetworkTable tempTable;
     private NetworkTable faultTable;
     private NetworkTable stickyTable;
+    private NetworkTable clearStickyTable;
     private NetworkTable sensorTable;
     private NetworkTable canStatusTable;
     private static NetworkTable taskTimings;
+    private REVDigitBoard digit;
+    private int timeCount = 0;
+    private Timer timer = new Timer();
     //solenoids, compressor
 
     public Logger() {
@@ -61,6 +68,7 @@ public class Logger implements Runnable {
         // Record both DS control and joystick data
         var log = DataLogManager.getLog();
         DriverStation.startDataLog(log);
+        digit = new REVDigitBoard();
 
         //create our logging table references
         canStatusTable = NetworkTableInstance.getDefault().getTable("CAN_Status");
@@ -69,6 +77,7 @@ public class Logger implements Runnable {
         commandTable = NetworkTableInstance.getDefault().getTable("Device_Commands");
         faultTable = NetworkTableInstance.getDefault().getTable("Device_Faults");
         stickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
+        clearStickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
         sensorTable = NetworkTableInstance.getDefault().getTable("Sensors");
         taskTimings = NetworkTableInstance.getDefault().getTable("Task_Timings_ms");
         SmartDashboard.putBoolean("Clear Faults", false);
@@ -263,6 +272,73 @@ public class Logger implements Runnable {
         sensorTable.getEntry("Rio 6V Current").setDouble(RobotController.getCurrent6V());
 
         checkClearFaults();
+
+        Set<String> keys0 = faultTable.getKeys();
+        Set<String> stickyKeys0 = stickyTable.getKeys();
+
+        String[] keys = new String[keys0.size()];
+        String[] stickyKeys = new String[stickyKeys0.size()];
+        
+        keys0.toArray(keys);
+        stickyKeys0.toArray(stickyKeys);
+       
+        ArrayList<String> faultValues = new ArrayList<>();
+        ArrayList<String> stickyValues = new ArrayList<>();
+        
+        String error = "";
+        
+        for(String i: keys) {
+            faultValues.add(faultTable.getEntry(i).getString("EROR"));
+        }
+        
+        for(String i: stickyKeys) {
+            stickyValues.add(stickyTable.getEntry(i).getString("EROR"));
+        }
+
+
+        if(faultValues.size()>0)
+        {
+            digit.display("FLT");
+            timer.start();
+            if(timer.hasElapsed(2.0))
+            {timeCount ++;
+                if(timeCount>=keys.length)
+                {
+                    timeCount=0;
+                }
+
+            timer.stop();
+            timer.reset();
+            }
+            error = keys[timeCount] + " FLT";
+            SmartDashboard.putString("Error Code", error);    
+  
+            return;
+        }
+
+        if(stickyValues.size()>0)
+        {
+            digit.display("SFLT");
+            timer.start();
+            if(timer.hasElapsed(2.0))
+            {timeCount ++;
+                if(timeCount>=stickyKeys.length)
+                {
+                    timeCount=0;
+                }
+          
+            timer.stop();
+            timer.reset();
+            }
+            error = stickyKeys[timeCount] + " SFLT";
+            SmartDashboard.putString("Error Code", error);    
+            return;
+        }
+            SmartDashboard.putString("Error Code", "Rony");
+            digit.display("Rony");
+            timeCount=0;
+        
+
     }
 
     private void readTalon(String name, BaseTalon talon) {
@@ -357,7 +433,7 @@ public class Logger implements Runnable {
     public void checkClearFaults() {
         var clearFaults = SmartDashboard.getBoolean("Clear Faults", false);
 
-        if(clearFaults == false) {
+        if(clearFaults == false && !digit.getButtonA()) {
             return;
         }
         SmartDashboard.putBoolean("Clear Faults", false);

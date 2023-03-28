@@ -17,8 +17,8 @@ public class ArmSim implements IArmControl {
     private final double kV_Shoulder = 0.07832;     //4v for 1.6 sec/81.765*
 
     public ArmSim() {
-        shoulderDeg = 60;
-        elbowDeg = -60;
+        shoulderDeg = 45;
+        elbowDeg = 120;
 
         Logger.RegisterSensor("Shoulder Angle", () -> getShoulderAngle());
         Logger.RegisterSensor("Elbow Angle", () -> getElbowAngle());
@@ -60,6 +60,30 @@ public class ArmSim implements IArmControl {
 
     @Override
     public double getFeedForward(double offset) {
+        return 0;
+    }
+
+    @Override
+    public void setElbowAngle(double angleDeg) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setShoulderAngle(double angleDeg) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public double getElbowAbsAngle() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getShoulderAbsAngle() {
+        // TODO Auto-generated method stub
         return 0;
     }
 }

@@ -32,6 +32,7 @@ public class DriveStick extends CommandBase {
         SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
         SmartDashboard.putNumber("Turtle Speed", 1);
         SmartDashboard.putNumber("Turtle Turn Speed", 4);
+        drive.SwerveDrive(0, 0, 0, false);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class DriveStick extends CommandBase {
 
         if(boost > 0.1){
             xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(ySpeed));
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED);
             turn = turn * Constants.MAX_DRIVER_OMEGA;
         } else if(turtle > 0.1) {
             xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(xSpeed));

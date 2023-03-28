@@ -5,16 +5,12 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
-import org.livoniawarriors.REVDigitBoard;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
@@ -52,12 +48,9 @@ public class Robot extends TimedRobot {
     private Intake intake;
     private Pivot pivot;
     private Tail tail;
-    private REVDigitBoard digit;
-
+    public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
-    public Pose2d startPosition;
-    private AnalogInput jumper;
 
     private static boolean pieceMode;
 
@@ -81,28 +74,28 @@ public class Robot extends TimedRobot {
     };
 
     private String[] pdhRealChannelNames = {
-        null,           //"RF Turn",
-        null,           //"RF Drive",
-        null,           //"LF Turn",
-        null,           //"LF Drive",
-        null,           //"Elbow",
-        null,           //"Shoulder",
+        "RF Turn", 
+        "RF Drive",
+        "LF Turn", 
+        "LF Drive",
+        "Elbow",   
+        "Shoulder",
         null,           //"6",
         null,           //"7",
-        null,           //"Intake",
+        "Intake",
         "Front MPM",
         null,           //"10",
-        null,           //"Tail",
-        null,           //"Wrist",
+        "Tail", 
+        "Wrist",
         "Back MPM",
         null,           //"14",
-        null,           //"15",
-        null,           //"RL Turn",
-        null,           //"RL Drive",
-        null,           //"RR Drive",
-        null,           //"RR Turn",
-        "Radio Power",
         "Pneumatics",
+        "RL Turn", 
+        "RL Drive",
+        "RR Drive",
+        "RR Turn", 
+        "Radio Power",
+        null,
         "RoboRio",
         null,           //"23",
     };
@@ -133,17 +126,12 @@ public class Robot extends TimedRobot {
     private static final String kJaydenDriver = "Jayden";
     private String driverSelected;
     private String operatorSelected;
-    private final SendableChooser<String> driverChooser = new SendableChooser<>();;
-    private final SendableChooser<String> operatorChooser = new SendableChooser<>();;
+    private final SendableChooser<String> driverChooser = new SendableChooser<>();
+    private final SendableChooser<String> operatorChooser = new SendableChooser<>();
+    public Logger logger = new Logger();
     
     //Autonomus Chooser
-    private static final String kNoObstacles = "No Obstacles";
-    private static final String kBalance = "Scale";
-    private static final String kCord = "Cord";
-    private static final String kL3Score = "L3 Score";
-    private static final String kDoNothing = "Do Nothing";
-    private String AutonomousStartPosition;
-    private final SendableChooser<String> startPosChooser = new SendableChooser<>();;
+    private AutonChooser auton;
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -151,34 +139,33 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //internal logger class
-        var logger = new Logger();
+        SmartDashboard.putString("Serial Number", RobotController.getSerialNumber());
+        SerialNumber = RobotController.getSerialNumber();
         Logger.RegisterLoopTimes(this);
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
         opControls = new OperatorControls(); // initialize default operator controls, not used until teleopInit
 
-        //check to see what robot we are
-        //jumper = new AnalogInput(0);
-        var jumperVolts = 0;
-
         // initialize robot features
-        if (isSimulation() || ((Constants.BuzzVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.BuzzVoltage + Constants.JumperError))) {
+        if (isSimulation() || (SerialNumber.equals("031b525b"))) {
             //either buzz or simulation
             drive = new SwerveDriveTrain(new SwerveDriveSim());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
             Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
             SmartDashboard.putString("Robot", "Simulation/Buzz");
-        } else if ((Constants.PracticeVoltage - Constants.JumperError < jumperVolts) && (jumperVolts < Constants.PracticeVoltage + Constants.JumperError)) { 
+        } else if (SerialNumber.equals("031e3219")) { 
             //practice chassis
+            SmartDashboard.putString("Robot", "Practice");
             drive = new SwerveDriveTrain(new SwerveDriveHwPractice());
             arm = new Arm(new ArmSim());
             tail = new Tail(new TailSim());
             Logger.RegisterPdp(new PowerDistribution(0,ModuleType.kCTRE), pdpPracticeChannelNames);
-            SmartDashboard.putString("Robot", "Practice");
+            
         } else {
             //real robot
+            SmartDashboard.putString("Robot", "Real");
             pneumatics = new PneumaticHub();
             pneumatics.enableCompressorDigital();
             Logger.RegisterPneumaticHub(pneumatics, pneumaticNames);
@@ -187,13 +174,12 @@ public class Robot extends TimedRobot {
             arm = new Arm(new ArmHw());
             tail = new Tail(new TailHw());
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
-            SmartDashboard.putString("Robot", "Real");
+            
         }
         intake = new Intake();
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
-        digit = new REVDigitBoard();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls, arm, tail);
@@ -213,17 +199,13 @@ public class Robot extends TimedRobot {
         operatorChooser.addOption("Default Settings", kDefaultDriver);      
         operatorChooser.setDefaultOption("James", kJamesOperator);
         operatorChooser.addOption("Hayden", kHaydenOperator);
-        
-        startPosChooser.addOption("No Obstacles", kNoObstacles);
-        startPosChooser.setDefaultOption("Scale", kBalance);
-        startPosChooser.addOption("Cord", kCord);
-        startPosChooser.addOption("L3 Score Left", kL3Score);
-        startPosChooser.addOption("Do Nothing", kDoNothing);
 
         SmartDashboard.putData("Driver Select", driverChooser);
         SmartDashboard.putData("Operator Select", operatorChooser);
-        SmartDashboard.putData("StartPos Select", startPosChooser);
         SmartDashboard.putBoolean("Field Oriented", false);
+
+        //Construct auton thing
+        auton = new AutonChooser(drive, odometry, intake, arm);
         
         logger.start();
     }
@@ -237,12 +219,11 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        digit.display("Rony");
         // if cube mode: call cube LED's 
         // else (cone mode): call cone LED's
 
         //run once a second
-        if( count % 5 == 0) {
+        if(count % 5 == 0) {
             if(getGamePieceMode() == CUBE_MODE){
                 LED_controller.send(cmds.cube);
             }
@@ -263,100 +244,16 @@ public class Robot extends TimedRobot {
         //force the sticky faults to clear at Autonomous
         SmartDashboard.putBoolean("Clear Faults", true);
 
-        var alliance = DriverStation.getAlliance();
-        AutonomousStartPosition = startPosChooser.getSelected();
-
-        if (alliance == DriverStation.Alliance.Blue){ //Start positions using smartdashboard, red 1-3, blue 1-3
-            if(AutonomousStartPosition.equals(kNoObstacles)){
-                startPosition = Constants.START_BLUE_LEFT;
-            }
-            else if(AutonomousStartPosition.equals(kBalance)){
-                startPosition = Constants.START_BLUE_MIDDLE;
-            }
-            else if(AutonomousStartPosition.equals(kCord)){
-                startPosition = Constants.START_BLUE_RIGHT;
-            } 
-            else if(AutonomousStartPosition.equals(kL3Score)){
-                startPosition = Constants.START_BLUE_LEFT;
-            }
-            else{
-                SmartDashboard.putString("Error", "No Position");
-            }
-        }
-        else if(alliance == DriverStation.Alliance.Red){
-            if(AutonomousStartPosition.equals(kNoObstacles)){
-                startPosition = Constants.START_RED_LEFT;
-            }
-            else if(AutonomousStartPosition.equals(kBalance)){
-                startPosition = Constants.START_RED_MIDDLE;
-            }
-            else if(AutonomousStartPosition.equals(kCord)){
-                startPosition = Constants.START_RED_RIGHT;
-            }
-            else if(AutonomousStartPosition.equals(kL3Score)){
-                startPosition = Constants.START_RED_LEFT;
-            }
-            else{
-                SmartDashboard.putString("Error", "No Position");
-            }
-        }
-        else{
-            SmartDashboard.putString("Error", "No Team");
-        }
-
         //set out position to the auto starting position
         odometry.resetHeading();
-        odometry.resetPose(startPosition);
+        auton.setStartPos();
+        odometry.resetPose(auton.getStartPos());
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
 
-        Command sequence;
-
-        if (AutonomousStartPosition.equals(kBalance)) {
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-                .deadlineWith(new MoveWheelsStraight(drive));
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToScale(drive)).andThen(new DriveToBalance(drive))
-                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
-
-        } else if (AutonomousStartPosition.equals(kNoObstacles) || AutonomousStartPosition.equals(kCord)) {
-            Pose2d targetPoint;
-            double offset;
-            if (alliance == DriverStation.Alliance.Red) {
-                offset = -4;
-            } else {
-                offset = 4;
-            }
-            targetPoint = new Pose2d(startPosition.getX() + offset, startPosition.getY(), startPosition.getRotation());
-            
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-                .deadlineWith(new MoveWheelsStraight(drive));
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new WaitCommand(0.5).andThen(new DriveToPoint(drive,odometry,targetPoint))
-                .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
-        } else if (AutonomousStartPosition.equals(kL3Score)){ //score on top row
-            sequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
-            if(getGamePieceMode() == CUBE_MODE){
-                sequence = sequence.andThen(new IntakeBackward(intake));
-            } else {
-                sequence = sequence.andThen(new IntakeForward(intake));
-            }
-            sequence = sequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-        } else {
-            sequence = new MoveWheelsStraight(drive);
-        }
-
-        //schedule this command for our autonomous
-        schedule.schedule(sequence);
+        //schedule the command for our autonomous
+        schedule.schedule(auton.getAuton());
     }
 
     /** This function is called periodically during autonomous. */
@@ -401,6 +298,7 @@ public class Robot extends TimedRobot {
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
         pivot.setDefaultCommand(new PivotMove(opControls, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
+        odometry.setDriverControls(controls);
 
         //set all the other commands
         opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));
@@ -416,10 +314,12 @@ public class Robot extends TimedRobot {
         opControls.ArmToScoreMiddle().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
         opControls.ArmToScoreMiddleFront().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z));
         opControls.ArmToScoreTop().whileTrue(new ArmAutonPoint(arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        opControls.ArmToTransitionPoint().whileTrue(new ArmAutonPoint(arm, Constants.ArmToTransitionPoint_X, Constants.ArmToTransitionPoint_Z));
+        opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z).alongWith(new PivotSetPoint(pivot, Constants.PivotToPickupHuman)));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
+
+       
     }
 
     /** This function is called periodically during operator control. */
@@ -432,6 +332,9 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drive.setDriveMotorBrakeMode(false);
         drive.setTurnMotorBrakeMode(false);
+
+        
+        
     }
 
     /** This function is called periodically when disabled. */
@@ -458,7 +361,7 @@ public class Robot extends TimedRobot {
         } else {
             valid = OperatorControls.checkController();
         }
-        SmartDashboard.putBoolean("Operator Check", valid);
+        SmartDashboard.putBoolean("Operator Check", valid);   
     }
 
     /** This function is called once when test mode is enabled. */
