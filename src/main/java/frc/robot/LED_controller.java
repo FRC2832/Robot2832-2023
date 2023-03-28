@@ -99,36 +99,39 @@ public class LED_controller{
     }
 
     private boolean lastEnabled;
+    private int loopCounts;
 
     public void update(ISwerveDrive drive, IOperatorControls opControls) {
-        boolean enabled = DriverStation.isEnabled();
-
-        if(!enabled) {
-            send("prematch");
-        }
-        else if(DriverStation.isAutonomous()) {
-            if(lastEnabled == false) {
-                //first loop, say auto mode
-                send("auton");
-            } else {
-                //send bubble mode
-                send("bubble" + (int)drive.getPitch());
+        if(loopCounts % 5 == 0) {
+            boolean enabled = DriverStation.isEnabled();
+            
+            if(!enabled) {
+                send("prematch");
             }
-        } else {
-            //in teleop mode
-            if(lastEnabled == false) {
-                //first loop, say teleop mode
-                send("teleop");
-            } else if (opControls.IntakeSpitRequested().getAsBoolean()) {
-                send("l");
-            } else if (Robot.getGamePieceMode() == Robot.CONE_MODE) {
-                //send cone mode
-                send("cone");
+            else if(DriverStation.isAutonomous()) {
+                if(lastEnabled == false) {
+                    //first loop, say auto mode
+                    send("auton");
+                } else {
+                    //send bubble mode
+                    send("bubble" + (int)drive.getPitch());
+                }
             } else {
-                send("cube");
+                //in teleop mode
+                if(lastEnabled == false) {
+                    //first loop, say teleop mode
+                    send("teleop");
+                } else if (opControls.IntakeSpitRequested().getAsBoolean()) {
+                    send("l");
+                } else if (Robot.getGamePieceMode() == Robot.CONE_MODE) {
+                    //send cone mode
+                    send("cone");
+                } else {
+                    send("cube");
+                }
             }
+            lastEnabled = enabled;
         }
-        lastEnabled = enabled;
 
         //run the digit board
         if(Logger.FaultSet()) {
