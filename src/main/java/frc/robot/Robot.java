@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.LED_controller.cmds;
 import frc.robot.commands.*;
 import frc.robot.controls.DriveControls;
 import frc.robot.controls.LilHaydenDriveControls;
@@ -51,6 +50,7 @@ public class Robot extends TimedRobot {
     public static String SerialNumber;
     private PneumaticHub pneumatics;
     private Arm arm;
+    private LED_controller leds;
 
     private static boolean pieceMode;
 
@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
         intake = new Intake();
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
-        new LED_controller();
+        leds = new LED_controller();
 
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive,controls, arm, tail);
@@ -219,21 +219,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        // if cube mode: call cube LED's 
-        // else (cone mode): call cone LED's
-
-        //run once a second
-        if(count % 5 == 0) {
-            if(getGamePieceMode() == CUBE_MODE){
-                LED_controller.send(cmds.cube);
-            }
-            else{
-                LED_controller.send(cmds.cone);
-            }
-        }
-        count++;
+        leds.update(drive, opControls);
     }
-    int count = 0;
     
     /** This function is called once when autonomous is enabled. */
     @Override
@@ -318,8 +305,6 @@ public class Robot extends TimedRobot {
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
-
-       
     }
 
     /** This function is called periodically during operator control. */
@@ -332,9 +317,6 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drive.setDriveMotorBrakeMode(false);
         drive.setTurnMotorBrakeMode(false);
-
-        
-        
     }
 
     /** This function is called periodically when disabled. */
@@ -383,7 +365,6 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {
     }
-
 
     public static boolean getGamePieceMode(){
         return pieceMode;
