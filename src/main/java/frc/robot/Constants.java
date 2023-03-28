@@ -112,10 +112,10 @@ public final class Constants {
     public static final double ArmToPickupGroundBack_X = -20;
     public static final double ArmToPickupGroundBack_Z = 2;
 
-    public static final double ArmToTransitionPoint_X = -3;
-    public static final double ArmToTransitionPoint_Z = 50;
-    public static final double ArmToTransitionPoint2_X = 5;
-    public static final double ArmToTransitionPoint2_Z = 50;
+    public static final double ArmToTransitionPoint_X = 48;
+    public static final double ArmToTransitionPoint_Z = 31.5;
+    public static final double ArmToTransitionPoint2_X = -2.078;
+    public static final double ArmToTransitionPoint2_Z = 31.278;
 
     public static final double ScoreCubeOffset = 8;
 
