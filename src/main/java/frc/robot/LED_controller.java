@@ -138,8 +138,9 @@ public class LED_controller{
         } else {
             digit.display("RONY");
         }
+        /*
         if(digit.getButtonA()) {
             Logger.checkClearFaults(true);
-        }
+        } */
     }
 }

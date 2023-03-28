@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
     private Arm arm;
     private LED_controller leds;
 
-    private static boolean pieceMode;
+    private static boolean pieceMode = CUBE_MODE;
 
     private String[] pdpPracticeChannelNames = {
         "RR Drive",
