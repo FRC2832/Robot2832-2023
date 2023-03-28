@@ -61,7 +61,7 @@ public class Arm extends SubsystemBase{
         //double volts = shoulderPid.calculate(getShoulderAngle());
 
         //setShoulderMotorVolts(volts);
-        var newAngle = angleDeg + shoulderDelta;
+        var newAngle = angleDeg - shoulderDelta;
         hardware.setShoulderAngle(newAngle);
         SmartDashboard.putNumber("Shoulder Angle Command", newAngle);
         //SmartDashboard.putNumber("Shoulder Volts Command", volts);
@@ -136,6 +136,9 @@ public class Arm extends SubsystemBase{
         
         this.setElbowAngle(elbow);
         this.setShoulderAngle(shoulder);
+
+        SmartDashboard.putNumber("Commanded Shoulder", shoulder);
+        SmartDashboard.putNumber("Commanded Elbow", elbow);
     }
 
     public double getArmXPosition() {
