@@ -33,7 +33,7 @@ public class DriveToOffScale extends CommandBase {
     public void execute() {
         drive.SwerveDrive(Constants.MAX_AUTO_SPEED, 0, 0, false);
 
-        if(drive.getPitch() < 8) {
+        if(drive.getPitch() > 8 || finishedCounts > 5) {
             finishedCounts++;
         } else {
             finishedCounts = 0;

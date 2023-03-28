@@ -15,7 +15,7 @@ public class DriveToPoint extends CommandBase {
     private ISwerveDrive drive;
     private Odometry odometry;
     private Pose2d dest;
-    private final double TARGET_ERROR = Units.feetToMeters(0.25);
+    private final double TARGET_ERROR = Units.feetToMeters(0.5);
     private boolean isFinished;
 
     private double distX;
@@ -55,10 +55,11 @@ public class DriveToPoint extends CommandBase {
         Pose2d currentPose = odometry.getPose();
         distX = dest.getX() - currentPose.getX();
         distY = dest.getY() - currentPose.getY();
-        distRot = dest.getRotation().getDegrees() - (currentPose.getRotation().getDegrees());
+        distRot = 0;
+        //distRot = dest.getRotation().getDegrees() - (currentPose.getRotation().getDegrees());
         distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
-        if(distLeft > TARGET_ERROR || Math.abs(distRot) > 2) {
+        if(distLeft > TARGET_ERROR || Math.abs(distRot) > 10) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = (Constants.MAX_AUTO_SPEED * speedMod)/ distLeft;
