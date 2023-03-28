@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             
         }
-        intake = new Intake();
+        intake = new Intake(opControls);
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         new LED_controller();
@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
 
         //Construct auton thing
         auton = new AutonChooser(drive, odometry, intake, arm);
-        
+        SmartDashboard.putBoolean("Piece Detected", intake.hasPiece);
         logger.start();
     }
 

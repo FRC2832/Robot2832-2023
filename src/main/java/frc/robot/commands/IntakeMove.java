@@ -14,7 +14,7 @@ public class IntakeMove extends CommandBase{
     private Intake intake;
     private IOperatorControls controls;
     private XboxController operCont;
-
+    private double motorTime;
     public IntakeMove(IOperatorControls controls, Intake intake){
         this.intake = intake;
         this.controls = controls;
@@ -23,7 +23,9 @@ public class IntakeMove extends CommandBase{
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        motorTime = 0;
+    }
 
     @Override
     public void execute() {
@@ -36,15 +38,22 @@ public class IntakeMove extends CommandBase{
         if(controls.IntakeSuckRequested().getAsBoolean()){
             intakeVolts = Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign;
             intake.setIntakeVolts(intakeVolts);
+            if(motorTime>10 && intake.getIntakeCurrent()>=10){
+                intake.hasPiece=true;
+            }
         }  
         else if(controls.IntakeSpitRequested().getAsBoolean()){
             intakeVolts = -Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign;
             intake.setIntakeVolts(intakeVolts);
             LED_controller.send(cmds.lightning);
+            intake.hasPiece = false;
         } else {
             intake.setIntakeVolts(0);
+            motorTime = 0;
         }
         SmartDashboard.putNumber("Intake Voltage", intakeVolts);
+        
+        motorTime++;
     }
 
     @Override

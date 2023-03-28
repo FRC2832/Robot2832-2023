@@ -1,10 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
 import org.livoniawarriors.Logger;
-
+import frc.robot.interfaces.IOperatorControls;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -14,26 +15,45 @@ public class Intake extends SubsystemBase {
     private CANSparkMax intakeMotor;
     private double velocity;
     private Timer timer;
-
-    public Intake() {
+    private IOperatorControls controls;
+    public boolean hasPiece;
+    private double motorTime;
+    public Intake(IOperatorControls controls) {
         super();
         intakeMotor = new CANSparkMax(8,MotorType.kBrushless);
         intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setSmartCurrentLimit(30);
         timer = new Timer();
-
+        controls = this.controls;
+        hasPiece = false;
         Logger.RegisterCanSparkMax("Intake", intakeMotor);
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Intake Input Volts", intakeMotor.getBusVoltage());
+        if(!DriverStation.isDisabled()){
+            SmartDashboard.putNumber("Intake Input Volts", intakeMotor.getBusVoltage());
+            if(controls.IntakeSuckRequested().getAsBoolean()){
+                if(motorTime>10 && getIntakeCurrent()>=10){
+                    hasPiece=true;
+                }
+            }
+            else if(controls.IntakeSpitRequested().getAsBoolean()){
+                hasPiece = false;
+            } else {
+                motorTime = 0;
+            }
+            SmartDashboard.putBoolean("Piece Detected", hasPiece);
+            motorTime++;
+        }
     }
 
     public void setIntakeVolts(double volts) {
         intakeMotor.setVoltage(volts);
     }
-    
+    public double getIntakeCurrent() {
+        return intakeMotor.getOutputCurrent();  
+    }
     public void Grab(boolean forward) {
         velocity = intakeMotor.getEncoder().getVelocity();
         SmartDashboard.putNumber("Intake Velocity", velocity);
