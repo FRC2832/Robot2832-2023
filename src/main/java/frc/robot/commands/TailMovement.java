@@ -29,9 +29,9 @@ public class TailMovement extends CommandBase{
         boolean tailUpOverride = SmartDashboard.getBoolean("Distance Sensor Not Working (Override Tail Up)", false);
         double tailDist = tail.getDistSensor();
 
-        //if(arm.getArmXPosition() <= -10) {
-        //    tail.setTailAngle(Constants.TAIL_STOW_POINT);
-        //} else 
+        if(arm.getArmXPosition() <= -10) {
+            tail.setTailAngle(Constants.TAIL_STOW_POINT);
+        } else 
         if(controls.TailUpRequested().getAsBoolean()){
             //tail.setTailVoltage(4);
             tail.setTailAngle(Constants.TAIL_HIGH_POINT);
@@ -41,8 +41,8 @@ public class TailMovement extends CommandBase{
         } else if(controls.TailStowRequested().getAsBoolean()){
             tail.setTailAngle(Constants.TAIL_STOW_POINT);
             //tail.setTailVoltage(-4);
-        //} else if(tailDist > 0 && tailDist < 5.3 && !tailUpOverride) {
-        //    tail.setTailAngle(Constants.TAIL_HIGH_POINT);
+        } else if(tailDist > 0 && tailDist < 5.3 && !tailUpOverride) {
+            tail.setTailAngle(Constants.TAIL_HIGH_POINT);
         } else {
             tail.setTailVoltage(0);
         }

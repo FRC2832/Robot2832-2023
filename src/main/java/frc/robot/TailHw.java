@@ -21,7 +21,6 @@ public class TailHw implements ITailControl{
     TalonSRX tailMotor;
     DutyCycle tailEncoder;
     Rev2mDistanceSensor distSensor;
-    PIDController tailPid;
 
     double tailAngle;
     double distValue;
@@ -32,14 +31,12 @@ public class TailHw implements ITailControl{
     public TailHw(){
         tailMotor = new TalonSRX(49);
         tailMotor.setNeutralMode(NeutralMode.Brake);
-        tailMotor.setInverted(true);
+        tailMotor.setInverted(false);
         tailEncoder = new DutyCycle(new DigitalInput(3));
         
         distSensor = new Rev2mDistanceSensor(Port.kOnboard);
         distSensor.setAutomaticMode(true);
         distSensor.setMeasurementPeriod(0.018);
-
-        tailPid = new PIDController(0.15, 0, 0.1);
 
         Logger.RegisterTalon("Tail", tailMotor);
         Logger.RegisterSensor("Tail Angle", () -> getTailAngle());
@@ -48,13 +45,7 @@ public class TailHw implements ITailControl{
 
     @Override
     public void setTailVoltage(double volts) {
-        //tailMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
-    }
-
-    @Override
-    public void setTailAngle(double angleDeg) {
-        double volts = tailPid.calculate(tailAngle, angleDeg);
-        setTailVoltage(volts);
+        tailMotor.set(ControlMode.PercentOutput, -volts/RobotController.getBatteryVoltage());
     }
 
     @Override

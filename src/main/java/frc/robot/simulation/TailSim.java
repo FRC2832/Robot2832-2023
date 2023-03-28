@@ -24,10 +24,6 @@ public class TailSim implements ITailControl{
     }
 
     @Override
-    public void setTailAngle(double angleDeg) {
-    }
-
-    @Override
     public double getTailAngle() {
         return tailAngle;
     }

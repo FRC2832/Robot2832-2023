@@ -50,7 +50,7 @@ public final class Constants {
     public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sec) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
-    public static final double MAX_AUTO_SPEED = 1.0;//2.5;                //Max speed (meters/sec) the robot can go in auton
+    public static final double MAX_AUTO_SPEED = 1.5;//2.5;                //Max speed (meters/sec) the robot can go in auton
     public static final double MAX_AUTO_TURN_SPEED = 3 * Math.PI;                //Max speed (rad/sec) the robot can rotate
     
     public static final Pose2d START_BLUE_LEFT = new Pose2d(2.5,4.75,Rotation2d.fromDegrees(0));  //starting positions for Auton
@@ -68,7 +68,7 @@ public final class Constants {
     public static final double ELBOW_OFFSET = 135-58;
     public static final double INTAKE_OFFSET = 110;
 
-    public static final double ARM_ACCEPT_ERROR = 1;      //MAX error in inches for arm going to set points autonomously 
+    public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
     //Arm set point constants 
     //pickup ground front
@@ -76,8 +76,8 @@ public final class Constants {
     public static final double ArmToPickupGround_Z = -0.5;
 
     //pickup from tail
-    public static final double ArmToPickupTail_X = 29.1;
-    public static final double ArmToPickupTail_Z = 14.6;
+    public static final double ArmToPickupTail_X = 25.2;
+    public static final double ArmToPickupTail_Z = 16.0;
 
     //pickup from human player station
     public static final double ArmToPickupHuman_X = 133.5;
@@ -122,7 +122,7 @@ public final class Constants {
     public static final double IntakeVoltage = 12.5;
     public static final double TAIL_LOW_POINT = 5;
     public static final double TAIL_HIGH_POINT = 95;
-    public static final double TAIL_STOW_POINT = 150;
+    public static final double TAIL_STOW_POINT = 130;
     
     public static final double CTRE_P_RES = 1024 / 12;
 }

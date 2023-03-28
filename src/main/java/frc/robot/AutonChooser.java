@@ -62,16 +62,16 @@ public class AutonChooser {
 
         sequence = new DriveToPoint(drive, odometry, odometry.getPose()); //if no sequence gets loaded it'll go to where it is (do nothing)
 
-        startPosChooser.setDefaultOption("Scale", kBalance);
-        startPosChooser.addOption("Scale + Mobility", kMobility);
+        startPosChooser.addOption("Scale", kBalance);
+        startPosChooser.setDefaultOption("Scale + Mobility", kMobility);
         startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.addOption("Cord", kCord);
-        startPosChooser.addOption("Do Nothing", kDoNothing);
-        startPosChooser.addOption("Score One", kOnePiece);
-        startPosChooser.addOption("Score Two", kTwoPiece);
-        startPosChooser.addOption("Score Three", kThreePiece);
-        startPosChooser.addOption(kPathPlan, kPathPlan);
-        startPosChooser.addOption(kPlan3P, kPlan3P);
+        //startPosChooser.addOption("Do Nothing", kDoNothing);
+        //startPosChooser.addOption("Score One", kOnePiece);
+        //startPosChooser.addOption("Score Two", kTwoPiece);
+        //startPosChooser.addOption("Score Three", kThreePiece);
+        //startPosChooser.addOption(kPathPlan, kPathPlan);
+        //startPosChooser.addOption(kPlan3P, kPlan3P);
         
         SmartDashboard.putData("StartPos Select", startPosChooser);
 
@@ -123,16 +123,16 @@ public class AutonChooser {
     public Command autoBalanceAndOut(){ //drive over charge station out of community then come back in and balance - untested
         Command tempSequence;
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-            .deadlineWith(new MoveWheelsStraight(drive));
-            
+            .deadlineWith(new MoveWheelsStraight(drive));   
         tempSequence = tempSequence.andThen(spit());
+        //tempSequence = spit();
 
         tempSequence = tempSequence.andThen(new WaitCommand(0.5)
             .andThen(new DriveToScale(drive)).withTimeout(2.9)
-            .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
+            .deadlineWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
             .andThen(new DriveToOffScale(drive))
             .andThen(new DriveToScaleNegative(drive))
-            .andThen(new DriveToBalance(drive)).withTimeout(8));
+            .andThen(new DriveToBalance(drive)));
         return tempSequence;
     }
 
@@ -480,7 +480,7 @@ public class AutonChooser {
     //CUSTOM FUNCTIONS
     private Command suck(){
         Command tempCommand;
-        if(Robot.getGamePieceMode() == Robot.CONE_MODE){
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
             tempCommand = new IntakeBackward(intake);
         } else {
             tempCommand = new IntakeForward(intake);
@@ -490,7 +490,7 @@ public class AutonChooser {
     
     private Command spit(){
         Command tempCommand;
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
+        if(Robot.getGamePieceMode() == Robot.CONE_MODE){
             tempCommand = new IntakeBackward(intake);
         } else {
             tempCommand = new IntakeForward(intake);
