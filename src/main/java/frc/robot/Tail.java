@@ -25,7 +25,7 @@ public class Tail extends SubsystemBase {
         //tailPid.reset(hardware.getTailAngle());
         //tailPid.setGoal(hardware.getTailAngle());
         tailPid.setTolerance(3);
-        setTailAngle(Constants.TAIL_STOW_POINT);
+        requestedAngle = Constants.TAIL_STOW_POINT;
     }
 
     @Override

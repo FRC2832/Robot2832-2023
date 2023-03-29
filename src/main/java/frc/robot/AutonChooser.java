@@ -121,7 +121,9 @@ public class AutonChooser {
         
         tempSequence = tempSequence.andThen(spit());
     
-        tempSequence = tempSequence.andThen(new WaitCommand(0.5).andThen(new DriveToScale(drive)).andThen(new DriveToBalance(drive))
+        tempSequence = tempSequence.andThen(new WaitCommand(0.5)
+            .andThen(new DriveToScale(drive))
+            .andThen(new DriveToBalance(drive))
             .alongWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
         return tempSequence;
     }    
@@ -131,11 +133,16 @@ public class AutonChooser {
         tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));   
         tempSequence = tempSequence.andThen(spit());
-        //tempSequence = spit();
 
+        // tempSequence = tempSequence.andThen(new WaitCommand(0.5)
+        //     .andThen(new DriveToScale(drive)).withTimeout(2.9)
+        //     .deadlineWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
+        //     .andThen(new DriveToOffScale(drive))
+        //     .andThen(new DriveToScaleNegative(drive))
+        //     .andThen(new DriveToBalance(drive)));
         tempSequence = tempSequence.andThen(new WaitCommand(0.5)
-            .andThen(new DriveToScale(drive)).withTimeout(2.9)
-            .deadlineWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
+            .andThen(Commands.parallel(new DriveToScale(drive),
+            new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))).withTimeout(2.9)
             .andThen(new DriveToOffScale(drive))
             .andThen(new DriveToScaleNegative(drive))
             .andThen(new DriveToBalance(drive)));
@@ -228,23 +235,19 @@ public class AutonChooser {
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(new WaitCommand(0.5))
             .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z)), suck()))
-            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 3))
-            .alongWith(suck());//pickup 2nd piece
+            .andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), 
+            suck());//pickup 2nd piece
         
         //drive back into community
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z))));
         
         //drive to scoring position
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), //Running these two in parallel
-            (new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z))))
-            .andThen(new WaitCommand(0.5));
-        //    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        
-        //score 2nd piece
-        tempSequence = tempSequence.andThen(spit());
-
+            (new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4))))
+            .andThen(spit()); //score 2nd piece
+    
         //try to put arm back over tail
         tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
 
