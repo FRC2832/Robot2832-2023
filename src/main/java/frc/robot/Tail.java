@@ -11,6 +11,8 @@ public class Tail extends SubsystemBase {
     private ITailControl hardware;
     double tailAngle;
     PIDController tailPid;
+    boolean isVoltControl;
+    double requestedAngle;
    
     public Tail(ITailControl hardware) {
         super();
@@ -23,28 +25,34 @@ public class Tail extends SubsystemBase {
         //tailPid.reset(hardware.getTailAngle());
         //tailPid.setGoal(hardware.getTailAngle());
         tailPid.setTolerance(3);
+        setTailAngle(Constants.TAIL_STOW_POINT);
     }
 
     @Override
     public void periodic() {
         hardware.updateInputs();
+        tailAngle = hardware.getTailAngle();
+        if(!isVoltControl) {
+            double volts = tailPid.calculate(tailAngle, requestedAngle);
+            // if(tailPid.atSetpoint()) {
+            //     volts = 0;
+            // }
+            setTailVoltage(volts);
+        }
+        isVoltControl = false;
     }
 
     public void setTailVoltage(double volts) {
         hardware.setTailVoltage(volts);
+        isVoltControl = true;
     }
 
     public double getTailAngle() {
-        tailAngle = hardware.getTailAngle();
         return tailAngle;
     }
 
     public void setTailAngle(double angleDeg) {
-        double volts = tailPid.calculate(tailAngle, angleDeg);
-        if(tailPid.atSetpoint()) {
-            volts = 0;
-        }
-        setTailVoltage(volts);
+        requestedAngle = angleDeg;
     }
 
     public double getDistSensor() {

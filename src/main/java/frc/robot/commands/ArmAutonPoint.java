@@ -59,17 +59,18 @@ public class ArmAutonPoint extends CommandBase{
         } else if(transitionNegToPos){
             arm.calcAngles(Constants.ArmToTransitionPoint2_X, Constants.ArmToTransitionPoint2_Z);
             if (arm.getArmXPosition() > Constants.ArmToTransitionPoint2_X - FLIP_TOLERANCE && arm.getArmXPosition() < Constants.ArmToTransitionPoint2_X + FLIP_TOLERANCE){
+            //if (FLIP_TOLERANCE > Math.sqrt(Math.pow(arm.getArmXPosition() - Constants.ArmToTransitionPoint2_X, 2) + Math.pow(arm.getArmZPosition() - Constants.ArmToTransitionPoint2_Z, 2))){
                 moveElbow2 = true; 
                 transitionNegToPos = false;
             }
         } else if (moveElbow1) {
             arm.setElbowAngle(90);
-            if (Math.abs(arm.getElbowAngle() - 90) < 5){
+            if (Math.abs(arm.getElbowAngle() - 90) < 7){
                 moveElbow1 = false;
             }
         } else if (moveElbow2) {
             arm.setElbowAngle(-90);
-            if (Math.abs(arm.getElbowAngle() + 90) < 5){
+            if (Math.abs(arm.getElbowAngle() + 90) < 7){
                 moveElbow2 = false;
             }
         } else { 

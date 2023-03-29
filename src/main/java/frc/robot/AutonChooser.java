@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmAutonPoint;
+import frc.robot.commands.ArmAutonPointNoLimit;
 import frc.robot.commands.DriveToBalance;
 import frc.robot.commands.DriveToOffScale;
 import frc.robot.commands.DriveToOffScaleNegative;
@@ -47,7 +48,7 @@ public class AutonChooser {
     private static final String kMobility = "Mobility";
     private static final String kMobilityBack = "Scale Back";
     private static final String kCord = "Cord";
-    private static final String kDoNothing = "Do Nothing";
+    //private static final String kDoNothing = "Do Nothing";
     private static final String kOnePiece = "L3 Score";
     private static final String kTwoPiece = "Score Two";
     private static final String kThreePiece = "Score Three";
@@ -115,7 +116,7 @@ public class AutonChooser {
     //ALL AUTON SEQUENCES
     public Command autoBalance(){ //balance auto from jackson comp
         Command tempSequence;
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+        tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
                 .deadlineWith(new MoveWheelsStraight(drive));
         
         tempSequence = tempSequence.andThen(spit());
@@ -127,7 +128,7 @@ public class AutonChooser {
 
     public Command autoBalanceAndOut(){ //drive over charge station out of community then come back in and balance - untested
         Command tempSequence;
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+        tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));   
         tempSequence = tempSequence.andThen(spit());
         //tempSequence = spit();
@@ -164,7 +165,7 @@ public class AutonChooser {
         
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation());
             
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+        tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
             
         tempSequence = tempSequence.andThen(spit());
@@ -181,7 +182,7 @@ public class AutonChooser {
         
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation());
             
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+        tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
         
         tempSequence = tempSequence.andThen(spit());
@@ -217,31 +218,29 @@ public class AutonChooser {
         Command tempSequence;
         Pose2d targetPoint;
         //Put arm in scoring position
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
+        tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
         
         //score 1st piece
         tempSequence = tempSequence.andThen(spit());
         
         //drive to next piece and lower arm
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(4.3), startPosition.getY() - 0.1, startPosition.getRotation());
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(new WaitCommand(0.5))
             .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z)), suck()))
-            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2));
-        
-        //pickup 2nd piece
-        tempSequence = tempSequence.andThen(suck());
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 3))
+            .alongWith(suck());//pickup 2nd piece
         
         //drive back into community
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
         
         //drive to scoring position
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.36, startPosition.getRotation());
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), //Running these two in parallel
             (new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z))))
-            .andThen(new WaitCommand(0.5))
-            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
+            .andThen(new WaitCommand(0.5));
+        //    .andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
         
         //score 2nd piece
         tempSequence = tempSequence.andThen(spit());

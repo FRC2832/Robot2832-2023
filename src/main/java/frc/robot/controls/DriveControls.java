@@ -61,6 +61,11 @@ public class DriveControls implements IDriveControls {
     public JoystickButton TailStowRequested() {
         return new JoystickButton(driveCont, XboxController.Button.kA.value);
     }
+    
+    @Override
+    public JoystickButton TailHumanRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kB.value);
+    }
 
     @Override
     public double GetBoostTriggerRequest() {

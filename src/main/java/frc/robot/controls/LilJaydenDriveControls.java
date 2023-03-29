@@ -57,6 +57,11 @@ public class LilJaydenDriveControls implements IDriveControls {
     }
 
     @Override
+    public JoystickButton TailHumanRequested() {
+        return new JoystickButton(driveContLeft, T16000M.Button.right.value);
+    }
+
+    @Override
     public double GetBoostTriggerRequest() {
         if(driveContRight.getTrigger()){
             return 1.0;
