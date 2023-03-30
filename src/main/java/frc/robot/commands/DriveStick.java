@@ -51,7 +51,7 @@ public class DriveStick extends CommandBase {
 
         if(boost > 0.1){
             xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED);
+            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(ySpeed));
             turn = turn * Constants.MAX_DRIVER_OMEGA;
         } else if(turtle > 0.1) {
             xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(xSpeed));

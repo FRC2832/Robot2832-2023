@@ -9,7 +9,7 @@ import frc.robot.Robot;
 
 
 public class ArmAutonPoint extends CommandBase{
-    final static double FLIP_TOLERANCE = 5.0; //Constants.ARM_ACCEPT_ERROR;
+    final static double FLIP_TOLERANCE = 6.0; //Constants.ARM_ACCEPT_ERROR;
     private Arm arm;
     private double x, z;
     private double zOrig;
@@ -63,8 +63,8 @@ public class ArmAutonPoint extends CommandBase{
                 transitionNegToPos = false;
             }
         } else if (moveElbow1) {
-            arm.setElbowAngle(100);
-            if (Math.abs(arm.getElbowAngle() - 100) < 5){
+            arm.setElbowAngle(90);
+            if (Math.abs(arm.getElbowAngle() - 90) < 5){
                 moveElbow1 = false;
             }
         } else if (moveElbow2) {

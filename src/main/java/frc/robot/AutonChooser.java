@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmAutonPoint;
 import frc.robot.commands.DriveToBalance;
 import frc.robot.commands.DriveToOffScale;
+import frc.robot.commands.DriveToOffScaleNegative;
 import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.DriveToScale;
 import frc.robot.commands.DriveToScaleNegative;
@@ -44,6 +45,7 @@ public class AutonChooser {
     private static final String kNoObstacles = "No Obstacles";
     private static final String kBalance = "Scale";
     private static final String kMobility = "Mobility";
+    private static final String kMobilityBack = "Scale Back";
     private static final String kCord = "Cord";
     private static final String kDoNothing = "Do Nothing";
     private static final String kOnePiece = "L3 Score";
@@ -64,11 +66,12 @@ public class AutonChooser {
 
         startPosChooser.addOption("Scale", kBalance);
         startPosChooser.setDefaultOption("Scale + Mobility", kMobility);
+        startPosChooser.setDefaultOption("Scale + Mobility Backwards", kMobilityBack);
         startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.addOption("Cord", kCord);
         //startPosChooser.addOption("Do Nothing", kDoNothing);
         //startPosChooser.addOption("Score One", kOnePiece);
-        //startPosChooser.addOption("Score Two", kTwoPiece);
+        startPosChooser.addOption("Score Two", kTwoPiece);
         //startPosChooser.addOption("Score Three", kThreePiece);
         //startPosChooser.addOption(kPathPlan, kPathPlan);
         //startPosChooser.addOption(kPlan3P, kPlan3P);
@@ -83,6 +86,8 @@ public class AutonChooser {
             sequence = autoBalance();
         } else if (AutonomousStartPosition.equals(kMobility)) {
             sequence = autoBalanceAndOut();
+        } else if (AutonomousStartPosition.equals(kMobilityBack)) {
+            sequence = autoBalanceAndOutBackwards();
         } else if (AutonomousStartPosition.equals(kNoObstacles)) {
             sequence = autoNoObstacles();
         } else if (AutonomousStartPosition.equals(kCord)) {
@@ -132,6 +137,23 @@ public class AutonChooser {
             .deadlineWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
             .andThen(new DriveToOffScale(drive))
             .andThen(new DriveToScaleNegative(drive))
+            .andThen(new DriveToBalance(drive)));
+        return tempSequence;
+    }
+
+    public Command autoBalanceAndOutBackwards(){ //drive over charge station out of community then come back in and balance - untested
+        //add something to re field orient the right way
+        Command tempSequence;
+        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddleFront_X, Constants.ArmToScoreMiddleFront_Z)
+            .deadlineWith(new MoveWheelsStraight(drive));   
+        tempSequence = tempSequence.andThen(spit());
+        //tempSequence = spit();
+
+        tempSequence = tempSequence.andThen(new WaitCommand(0.5)
+            .andThen(new DriveToScaleNegative(drive)).withTimeout(2.9)
+            .deadlineWith(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
+            .andThen(new DriveToOffScaleNegative(drive))
+            .andThen(new DriveToScale(drive))
             .andThen(new DriveToBalance(drive)));
         return tempSequence;
     }
@@ -202,9 +224,10 @@ public class AutonChooser {
         tempSequence = tempSequence.andThen(spit());
         
         //drive to next piece and lower arm
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4.3), startPosition.getY() - 0.1, startPosition.getRotation());
         tempSequence = tempSequence.andThen(new WaitCommand(0.5))
-            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z)), suck()));
+            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z)), suck()))
+            .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2));
         
         //pickup 2nd piece
         tempSequence = tempSequence.andThen(suck());
@@ -418,6 +441,9 @@ public class AutonChooser {
             else if(AutonomousStartPosition.equals(kMobility)){
                 startPosition = Constants.START_BLUE_MIDDLE;
             }
+            else if(AutonomousStartPosition.equals(kMobilityBack)){
+                startPosition = Constants.START_BLUE_MIDDLE;
+            }
             else if(AutonomousStartPosition.equals(kCord)){
                 startPosition = Constants.START_BLUE_RIGHT;
             } 
@@ -448,6 +474,9 @@ public class AutonChooser {
                 startPosition = Constants.START_RED_MIDDLE;
             }
             else if(AutonomousStartPosition.equals(kMobility)){
+                startPosition = Constants.START_RED_MIDDLE;
+            }
+            else if(AutonomousStartPosition.equals(kMobilityBack)){
                 startPosition = Constants.START_RED_MIDDLE;
             }
             else if(AutonomousStartPosition.equals(kCord)){
