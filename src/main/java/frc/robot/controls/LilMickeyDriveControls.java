@@ -53,6 +53,11 @@ public class LilMickeyDriveControls implements IDriveControls {
     public JoystickButton TailStowRequested() { 
         return new JoystickButton(driveCont, XboxController.Button.kY.value);
     }
+
+    @Override
+    public JoystickButton TailHumanRequested() {
+        return new JoystickButton(driveCont, XboxController.Button.kA.value);
+    }
     
     @Override
     public double GetPrecisionTriggerRequest() {

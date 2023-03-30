@@ -12,4 +12,5 @@ public interface IDriveControls {
     JoystickButton TailUpRequested();
     JoystickButton TailDownRequested();
     JoystickButton TailStowRequested();
+    JoystickButton TailHumanRequested();
 }

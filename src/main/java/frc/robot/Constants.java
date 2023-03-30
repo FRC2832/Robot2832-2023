@@ -99,6 +99,10 @@ public final class Constants {
     public static final double ArmToScoreTop_Z = 41.6;
     //575 pivot
 
+    //level 3 auton //X = -24.2 Z = 30.0
+    public static final double ArmToScoreTopAuto_X = -24.2;
+    public static final double ArmToScoreTopAuto_Z = 37.0;
+
 ////////////////////////////////////////////////////////////////////////
     //level 1 back
     public static final double ArmToScoreLow_X = -26.6;
@@ -123,6 +127,8 @@ public final class Constants {
     public static final double TAIL_LOW_POINT = 5;
     public static final double TAIL_HIGH_POINT = 95;
     public static final double TAIL_STOW_POINT = 130;
+    public static final double TAIL_HUMAN_POINT = 52;
+    
     
     public static final double CTRE_P_RES = 1024 / 12;
 }
