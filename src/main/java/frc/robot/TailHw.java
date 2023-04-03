@@ -10,8 +10,8 @@ import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.interfaces.ITailControl;
@@ -45,7 +45,11 @@ public class TailHw implements ITailControl{
 
     @Override
     public void setTailVoltage(double volts) {
-        tailMotor.set(ControlMode.PercentOutput, -volts/RobotController.getBatteryVoltage());
+        if(!DriverStation.isTest()) {
+            tailMotor.set(ControlMode.PercentOutput, -volts/RobotController.getBatteryVoltage());
+        } else {
+            tailMotor.set(ControlMode.PercentOutput, 0);
+        }
     }
 
     @Override

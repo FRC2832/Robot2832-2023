@@ -99,12 +99,16 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void setShoulderMotorVolts(double volts) {
-        shoulderMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
+        if(!DriverStation.isTest()) {
+            shoulderMotor.set(ControlMode.PercentOutput, volts/RobotController.getBatteryVoltage());
+        }
     }
 
     @Override
     public void setElbowMotorVolts(double volts) {
-        elbowMotor.set(ControlMode.PercentOutput, -volts/RobotController.getBatteryVoltage());
+        if(!DriverStation.isTest()) {
+            elbowMotor.set(ControlMode.PercentOutput, -volts/RobotController.getBatteryVoltage());
+        }
     }
 
     @Override
@@ -169,15 +173,19 @@ public class ArmHw implements IArmControl {
 
     @Override
     public void setElbowAngle(double angleDeg) {
-        elbowMotor.set(ControlMode.MotionMagic, angleDeg * COUNTS_PER_DEGREE_ELBOW, 
-            DemandType.ArbitraryFeedForward, getFeedForward(shoulderAngle)/RobotController.getBatteryVoltage());
+        if(!DriverStation.isTest()) {
+            elbowMotor.set(ControlMode.MotionMagic, angleDeg * COUNTS_PER_DEGREE_ELBOW, 
+                DemandType.ArbitraryFeedForward, getFeedForward(shoulderAngle)/RobotController.getBatteryVoltage());
+        }
     }
 
     @Override
     public void setShoulderAngle(double angleDeg) {
-        var ff = Math.cos(Math.toRadians(shoulderAngle)) * kF_SHOULDER;
-        shoulderMotor.set(ControlMode.MotionMagic, angleDeg * COUNTS_PER_DEGREE_SHOULDER,
-            DemandType.ArbitraryFeedForward, ff/RobotController.getBatteryVoltage());
+        if(!DriverStation.isTest()) {
+            var ff = Math.cos(Math.toRadians(shoulderAngle)) * kF_SHOULDER;
+            shoulderMotor.set(ControlMode.MotionMagic, angleDeg * COUNTS_PER_DEGREE_SHOULDER,
+                DemandType.ArbitraryFeedForward, ff/RobotController.getBatteryVoltage());
+        }
     }
 
     @Override

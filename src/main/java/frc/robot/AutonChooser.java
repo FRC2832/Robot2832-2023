@@ -67,7 +67,7 @@ public class AutonChooser {
 
         startPosChooser.addOption("Scale", kBalance);
         startPosChooser.setDefaultOption("Scale + Mobility", kMobility);
-        startPosChooser.setDefaultOption("Scale + Mobility Backwards", kMobilityBack);
+        startPosChooser.addOption("Scale + Mobility Backwards", kMobilityBack);
         startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.addOption("Cord", kCord);
         //startPosChooser.addOption("Do Nothing", kDoNothing);

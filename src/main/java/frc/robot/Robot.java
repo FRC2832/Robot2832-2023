@@ -142,6 +142,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Serial Number", RobotController.getSerialNumber());
         SerialNumber = RobotController.getSerialNumber();
         Logger.RegisterLoopTimes(this);
+        RobotController.setBrownoutVoltage(3);
 
         // initialize robot parts and locations where they are
         controls = new DriveControls();
