@@ -109,7 +109,7 @@ public class Arm extends SubsystemBase{
         double forearmLen = Constants.FOREARM_LENGTH;
         double bicepLen = Constants.BICEP_LENGTH;
 
-        boolean sideLimit = x < 77.5 && x > -48;
+        boolean sideLimit = x < 77.5 && x > -41.1;
         boolean heightLimit = z < 59 && z > -14;
         boolean robotHeightLimit = (-5 < x && x < 30) && (z < 0);
         boolean armLengthLimit = Math.sqrt(x*x + z*z) < forearmLen + bicepLen;
