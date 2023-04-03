@@ -114,7 +114,14 @@ public class LED_controller{
                     send("auton");
                 } else {
                     //send bubble mode
-                    send("bubble" + (int)drive.getPitch());
+                    var pitch = (int)(drive.getPitch() + 12);
+                    if(pitch < 1) {
+                        pitch = 1;
+                    }
+                    if (pitch > 25) {
+                        pitch = 25;
+                    }
+                    send("bubble" + pitch);
                 }
             } else {
                 //in teleop mode
