@@ -186,7 +186,7 @@ public class Robot extends TimedRobot {
         odometry = new Odometry(drive,controls, arm, tail);
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
-        SmartDashboard.putData(new ChangeMode(opControls));
+        SmartDashboard.putData(new ChangeMode());
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
@@ -305,7 +305,6 @@ public class Robot extends TimedRobot {
         opControls.ArmToPickupHuman().whileTrue(new ArmAutonPoint(arm, Constants.ArmToPickupHuman_X, Constants.ArmToPickupHuman_Z).alongWith(new PivotSetPoint(pivot, Constants.PivotToPickupHuman)));
         opControls.IntakeSuckRequested().whileTrue(new IntakeMove(opControls, intake));
         opControls.IntakeSpitRequested().whileTrue(new IntakeMove(opControls, intake));
-        opControls.ChangePieceMode().whileTrue(new ChangeMode(opControls));
     }
 
     /** This function is called periodically during operator control. */

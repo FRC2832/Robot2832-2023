@@ -5,16 +5,19 @@ import org.livoniawarriors.REVDigitBoard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
 
-public class LED_controller{
+public class LED_controller {
     private static SerialPort sp;
     private REVDigitBoard digit;
+    private boolean lastPieceMode;
 
     public LED_controller(){
         LED_controller.sp = new SerialPort(9600, Port.kOnboard);
         digit = new REVDigitBoard();
+        lastPieceMode = false;
     }
     
     public enum cmds {
@@ -152,5 +155,21 @@ public class LED_controller{
         if(digit.getButtonA()) {
             Logger.checkClearFaults(true);
         } */
+
+        //check if piece mode needs to be switched
+        var newMode = opControls.ChangePieceMode().getAsBoolean();
+        boolean currentMode = Robot.getGamePieceMode();
+        if(newMode == true && lastPieceMode == false) {
+            Robot.setGamePieceMode(!currentMode);
+        }
+
+        String mode;
+        if(currentMode == Robot.CONE_MODE) {
+            mode = "Cone!";
+        } else {
+            mode = "Cube!";
+        }
+        SmartDashboard.putString("Piece Mode", mode);
+        lastPieceMode = newMode;
     }
 }
