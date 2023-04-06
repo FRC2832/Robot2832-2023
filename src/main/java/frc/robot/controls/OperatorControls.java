@@ -146,4 +146,9 @@ public class OperatorControls implements IOperatorControls {
         }
         return false;
     }
+
+    @Override
+    public void SetRumble(double pct) {
+        
+    }
 }

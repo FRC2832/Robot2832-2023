@@ -177,7 +177,7 @@ public class Robot extends TimedRobot {
             Logger.RegisterPdp(new PowerDistribution(1,ModuleType.kRev), pdhRealChannelNames);
             
         }
-        intake = new Intake();
+        intake = new Intake(opControls);
         pivot = new Pivot(new PivotHw(),arm);
         schedule = CommandScheduler.getInstance();
         leds = new LED_controller();
@@ -220,7 +220,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        leds.update(drive, opControls);
+        leds.update(drive, intake, tail, opControls);
     }
     
     /** This function is called once when autonomous is enabled. */
@@ -287,6 +287,7 @@ public class Robot extends TimedRobot {
         pivot.setDefaultCommand(new PivotMove(opControls, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
         odometry.setDriverControls(controls);
+        intake.setOperator(opControls);
 
         //set all the other commands
         opControls.ShoulderPosRequested().whileTrue(new ArmManualOverride(arm, opControls));

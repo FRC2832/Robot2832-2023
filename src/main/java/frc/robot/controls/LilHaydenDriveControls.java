@@ -154,4 +154,9 @@ public class LilHaydenDriveControls implements IOperatorControls {
         }
         return false;
     }
+
+    @Override
+    public void SetRumble(double pct) {
+        
+    }
 }
