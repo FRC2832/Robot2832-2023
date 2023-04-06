@@ -17,7 +17,7 @@ public class Tail extends SubsystemBase {
         this.hardware = hardware;
         //tailPid = new ProfiledPIDController(0.03, 0.007, 0, 
         //    new Constraints(120, 60));
-        tailPid = new PIDController(0.04, 0.007, 0);
+        tailPid = new PIDController(0.03, 0.007, 0);
         hardware.updateInputs();
         tailPid.reset();
         //tailPid.reset(hardware.getTailAngle());
@@ -57,4 +57,8 @@ public class Tail extends SubsystemBase {
         return hardware.getDistSensor();
     }
 
+    public boolean HasPiece() {
+        var tailDist = hardware.getDistSensor();
+        return tailDist > 0 && tailDist < 5.3;
+    }
 }
