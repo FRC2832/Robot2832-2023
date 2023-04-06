@@ -5,16 +5,19 @@ import org.livoniawarriors.REVDigitBoard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
 
-public class LED_controller{
+public class LED_controller {
     private static SerialPort sp;
     private REVDigitBoard digit;
+    private boolean lastPieceMode;
 
     public LED_controller(){
         LED_controller.sp = new SerialPort(9600, Port.kOnboard);
         digit = new REVDigitBoard();
+        lastPieceMode = false;
     }
     
     public enum cmds {
@@ -98,37 +101,33 @@ public class LED_controller{
         sp.writeString(msg+"\r\n");
     }
 
-    private boolean lastEnabled;
     private int loopCounts;
 
-    public void update(ISwerveDrive drive, IOperatorControls opControls) {
-        if(loopCounts % 5 == 0) {
-            boolean enabled = DriverStation.isEnabled();
-            
-            if(!enabled) {
+    public void update(ISwerveDrive drive, Intake intake, Tail tail, IOperatorControls opControls) {
+        if(loopCounts % 50 == 0) {
+            if(!DriverStation.isEnabled()) {
                 send("prematch");
+            } else if(DriverStation.isAutonomous()) {
+                send("auton");
+            } else {
+                send("teleop");
+            }
+        } else if(loopCounts % 5 == 3) {
+            if(!DriverStation.isEnabled()) {
+                //do nothing in disabled
             }
             else if(DriverStation.isAutonomous()) {
-                if(lastEnabled == false) {
-                    //first loop, say auto mode
-                    send("auton");
-                } else {
-                    //send bubble mode
-                    var pitch = (int)(drive.getPitch() + 12);
-                    if(pitch < 1) {
-                        pitch = 1;
-                    }
-                    if (pitch > 25) {
-                        pitch = 25;
-                    }
-                    send("bubble" + pitch);
+                //send bubble mode
+                var pitch = (int)(drive.getPitch() + 12);
+                if(pitch < 1) {
+                    pitch = 1;
                 }
+                if (pitch > 25) {
+                    pitch = 25;
+                }
+                send("bubble" + pitch);
             } else {
-                //in teleop mode
-                if(lastEnabled == false) {
-                    //first loop, say teleop mode
-                    send("teleop");
-                } else if (opControls.IntakeSpitRequested().getAsBoolean()) {
+                if (opControls.IntakeSpitRequested().getAsBoolean()) {
                     send("l");
                 } else if (Robot.getGamePieceMode() == Robot.CONE_MODE) {
                     //send cone mode
@@ -137,7 +136,6 @@ public class LED_controller{
                     send("cube");
                 }
             }
-            lastEnabled = enabled;
         }
 
         //run the digit board
@@ -152,5 +150,34 @@ public class LED_controller{
         if(digit.getButtonA()) {
             Logger.checkClearFaults(true);
         } */
+
+        //check if piece mode needs to be switched
+        var newMode = opControls.ChangePieceMode().getAsBoolean();
+        boolean currentMode = Robot.getGamePieceMode();
+        if(newMode == true && lastPieceMode == false) {
+            Robot.setGamePieceMode(!currentMode);
+        }
+
+        String mode;
+        if(currentMode == Robot.CONE_MODE) {
+            mode = "Cone!";
+        } else {
+            mode = "Cube!";
+        }
+        SmartDashboard.putString("Piece Mode", mode);
+        lastPieceMode = newMode;
+
+        //check for rumble
+        var rumble = 0.;
+        if(intake.HasPiece() || tail.HasPiece()) {
+            if(rumbleCounts < 40) {
+                rumble = 0.6;
+            }
+            rumbleCounts++;
+        } else {
+            rumbleCounts = 0;
+        }
+        opControls.SetRumble(rumble);
     }
+    int rumbleCounts;
 }

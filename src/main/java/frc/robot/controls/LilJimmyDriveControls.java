@@ -1,6 +1,7 @@
 package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -148,6 +149,11 @@ public class LilJimmyDriveControls implements IOperatorControls {
             }
         }
         return false;
+    }
+
+    @Override
+    public void SetRumble(double pct) {
+        operCont.setRumble(RumbleType.kLeftRumble, pct);
     }
 }
 

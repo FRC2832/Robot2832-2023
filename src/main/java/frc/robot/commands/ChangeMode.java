@@ -3,17 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
-import frc.robot.interfaces.IOperatorControls;
-
 
 public class ChangeMode extends CommandBase{
     private boolean currentMode;
     private String mode;
-    private IOperatorControls controls;
 
-    public ChangeMode(IOperatorControls controls) {
-        this.controls = controls;
-        addRequirements();
+    public ChangeMode() {
     }
 
     @Override
@@ -39,7 +34,7 @@ public class ChangeMode extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return !controls.ChangePieceMode().getAsBoolean(); 
+        return false;
     }
 
     @Override

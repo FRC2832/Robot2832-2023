@@ -27,4 +27,6 @@ public interface IOperatorControls {
     Trigger IntakeSuckRequested();
     Trigger IntakeSpitRequested();
     Trigger ChangePieceMode();
+
+    void SetRumble(double pct);
 }
