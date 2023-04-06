@@ -31,7 +31,7 @@ public class ArmHw implements IArmControl {
     final double COUNTS_PER_DEGREE_SHOULDER_V = COUNTS_PER_DEGREE_SHOULDER / 10;
 
     //75:1 gearbox, 60:30 pulley, 2048 pulses per rev
-    final double COUNTS_PER_DEGREE_ELBOW = 64/1 * 60/30 * 2048 / 360;
+    final double COUNTS_PER_DEGREE_ELBOW = 75/1 * 50/42 * 60/30 * 2048 / 360;
     final double COUNTS_PER_DEGREE_ELBOW_V = COUNTS_PER_DEGREE_ELBOW / 10;
 
     private final double kF_ELBOW = 0.716; //12.55 bat * 6.5% power to keep flat
@@ -70,14 +70,14 @@ public class ArmHw implements IArmControl {
         elbowMotor.setInverted(true);
 
         elbowMotor.getAllConfigs(allConfigs);
-        allConfigs.slot0.kP = 0.2 / COUNTS_PER_DEGREE_ELBOW * Constants.CTRE_P_RES;
+        allConfigs.slot0.kP = 0.28 / COUNTS_PER_DEGREE_ELBOW * Constants.CTRE_P_RES;
         allConfigs.slot0.kI = 2.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
         allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_ELBOW;
         allConfigs.slot0.allowableClosedloopError = 0;
-        allConfigs.motionCruiseVelocity = 100 * COUNTS_PER_DEGREE_ELBOW_V;
-        allConfigs.motionAcceleration = 200 * COUNTS_PER_DEGREE_ELBOW_V;
+        allConfigs.motionCruiseVelocity = 200 * COUNTS_PER_DEGREE_ELBOW_V;
+        allConfigs.motionAcceleration = 300 * COUNTS_PER_DEGREE_ELBOW_V;
         elbowMotor.configAllSettings(allConfigs);
 
         shoulderEncoder = new DutyCycle(new DigitalInput(0));

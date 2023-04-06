@@ -65,12 +65,12 @@ public class ArmAutonPoint extends CommandBase{
             }
         } else if (moveElbow1) {
             arm.setElbowAngle(90);
-            if (Math.abs(arm.getElbowAngle() - 90) < 7){
+            if (Math.abs(arm.getElbowAngle() - 90) < 15){
                 moveElbow1 = false;
             }
         } else if (moveElbow2) {
-            arm.setElbowAngle(-90);
-            if (Math.abs(arm.getElbowAngle() + 90) < 7){
+            arm.setElbowAngle(-45);
+            if (Math.abs(arm.getElbowAngle() + 45) < 15){
                 moveElbow2 = false;
             }
         } else { 
