@@ -30,9 +30,9 @@ public final class Constants {
 
     //CanCoder zero locations
     public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 142.2;
-    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 10.8;
-    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 90.5;
-    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 120.4;
+    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 13.8;
+    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 227.5;
+    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 119.0;
 
     //Swerve corner locations for kinematics
     //22.25 -1.5" width 10.375"
@@ -47,7 +47,7 @@ public final class Constants {
     public static final double NOM_BATTERY_VOLTAGE = 12.5;
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
-    public static final double MAX_DRIVER_SPEED = 2.5;                //Max speed (meters/sec) the driver can go
+    public static final double MAX_DRIVER_SPEED = 3.0;                //Max speed (meters/sec) the driver can go
     public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
     public static final double MAX_AUTO_SPEED = 1.5;//2.5;                //Max speed (meters/sec) the robot can go in auton
