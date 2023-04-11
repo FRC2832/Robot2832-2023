@@ -62,7 +62,6 @@ public class TailHw implements ITailControl{
         tailAngle = TAIL_ZERO_OFFSET + tailEncoder.getOutput() * 360;
         tailAngle = MathUtil.inputModulus(tailAngle, -180, 180);
         distValue = distSensor.getRange(Unit.kInches);
-        tailMotor.setSelectedSensorPosition(tailAngle * COUNTS_PER_DEGREE_TAIL);
     }
 
     @Override
