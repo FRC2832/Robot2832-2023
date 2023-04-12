@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.9121419127289037,
-        "y": 5.088778793820069
+        "x": 2.2208992777471996,
+        "y": 5.020166046038226
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.861284923711074,
-        "y": 4.814327802692695
+        "x": 3.17004228872937,
+        "y": 4.745715054910852
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -18,7 +18,7 @@
       "stopEvent": {
         "names": [
           "armDown",
-          "spitFirst"
+          "spit"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "before",
@@ -45,7 +45,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "suckSecond"
+          "suck"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -54,15 +54,15 @@
     },
     {
       "anchorPoint": {
-        "x": 1.9921901184743878,
+        "x": 2.2208992777471996,
         "y": 4.425522231928914
       },
       "prevControl": {
-        "x": 2.7663827717768994,
+        "x": 2.9950919310497115,
         "y": 4.879722463230603
       },
       "nextControl": {
-        "x": 1.3816657704914457,
+        "x": 1.6103749297642576,
         "y": 4.067342263562808
       },
       "holonomicAngle": 0,
@@ -72,7 +72,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "spitSecond"
+          "spit"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -85,12 +85,12 @@
         "y": 3.567862884655869
       },
       "prevControl": {
-        "x": 4.441068548008218,
-        "y": 6.120102836864384
+        "x": 4.076226473577725,
+        "y": 5.882102933651286
       },
       "nextControl": {
-        "x": 5.995744324328123,
-        "y": 3.29571120261875
+        "x": 5.9946004057486,
+        "y": 3.373460099273978
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -124,7 +124,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "suckThird"
+          "suck"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -133,12 +133,12 @@
     },
     {
       "anchorPoint": {
-        "x": 2.003625576438028,
-        "y": 3.876620249674165
+        "x": 2.209463819783559,
+        "y": 3.819442959855962
       },
       "prevControl": {
-        "x": 4.0068307344251926,
-        "y": 6.199055166606754
+        "x": 4.212668977770724,
+        "y": 6.14187787678855
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -148,7 +148,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "spitThird"
+          "spit"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -156,5 +156,8 @@
       }
     }
   ],
+  "maxVelocity": 4.0,
+  "maxAcceleration": 3.0,
+  "isReversed": null,
   "markers": []
 }

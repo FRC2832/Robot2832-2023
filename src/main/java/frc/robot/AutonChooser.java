@@ -30,6 +30,7 @@ import frc.robot.commands.DriveToScaleNegative;
 import frc.robot.commands.IntakeBackward;
 import frc.robot.commands.IntakeForward;
 import frc.robot.commands.MoveWheelsStraight;
+import frc.robot.commands.PivotSetPoint;
 import frc.robot.interfaces.ISwerveDrive;
 
 public class AutonChooser {
@@ -37,6 +38,7 @@ public class AutonChooser {
     private ISwerveDrive drive;
     private Intake intake;
     private Arm arm;
+    private Pivot pivot;
     private Odometry odometry;
     public Pose2d startPosition;
     private final SendableChooser<String> startPosChooser = new SendableChooser<>();
@@ -57,11 +59,12 @@ public class AutonChooser {
 
     private String AutonomousStartPosition;
 
-    public AutonChooser(ISwerveDrive drive, Odometry odometry, Intake intake, Arm arm){
+    public AutonChooser(ISwerveDrive drive, Odometry odometry, Intake intake, Arm arm, Pivot pivot){
         this.drive = drive;
         this.odometry = odometry;
         this.intake = intake;
         this.arm = arm;
+        this.pivot = pivot;
 
         sequence = new DriveToPoint(drive, odometry, odometry.getPose()); //if no sequence gets loaded it'll go to where it is (do nothing)
 
@@ -73,9 +76,9 @@ public class AutonChooser {
         //startPosChooser.addOption("Do Nothing", kDoNothing);
         //startPosChooser.addOption("Score One", kOnePiece);
         startPosChooser.addOption("Score Two", kTwoPiece);
-        //startPosChooser.addOption("Score Three", kThreePiece);
+        startPosChooser.addOption("Score Three", kThreePiece);
         //startPosChooser.addOption(kPathPlan, kPathPlan);
-        //startPosChooser.addOption(kPlan3P, kPlan3P);
+        startPosChooser.addOption(kPlan3P, kPlan3P);
         
         SmartDashboard.putData("StartPos Select", startPosChooser);
 
@@ -233,19 +236,18 @@ public class AutonChooser {
         
         //drive to next piece and lower arm
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new WaitCommand(0.5))
-            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z)), suck()))
-            .andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), 
-            suck());//pickup 2nd piece
-        
+        //pickup 2nd
+        tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
+            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 1), new PivotSetPoint(pivot, 60)))
+            //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
+            .andThen(suck());
         //drive back into community
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), (new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z))));
+        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4), new PivotSetPoint(pivot, 0)));
         
         //drive to scoring position
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), //Running these two in parallel
-            (new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4))))
+        //targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4))
             .andThen(spit()); //score 2nd piece
     
         //try to put arm back over tail
@@ -289,16 +291,18 @@ public class AutonChooser {
         // //score 2nd piece
         // tempSequence = tempSequence.andThen(spit());
         //Put arm in scoring position
-        tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z)
-            .deadlineWith(new MoveWheelsStraight(drive));
+        //TODO
+        // tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z)
+        //     .deadlineWith(new MoveWheelsStraight(drive));
         
         //score 1st piece
-        tempSequence = tempSequence.andThen(spit());
-        
+        //TODO
+        //tempSequence = tempSequence.andThen(spit());
+        tempSequence = spit();
         //drive to next piece and lower arm
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
         tempSequence = tempSequence.andThen(new WaitCommand(0.5))
-            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint), suck()));
+            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1,0.75), suck()));
         
         //pickup 2nd piece
         tempSequence = tempSequence.andThen(suck());
@@ -324,8 +328,9 @@ public class AutonChooser {
         
         //move to pieces
         targetPoint = new Pose2d(startPosition.getX() + offsetX(3.2), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(offsetRot(225))));
-        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.2,1.1), //Running these two in parallel
-        (new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z))));
+        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.2,1.1)));//, //Running these two in parallel
+        //TODO
+        //(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z))));
 
         //move to next piece
         targetPoint = new Pose2d(startPosition.getX() + offsetX(4.008), startPosition.getY() - .824, startPosition.getRotation().plus(Rotation2d.fromDegrees(offsetRot(225))));
@@ -335,8 +340,8 @@ public class AutonChooser {
         tempSequence = tempSequence.andThen(suck());
 
         //move to lane
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(3.1), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(offsetRot(180))));
-        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint,0.85,1.45)); //TODO: implement speed and rot Modifiers
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(3.1), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(offsetRot(-25))));
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint,0.85,1.76)); //TODO: implement speed and rot Modifiers
 
         //back to community
         targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
@@ -393,7 +398,7 @@ public class AutonChooser {
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        //eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
         eventMap.put("spitFirst", spit());
         eventMap.put("suckSecond", suck());
         eventMap.put("spitSecond", spit());

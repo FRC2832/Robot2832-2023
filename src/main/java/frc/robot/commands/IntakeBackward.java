@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Intake;
+import frc.robot.Robot;
 
 public class IntakeBackward extends CommandBase{
     private int finishedCounts;
@@ -33,6 +34,22 @@ public class IntakeBackward extends CommandBase{
         else {
             return false; 
         }
+        // if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
+        //     if(intake.HasPiece()){
+        //         return true;
+        //     }
+        //     else {
+        //         return false; 
+        //     }
+        // }
+        // else {
+        //     if(!intake.HasPiece()){
+        //         return true;
+        //     }
+        //     else {
+        //         return false; 
+        //     }
+        // }
     }
 
     @Override
