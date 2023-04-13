@@ -37,7 +37,7 @@ public class PivotHw implements IPivotControl{
     
     public void setPivotAngle(double angleDeg){
         double volts = pid.calculate(currentIntakeDeg,angleDeg);
-        pivotMotor.set(ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
+        pivotMotor.set(ControlMode.PercentOutput, -volts / RobotController.getBatteryVoltage());
     }
 
     public void setPivotMotorVolts(double volts){

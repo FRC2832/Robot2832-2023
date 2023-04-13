@@ -64,9 +64,9 @@ public final class Constants {
     public static final double FOREARM_LENGTH = 23.5;       //length in inches of the forearm on the arm mechanism
 
     //sensor offsets
-    public static final double SHOULDER_OFFSET = 347;
-    public static final double ELBOW_OFFSET = 135-58;
-    public static final double INTAKE_OFFSET = 110;
+    public static final double SHOULDER_OFFSET = 14;       //90 is shoulder straight up
+    public static final double ELBOW_OFFSET = 195;         //0 is elbow parallel to shoulder
+    public static final double INTAKE_OFFSET = 78;
 
     public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
