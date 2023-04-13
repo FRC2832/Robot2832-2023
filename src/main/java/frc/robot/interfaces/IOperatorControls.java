@@ -21,7 +21,6 @@ public interface IOperatorControls {
     JoystickButton ArmToScoreMiddle();
     JoystickButton ArmToScoreMiddleFront();
     JoystickButton ArmToScoreTop();
-    JoystickButton ArmToTransitionPoint();
     Trigger IntakeUpRequested();
     Trigger IntakeDownRequested();
     Trigger IntakeSuckRequested();

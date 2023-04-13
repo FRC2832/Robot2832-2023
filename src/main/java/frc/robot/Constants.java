@@ -60,8 +60,8 @@ public final class Constants {
     public static final Pose2d START_RED_MIDDLE = new Pose2d(13.5,2.75,Rotation2d.fromDegrees(180)); 
     public static final Pose2d START_RED_RIGHT = new Pose2d(13.5,1.15,Rotation2d.fromDegrees(180)); 
     
-    public static final double BICEP_LENGTH = 34.0;         //length in inches of the bicep on the arm mechanism
-    public static final double FOREARM_LENGTH = 26.0;       //length in inches of the forearm on the arm mechanism
+    public static final double BICEP_LENGTH = 32.0;         //length in inches of the bicep on the arm mechanism
+    public static final double FOREARM_LENGTH = 23.5;       //length in inches of the forearm on the arm mechanism
 
     //sensor offsets
     public static final double SHOULDER_OFFSET = 347;
@@ -115,11 +115,6 @@ public final class Constants {
     //pickup ground back (only used in auto)
     public static final double ArmToPickupGroundBack_X = -20;
     public static final double ArmToPickupGroundBack_Z = 2;
-
-    public static final double ArmToTransitionPoint_X = 48;
-    public static final double ArmToTransitionPoint_Z = 31.5;
-    public static final double ArmToTransitionPoint2_X = -2.078;
-    public static final double ArmToTransitionPoint2_Z = 31.278;
 
     public static final double ScoreCubeOffset = 8;
 
