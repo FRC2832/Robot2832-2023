@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Field Oriented", false);
 
         //Construct auton thing
-        auton = new AutonChooser(drive, odometry, intake, arm);
+        auton = new AutonChooser(drive, odometry, intake, arm, pivot);
         
         logger.start();
     }
