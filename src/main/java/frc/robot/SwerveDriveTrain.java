@@ -224,4 +224,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
     public Translation2d[] getCornerLocations() {
         return hardware.getCornerLocations();
     }
+
+    @Override
+    public ISwerveDriveIo getHardware() {
+        return hardware;
+    }
 }

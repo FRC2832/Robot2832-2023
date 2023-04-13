@@ -14,6 +14,7 @@ public interface ISwerveDrive extends Subsystem {
     final int RL = 2;
     final int RR = 3;
 
+    ISwerveDriveIo getHardware();
      /**
      * Method to drive the robot using joystick info.
      *
