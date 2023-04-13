@@ -117,11 +117,6 @@ public class LilHaydenDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(armCont, 31);
-    }
-
-    @Override
     public JoystickButton IntakeUpRequested() {
         return new JoystickButton(armCont, 11);
     }
