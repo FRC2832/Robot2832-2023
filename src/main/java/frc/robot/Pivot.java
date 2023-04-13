@@ -39,7 +39,7 @@ public class Pivot extends SubsystemBase {
     public double optimalPivotAngle(){
         double value;
         if(Robot.getGamePieceMode() == Robot.CONE_MODE) { 
-            value =  arm.getElbowAngle() + arm.getShoulderAngle();
+            value =  180 + arm.getElbowAngle() + arm.getShoulderAngle();
         }
         else { 
             value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
@@ -52,6 +52,6 @@ public class Pivot extends SubsystemBase {
         } else {
             offset = -40;
         }
-        return value - offset;  //optimum angle to "snowblower" the piece in
+        return value + offset;  //optimum angle to "snowblower" the piece in
     }
 }

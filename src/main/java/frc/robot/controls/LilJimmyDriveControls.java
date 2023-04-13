@@ -113,11 +113,6 @@ public class LilJimmyDriveControls implements IOperatorControls {
     }
 
     @Override
-    public JoystickButton ArmToTransitionPoint(){
-        return new JoystickButton(operCont, 16);
-    }
-
-    @Override
     public Trigger IntakeUpRequested() { //driver/operator will use this method
         return new Trigger(() -> operCont.getRightY() > Constants.STICK_DEADBAND);
     }
