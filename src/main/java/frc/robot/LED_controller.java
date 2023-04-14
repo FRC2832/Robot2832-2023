@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
 
@@ -103,7 +104,7 @@ public class LED_controller {
 
     private int loopCounts;
 
-    public void update(ISwerveDrive drive, Intake intake, Tail tail, IOperatorControls opControls) {
+    public void update(ISwerveDrive drive, Intake intake, Tail tail, IDriveControls driver, IOperatorControls opControls) {
         if(loopCounts % 50 == 0) {
             if(!DriverStation.isEnabled()) {
                 send("prematch");
@@ -171,12 +172,13 @@ public class LED_controller {
         var rumble = 0.;
         if(intake.HasPiece() || tail.HasPiece()) {
             if(rumbleCounts < 40) {
-                rumble = 0.6;
+                rumble = 0.8;
             }
             rumbleCounts++;
         } else {
             rumbleCounts = 0;
         }
+        driver.SetRumble(rumble);
         opControls.SetRumble(rumble);
     }
     int rumbleCounts;

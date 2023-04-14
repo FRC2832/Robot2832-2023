@@ -220,7 +220,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //run the command schedule no matter what mode we are in
         schedule.run();
-        leds.update(drive, intake, tail, opControls);
+        leds.update(drive, intake, tail, controls, opControls);
     }
     
     /** This function is called once when autonomous is enabled. */

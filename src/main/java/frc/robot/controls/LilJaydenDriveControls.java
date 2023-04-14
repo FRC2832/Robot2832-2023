@@ -87,4 +87,8 @@ public class LilJaydenDriveControls implements IDriveControls {
         }
         return false;
     }
+
+    @Override
+    public void SetRumble(double pct) {
+    }
 }
