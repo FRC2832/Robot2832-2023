@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Pivot;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PivotSetPoint extends CommandBase{
@@ -29,6 +30,9 @@ public class PivotSetPoint extends CommandBase{
 
     @Override
     public boolean isFinished() {
+        if(DriverStation.isTeleop()) {
+            return false;
+        }
         return Math.abs(pivot.getPivotAngle() - angleDeg) < 5;
     }
 

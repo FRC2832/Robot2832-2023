@@ -114,7 +114,8 @@ public class Arm extends SubsystemBase{
         boolean robotHeightLimit = (-5 < x && x < 30) && (z < 0);
         boolean armLengthLimit = Math.sqrt(x*x + z*z) < forearmLen + bicepLen;
 
-        boolean limits = sideLimit && heightLimit && !robotHeightLimit && armLengthLimit;       
+        //boolean limits = sideLimit && heightLimit && !robotHeightLimit && armLengthLimit;       
+        var limits = true;
         SmartDashboard.putBoolean("Arm Limit Hit", limits);
 
         //40-45 finds elbow angle in radians, but havent tested to see which angle is for the up reaching arm and down reaching arm

@@ -48,7 +48,7 @@ public class Pivot extends SubsystemBase {
         //flip offset based on arm position
         double offset;
         if(arm.getArmXPosition() > 0) {
-            offset = 35;
+            offset = 25;
         } else {
             offset = -40;
         }

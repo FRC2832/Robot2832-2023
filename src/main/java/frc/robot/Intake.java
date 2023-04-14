@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
         intakeMotor.setSmartCurrentLimit(30);
         timer = new Timer();
         this.controls = controls;
-        hasPiece = false;
+        hasPiece = true;
 
         Logger.RegisterCanSparkMax("Intake", intakeMotor);
     }
