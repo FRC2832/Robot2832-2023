@@ -19,6 +19,10 @@ public class Intake extends SubsystemBase {
     private IOperatorControls controls;
     private boolean hasPiece;
     private double motorTime;
+    private boolean forward;
+    private double spitCount;
+    private double suckDeadband;
+    private double suckCount;
 
     public Intake(IOperatorControls controls) {
         super();
@@ -28,7 +32,11 @@ public class Intake extends SubsystemBase {
         intakeMotor.setSmartCurrentLimit(30);
         timer = new Timer();
         this.controls = controls;
-        hasPiece = false;
+        hasPiece = true;
+        forward = false;
+        spitCount = 0;
+        suckCount = 0;
+        suckDeadband = 0;
 
         Logger.RegisterCanSparkMax("Intake", intakeMotor);
     }
@@ -40,7 +48,28 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Intake Input Volts", intakeMotor.getBusVoltage());
         SmartDashboard.putBoolean("Piece Detected", hasPiece);
-
+        if(DriverStation.isAutonomous() && Math.abs(velocity) > 100 && Robot.CUBE_MODE){
+            if(forward){ //forward = true means spitting cube
+                suckDeadband = 0;
+                suckCount = 0;
+                spitCount++;
+                if(spitCount > 10) {
+                    hasPiece = false;
+                }
+            }
+            if(!forward){
+                spitCount = 0;
+                suckDeadband++;
+                if(suckDeadband > 15) {
+                    if(suckCount>10){
+                        hasPiece=true;
+                    } else if (getIntakeCurrent()>=10) {
+                        suckCount++;
+                    } else {
+                    }
+                }
+            }
+        }
         if(!DriverStation.isDisabled()){
             if(controls.IntakeSuckRequested().getAsBoolean()){
                 if(motorTime>10){
@@ -55,6 +84,19 @@ public class Intake extends SubsystemBase {
             } else {
                 motorTime = 0;
             }
+            // if(controls.IntakeSuckRequested().getAsBoolean()){
+            //     if(motorTime>10){
+            //         hasPiece=true;
+            //     } else if (getIntakeCurrent()>=10) {
+            //         motorTime++;
+            //     } else {
+            //     }
+            // }
+            // else if(controls.IntakeSpitRequested().getAsBoolean()){
+            //     hasPiece = false;
+            // } else {
+            //     motorTime = 0;
+            // }
         }
     }
 
@@ -69,17 +111,11 @@ public class Intake extends SubsystemBase {
     public void Grab(boolean forward) {
         velocity = intakeMotor.getEncoder().getVelocity();
         SmartDashboard.putNumber("Intake Velocity", velocity);
-        
-        timer.start();
-        if(timer.hasElapsed(1.0)) {
-            intakeOff();
-            timer.stop();
+        this.forward = forward;
+        if (forward) {
+            setIntakeVolts(Constants.IntakeVoltage);
         } else {
-            if (forward) {
-                setIntakeVolts(Constants.IntakeVoltage);
-            } else {
-                setIntakeVolts(-1 * Constants.IntakeVoltage);
-            }
+            setIntakeVolts(-1 * Constants.IntakeVoltage);
         }
     }
 

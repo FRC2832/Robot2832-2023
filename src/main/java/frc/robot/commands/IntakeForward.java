@@ -27,28 +27,28 @@ public class IntakeForward extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        if(finishedCounts > 50){
-            return true;
-        }
-        else {
-            return false; 
-        } 
-        // if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-        //     if(!intake.HasPiece()){
-        //         return true;
-        //     }
-        //     else {
-        //         return false; 
-        //     }
+        // if(finishedCounts > 50){
+        //     return true;
         // }
         // else {
-        //     if(intake.HasPiece()){
-        //         return true;
-        //     }
-        //     else {
-        //         return false; 
-        //     }
-        // }
+        //     return false; 
+        // } 
+        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
+            if(intake.HasPiece()){
+                return false;
+            }
+            else {
+                return true; 
+            }
+        }
+        else {
+            if(intake.HasPiece()){
+                return true;
+            }
+            else {
+                return false; 
+            }
+        }
     }
 
     @Override

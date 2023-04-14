@@ -29,6 +29,7 @@ import frc.robot.commands.DriveToScale;
 import frc.robot.commands.DriveToScaleNegative;
 import frc.robot.commands.IntakeBackward;
 import frc.robot.commands.IntakeForward;
+import frc.robot.commands.MoveWheelsSideways;
 import frc.robot.commands.MoveWheelsStraight;
 import frc.robot.commands.PivotSetPoint;
 import frc.robot.interfaces.ISwerveDrive;
@@ -51,7 +52,7 @@ public class AutonChooser {
     private static final String kMobilityBack = "Scale Back";
     private static final String kCord = "Cord";
     //private static final String kDoNothing = "Do Nothing";
-    private static final String kOnePiece = "L3 Score";
+    private static final String kOnePiece = "spit";
     private static final String kTwoPiece = "Score Two";
     private static final String kThreePiece = "Score Three";
     private static final String kPathPlan = "Drive Around Balance";
@@ -74,7 +75,7 @@ public class AutonChooser {
         startPosChooser.addOption("No Obstacles", kNoObstacles);
         startPosChooser.addOption("Cord", kCord);
         //startPosChooser.addOption("Do Nothing", kDoNothing);
-        //startPosChooser.addOption("Score One", kOnePiece);
+        startPosChooser.addOption("Score One", kOnePiece);
         startPosChooser.addOption("Score Two", kTwoPiece);
         startPosChooser.addOption("Score Three", kThreePiece);
         //startPosChooser.addOption(kPathPlan, kPathPlan);
@@ -97,7 +98,7 @@ public class AutonChooser {
         } else if (AutonomousStartPosition.equals(kCord)) {
             sequence = autoCord();
         } else if (AutonomousStartPosition.equals(kOnePiece)){ //score on top row
-            sequence = autoL3Score();
+            sequence = autoSpit();
         } else if (AutonomousStartPosition.equals(kTwoPiece)){ //score two somewhere
             sequence = autoTwoPiece();
         } else if (AutonomousStartPosition.equals(kThreePiece)){ //score three somewhere
@@ -204,7 +205,7 @@ public class AutonChooser {
     }
 
     /*
-    public Command autoL3Score(){
+    public Command autoSpit(){
         Command tempSequence;
         tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z);
         tempSequence = tempSequence.andThen(spit());
@@ -213,14 +214,8 @@ public class AutonChooser {
     }
     */
 
-    public Command autoL3Score(){
-        Command tempSequence = Commands.sequence(
-            Commands.parallel(new MoveWheelsStraight(drive),
-            new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)),
-            spit(),
-            Commands.parallel(new DriveToPoint(drive, odometry, (new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation().plus(Rotation2d.fromDegrees(180))))),
-            new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z))
-        );
+    public Command autoSpit(){
+        Command tempSequence = spit();
         return tempSequence;
     }
 
@@ -258,73 +253,31 @@ public class AutonChooser {
 
     public Command autoThreePiece(){
         Command tempSequence;
-        Pose2d targetPoint;
-        //Put arm in scoring position
-        // tempSequence = //new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z)
-        //     //new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z)
-        //     //.deadlineWith(
-        //     new MoveWheelsStraight(drive);//);
-        
-        // //score 1st piece
-        // tempSequence = tempSequence.andThen(spit());
-        
-        // //drive to next piece and lower arm
-        // targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
-        // tempSequence = tempSequence.andThen(new WaitCommand(0.5))
-        //     .andThen(new DriveToPoint(drive,odometry,targetPoint))
-        //     .andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
-        
-        // //pickup 2nd piece
-        // tempSequence = tempSequence.andThen(suck());
-        
-        // //drive back into community
-        // targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        // tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
-        
-        // //drive to scoring position
-        // targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.36, startPosition.getRotation());
-        // tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint))
-        //     .andThen(new WaitCommand(0.5));
-        //     //.andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTop_X, Constants.ArmToScoreTop_Z));
-        //     //.andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreMiddle_X, Constants.ArmToScoreMiddle_Z));
-        
-        // //score 2nd piece
-        // tempSequence = tempSequence.andThen(spit());
-        //Put arm in scoring position
-        //TODO
-        // tempSequence = new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z)
-        //     .deadlineWith(new MoveWheelsStraight(drive));
-        
+        Pose2d targetPoint;        
         //score 1st piece
-        //TODO
-        //tempSequence = tempSequence.andThen(spit());
-        tempSequence = spit();
+        tempSequence = spit()
+            .deadlineWith(new MoveWheelsSideways(drive));
+        //drive to lane
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + 0.55, startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint,1.75,1));
         //drive to next piece and lower arm
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(180)));
-        tempSequence = tempSequence.andThen(new WaitCommand(0.5))
-            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1,0.75), suck()));
-        
-        //pickup 2nd piece
-        tempSequence = tempSequence.andThen(suck());
-        
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY() + 0.55, startPosition.getRotation());
+        //pickup 2nd
+        tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
+            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 1), new PivotSetPoint(pivot, 60)))
+            //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
+            .andThen(suck());
         //drive back into community
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() - 0.1, startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z), new PivotSetPoint(pivot, 0)));
         
         //drive to scoring position
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + -0.36, startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint,1.2,1.1))
-            .andThen(new WaitCommand(0.5));
-        
-        //score 2nd piece
-        tempSequence = tempSequence.andThen(spit());
-
-        //try to put arm back to pickup
-        //tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        //targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        tempSequence = tempSequence.andThen(spit()); //score 2nd piece
 
         //move back to lane
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint));
+        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY() + 0.55, startPosition.getRotation());
+        tempSequence = tempSequence.andThen(new DriveToPoint(drive,odometry,targetPoint,0.75,1));
         
         //move to pieces
         targetPoint = new Pose2d(startPosition.getX() + offsetX(3.2), startPosition.getY() - 0.1, startPosition.getRotation().plus(Rotation2d.fromDegrees(offsetRot(225))));
@@ -398,13 +351,10 @@ public class AutonChooser {
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
-        //eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
-        eventMap.put("spitFirst", spit());
-        eventMap.put("suckSecond", suck());
-        eventMap.put("spitSecond", spit());
-        eventMap.put("suckThird", suck());
-        eventMap.put("spitThird", spit());
-        
+        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("armScore", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("spit", spit());
+        eventMap.put("suck", suck());
         //eventMap.put("intakeDown", new IntakeDown());
 
         // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
@@ -461,7 +411,7 @@ public class AutonChooser {
                 startPosition = Constants.START_BLUE_LEFT;
             }
             else if(AutonomousStartPosition.equals(kThreePiece)){
-                startPosition = Constants.START_BLUE_LEFT;
+                startPosition = Constants.START_BLUE_THREE_PIECE;
             }
             else if(AutonomousStartPosition.equals(kPathPlan)){
                 startPosition = Constants.START_BLUE_RIGHT;
@@ -496,7 +446,7 @@ public class AutonChooser {
                 startPosition = Constants.START_RED_LEFT;
             }
             else if(AutonomousStartPosition.equals(kThreePiece)){
-                startPosition = Constants.START_RED_LEFT;
+                startPosition = Constants.START_RED_THREE_PIECE;
             }
             else if(AutonomousStartPosition.equals(kPathPlan)){
                 startPosition = Constants.START_RED_RIGHT;
@@ -527,9 +477,9 @@ public class AutonChooser {
     private Command spit(){
         Command tempCommand;
         if(Robot.getGamePieceMode() == Robot.CONE_MODE){
-            tempCommand = new IntakeBackward(intake);
+            tempCommand = (new IntakeBackward(intake));
         } else {
-            tempCommand = new IntakeForward(intake);
+            tempCommand = (new IntakeForward(intake));
         }
         return tempCommand;
     }
