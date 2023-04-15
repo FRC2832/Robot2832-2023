@@ -4,6 +4,7 @@ import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.Saitek;
@@ -85,4 +86,9 @@ public class DriveControls implements IDriveControls {
         }
         return false;
     }   
+
+    @Override
+    public void SetRumble(double pct) {
+        driveCont.setRumble(RumbleType.kLeftRumble, pct);
+    }
 }

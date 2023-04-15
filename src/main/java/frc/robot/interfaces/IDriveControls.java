@@ -13,4 +13,6 @@ public interface IDriveControls {
     JoystickButton TailDownRequested();
     JoystickButton TailStowRequested();
     JoystickButton TailHumanRequested();
+
+    void SetRumble(double pct);
 }

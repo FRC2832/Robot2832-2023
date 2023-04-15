@@ -3,6 +3,7 @@ package frc.robot.controls;
 import org.livoniawarriors.UtilFunctions;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
@@ -76,5 +77,10 @@ public class LilMickeyDriveControls implements IDriveControls {
             }
         }
         return false;
+    }
+
+    @Override
+    public void SetRumble(double pct) {
+        driveCont.setRumble(RumbleType.kLeftRumble, pct);
     }
 }
