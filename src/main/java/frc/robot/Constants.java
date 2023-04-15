@@ -56,9 +56,11 @@ public final class Constants {
     public static final Pose2d START_BLUE_LEFT = new Pose2d(2.5,4.75,Rotation2d.fromDegrees(0));  //starting positions for Auton
     public static final Pose2d START_BLUE_MIDDLE = new Pose2d(2.5,2.75,Rotation2d.fromDegrees(0)); 
     public static final Pose2d START_BLUE_RIGHT = new Pose2d(2.5,1.15,Rotation2d.fromDegrees(0)); 
+    public static final Pose2d START_BLUE_THREE_PIECE = new Pose2d(2.5,4.2,Rotation2d.fromDegrees(0)); 
     public static final Pose2d START_RED_LEFT = new Pose2d(13.5,4.75,Rotation2d.fromDegrees(180)); 
     public static final Pose2d START_RED_MIDDLE = new Pose2d(13.5,2.75,Rotation2d.fromDegrees(180)); 
     public static final Pose2d START_RED_RIGHT = new Pose2d(13.5,1.15,Rotation2d.fromDegrees(180)); 
+    public static final Pose2d START_RED_THREE_PIECE = new Pose2d(13.5,4.2,Rotation2d.fromDegrees(180)); 
     
     public static final double BICEP_LENGTH = 32.0;         //length in inches of the bicep on the arm mechanism
     public static final double FOREARM_LENGTH = 23.5;       //length in inches of the forearm on the arm mechanism

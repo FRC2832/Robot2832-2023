@@ -236,6 +236,7 @@ public class Robot extends TimedRobot {
         odometry.resetHeading();
         auton.setStartPos();
         odometry.resetPose(auton.getStartPos());
+        
 
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
