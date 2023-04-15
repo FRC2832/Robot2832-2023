@@ -81,8 +81,8 @@ public final class Constants {
     public static final double PivotToPickupTail = 150;
 
     //pickup from human player station
-    public static final double ArmToPickupHuman_X = 133.5;
-    public static final double ArmToPickupHuman_Z = 5.1;
+    public static final double ArmToPickupHuman_X = 26.6;
+    public static final double ArmToPickupHuman_Z = 8.0;
     public static final double PivotToPickupHuman = 162;
 
     //level 2 back
@@ -91,14 +91,14 @@ public final class Constants {
     //223 pivot
 
     //level 2 front
-    public static final double ArmToScoreMiddleFront_X = 47.8;
-    public static final double ArmToScoreMiddleFront_Z = 27.3;
+    public static final double ArmToScoreMiddleFront_X = 46.2;
+    public static final double ArmToScoreMiddleFront_Z = 25.7;
     public static final double PivotToMiddleFront = 125;
-    //125 pivot
+    //558 pivot
 
     //level 3 back
-    public static final double ArmToScoreTop_X = -34.3;
-    public static final double ArmToScoreTop_Z = 41.6;
+    public static final double ArmToScoreTop_X = -39;
+    public static final double ArmToScoreTop_Z = 38.5;
     //575 pivot
 
     //level 3 auton //X = -24.2 Z = 30.0
@@ -118,7 +118,7 @@ public final class Constants {
     public static final double ArmToPickupGroundBack_X = -20;
     public static final double ArmToPickupGroundBack_Z = 2;
 
-    public static final double ScoreCubeOffset = 6;
+    public static final double ScoreCubeOffset = 0;
 
     public static final double IntakeVoltage = 12.5;
     public static final double TAIL_LOW_POINT = 0;

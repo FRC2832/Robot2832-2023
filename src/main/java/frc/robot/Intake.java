@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
             if(controls.IntakeSuckRequested().getAsBoolean()){
                 if(motorTime>10){
                     hasPiece=true;
-                } else if (getIntakeCurrent()>=10) {
+                } else if (getIntakeCurrent()>=20) {
                     motorTime++;
                 } else {
                 }

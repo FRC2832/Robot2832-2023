@@ -2,7 +2,6 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.Intake;
 import frc.robot.LED_controller;
-import frc.robot.Robot;
 import frc.robot.LED_controller.cmds;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -27,11 +26,8 @@ public class IntakeMove extends CommandBase{
 
     @Override
     public void execute() {
-        var sign = 1;
+        var sign = -1;
         double intakeVolts = 0.0;
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE) {
-            sign = -1;
-        }
         
         if(controls.IntakeSuckRequested().getAsBoolean()){
             intakeVolts = Constants.IntakeVoltage * operCont.getRightTriggerAxis()* sign;
@@ -42,7 +38,7 @@ public class IntakeMove extends CommandBase{
             intake.setIntakeVolts(intakeVolts);
             LED_controller.send(cmds.lightning);
         } else {
-            intake.setIntakeVolts(0);
+            intake.setIntakeVolts(-1);
         }
         SmartDashboard.putNumber("Intake Voltage", intakeVolts);
     }
