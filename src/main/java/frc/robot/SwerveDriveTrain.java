@@ -31,7 +31,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private double turnOffsets[];
     private InterpolatingTreeMap<Double, Double> speedReduction;
     private double gyroOffset = 0;
-    private PIDController pidZero = new PIDController(0.1, 0.001, 0);
+    private PIDController pidZero = new PIDController(0.15, 0.001, 0);
     private PIDController[] drivePid;
     private PIDController[] turnPid;
 
