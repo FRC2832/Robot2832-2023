@@ -284,7 +284,7 @@ public class Robot extends TimedRobot {
         drive.setDefaultCommand(new DriveStick(drive, controls));
         arm.setDefaultCommand(new DriveArmToPoint(arm, opControls));
         tail.setDefaultCommand(new TailMovement(controls, tail, arm));
-        pivot.setDefaultCommand(new PivotMove(opControls, pivot));
+        pivot.setDefaultCommand(new PivotMove(opControls,intake, pivot));
         intake.setDefaultCommand(new IntakeMove(opControls, intake));
         odometry.setDriverControls(controls);
         intake.setOperator(opControls);
