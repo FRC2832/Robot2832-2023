@@ -187,7 +187,7 @@ public class Robot extends TimedRobot {
         odometry.resetPose(Constants.START_BLUE_LEFT);
 
         SmartDashboard.putData(new ChangeMode());
-        SmartDashboard.putData(new AutoTest(drive));
+        SmartDashboard.putData(new AutoTest(drive,arm));
 
         SmartDashboard.putData(new MoveWheelsStraight(drive));
         SmartDashboard.putNumber("AutonomousStartPosition", 0);
