@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import frc.robot.T16000M;
 import frc.robot.interfaces.IDriveControls;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
 public class LilJaydenDriveControls implements IDriveControls {
@@ -90,5 +91,7 @@ public class LilJaydenDriveControls implements IDriveControls {
 
     @Override
     public void SetRumble(double pct) {
+        driveContLeft.setRumble(RumbleType.kLeftRumble, pct);
+        driveContRight.setRumble(RumbleType.kLeftRumble, pct);
     }
 }
