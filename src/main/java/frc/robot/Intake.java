@@ -44,8 +44,8 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Intake Input Volts", intakeMotor.getBusVoltage());
         SmartDashboard.putBoolean("Piece Detected", hasPiece);
-        if(DriverStation.isAutonomous() && Math.abs(velocity) > 100 && Robot.CUBE_MODE){
-            if(forward){ //forward = true means spitting cube
+        if(DriverStation.isAutonomous() && Math.abs(velocity) > 100){
+            if(forward){ //forward = true means spitting piece
                 suckDeadband = 0;
                 suckCount = 0;
                 spitCount++;
@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
                 if(suckDeadband > 15) {
                     if(suckCount>10){
                         hasPiece=true;
-                    } else if (getIntakeCurrent()>=10) {
+                    } else if (getIntakeCurrent()>=20) {
                         suckCount++;
                     } else {
                     }
@@ -109,7 +109,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Intake Velocity", velocity);
         this.forward = forward;
         if (forward) {
-            setIntakeVolts(Constants.IntakeVoltage);
+            setIntakeVolts(Constants.IntakeVoltage); //positive intake voltage is outtake
         } else {
             setIntakeVolts(-1 * Constants.IntakeVoltage);
         }

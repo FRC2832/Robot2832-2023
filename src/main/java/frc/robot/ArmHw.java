@@ -51,7 +51,7 @@ public class ArmHw implements IArmControl {
 
         shoulderMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.12 / COUNTS_PER_DEGREE_SHOULDER * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 2.603e-5;
+        allConfigs.slot0.kI = 4.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
         allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_SHOULDER;
@@ -71,7 +71,7 @@ public class ArmHw implements IArmControl {
 
         elbowMotor.getAllConfigs(allConfigs);
         allConfigs.slot0.kP = 0.28 / COUNTS_PER_DEGREE_ELBOW * Constants.CTRE_P_RES;
-        allConfigs.slot0.kI = 2.603e-5;
+        allConfigs.slot0.kI = 4.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
         allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_ELBOW;

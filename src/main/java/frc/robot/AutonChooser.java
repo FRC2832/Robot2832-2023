@@ -54,6 +54,7 @@ public class AutonChooser {
     //private static final String kDoNothing = "Do Nothing";
     private static final String kOnePiece = "spit";
     private static final String kTwoPiece = "Score Two";
+    private static final String kTwoPieceCord = "Score Two Cord";
     private static final String kThreePiece = "Score Three";
     private static final String kPathPlan = "Drive Around Balance";
     private static final String kPlan3P = "3 piece pathplan";
@@ -76,7 +77,8 @@ public class AutonChooser {
         startPosChooser.addOption("Cord", kCord);
         //startPosChooser.addOption("Do Nothing", kDoNothing);
         startPosChooser.addOption("Score One", kOnePiece);
-        startPosChooser.addOption("Score Two", kTwoPiece);
+        startPosChooser.addOption("Score Two Clear", kTwoPiece);
+        startPosChooser.addOption("Score Two Cord", kTwoPieceCord);
         startPosChooser.addOption("Score Three", kThreePiece);
         //startPosChooser.addOption(kPathPlan, kPathPlan);
         startPosChooser.addOption(kPlan3P, kPlan3P);
@@ -100,7 +102,9 @@ public class AutonChooser {
         } else if (AutonomousStartPosition.equals(kOnePiece)){ //score on top row
             sequence = autoSpit();
         } else if (AutonomousStartPosition.equals(kTwoPiece)){ //score two somewhere
-            sequence = autoTwoPiece();
+            sequence = autoTwoPiece(true);
+        } else if (AutonomousStartPosition.equals(kTwoPieceCord)){ //score two somewhere
+            sequence = autoTwoPiece(false);
         } else if (AutonomousStartPosition.equals(kThreePiece)){ //score three somewhere
             sequence = autoThreePiece();
         } else if (AutonomousStartPosition.equals(kPathPlan)){ //path plan
@@ -219,7 +223,7 @@ public class AutonChooser {
         return tempSequence;
     }
 
-    public Command autoTwoPiece(){
+    public Command autoTwoPiece(boolean isClear){
         Command tempSequence;
         Pose2d targetPoint;
         //Put arm in scoring position
@@ -229,25 +233,43 @@ public class AutonChooser {
         //score 1st piece
         tempSequence = tempSequence.andThen(spit());
         
-        //drive to next piece and lower arm
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY(), startPosition.getRotation());
-        //pickup 2nd
-        tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
-            .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 1), new PivotSetPoint(pivot, 60)))
-            //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
-            .andThen(suck());
+        if(isClear){
+            //drive to next piece and lower arm
+            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
+            //pickup 2nd
+            tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
+                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4), new PivotSetPoint(pivot, 60)))
+                //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
+                .andThen(suck());
+        }
+        else {
+            //drive to next piece and lower arm
+            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
+            //pickup 2nd
+            tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
+                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.5,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4), new PivotSetPoint(pivot, 60)))
+                //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
+                .andThen(suck());
+        }
+        
         //drive back into community
-        targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(0.5), startPosition.getY(), startPosition.getRotation());
         tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4), new PivotSetPoint(pivot, 0)));
         
         //drive to scoring position
         //targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4))
+        tempSequence = tempSequence.andThen(new WaitCommand(0.5))//.andThen(new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4))
             .andThen(spit()); //score 2nd piece
-    
-        //try to put arm back over tail
-        tempSequence = tempSequence.andThen(new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z));
-
+        
+        if(isClear){
+            //try to put arm back over tail
+            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY() + 1, startPosition.getRotation());
+            tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive, odometry, targetPoint, 1.75, 1), new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
+        }
+        else {
+            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.55), startPosition.getY(), startPosition.getRotation());
+            tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive, odometry, targetPoint, 1.75, 1), new ArmAutonPoint(this.arm, Constants.ArmToPickupTail_X, Constants.ArmToPickupTail_Z)));
+        }
         return tempSequence;
     }
 
@@ -410,6 +432,9 @@ public class AutonChooser {
             else if(AutonomousStartPosition.equals(kTwoPiece)){
                 startPosition = Constants.START_BLUE_LEFT;
             }
+            else if(AutonomousStartPosition.equals(kTwoPieceCord)){
+                startPosition = Constants.START_BLUE_RIGHT;
+            }
             else if(AutonomousStartPosition.equals(kThreePiece)){
                 startPosition = Constants.START_BLUE_THREE_PIECE;
             }
@@ -443,6 +468,9 @@ public class AutonChooser {
                 startPosition = Constants.START_RED_LEFT;
             }
             else if(AutonomousStartPosition.equals(kTwoPiece)){
+                startPosition = Constants.START_RED_RIGHT;
+            }
+            else if(AutonomousStartPosition.equals(kTwoPieceCord)){
                 startPosition = Constants.START_RED_LEFT;
             }
             else if(AutonomousStartPosition.equals(kThreePiece)){
@@ -466,21 +494,22 @@ public class AutonChooser {
     //CUSTOM FUNCTIONS
     private Command suck(){
         Command tempCommand;
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
+        //if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
             tempCommand = new IntakeBackward(intake);
-        } else {
-            tempCommand = new IntakeForward(intake);
-        }
+        // } else {
+        //     tempCommand = new IntakeForward(intake);
+        // }
         return tempCommand;
     }
     
     private Command spit(){
         Command tempCommand;
-        if(Robot.getGamePieceMode() == Robot.CONE_MODE){
-            tempCommand = (new IntakeBackward(intake));
-        } else {
-            tempCommand = (new IntakeForward(intake));
-        }
+        // if(Robot.getGamePieceMode() == Robot.CONE_MODE){
+        //     tempCommand = new IntakeBackward(intake);
+        // } else {
+        //     tempCommand = new IntakeForward(intake);
+        // }
+        tempCommand = (new IntakeForward(intake));
         return tempCommand;
     }
 
