@@ -51,15 +51,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.383405976512382,
+        "x": 6.32,
         "y": 4.585618643419883
       },
       "prevControl": {
-        "x": 5.383405976512382,
+        "x": 5.32,
         "y": 4.585618643419883
       },
       "nextControl": {
-        "x": 7.383405976512382,
+        "x": 7.32,
         "y": 4.585618643419883
       },
       "holonomicAngle": 0,
@@ -155,15 +155,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.37197051854874,
+        "x": 6.32,
         "y": 3.3391537253830568
       },
       "prevControl": {
-        "x": 5.886667439697432,
+        "x": 5.8346969211486925,
         "y": 3.848031604765064
       },
       "nextControl": {
-        "x": 6.857273597400048,
+        "x": 6.805303078851308,
         "y": 2.8302758460010495
       },
       "holonomicAngle": 0,
@@ -214,6 +214,33 @@
         "x": 3.0515753835074526,
         "y": 5.00158342684731
       },
+      "nextControl": {
+        "x": 0.7040956941685108,
+        "y": 4.993006833374579
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "spit"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 7.080968912294458,
+        "y": 5.47758436458385
+      },
+      "prevControl": {
+        "x": 4.919667357166384,
+        "y": 4.837198718619976
+      },
       "nextControl": null,
       "holonomicAngle": 0,
       "isReversal": false,
@@ -221,9 +248,7 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "spit"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -237,7 +262,8 @@
     {
       "position": 1.1054545454545825,
       "names": [
-        "armDown"
+        "armDown",
+        "pivotPickup"
       ]
     },
     {
@@ -249,7 +275,8 @@
     {
       "position": 4.072727272727369,
       "names": [
-        "armDown"
+        "armDown",
+        "pivotPickup"
       ]
     },
     {

@@ -195,7 +195,7 @@ public class Robot extends TimedRobot {
 
         driverChooser.addOption("Default Settings", kDefaultDriver);        
         driverChooser.setDefaultOption("Mickey", kMickeyDriver); 
-        driverChooser.addOption("Jayden", kJaydenDriver); 
+        driverChooser.addOption("Jayden", kJaydenDriver);
 
         operatorChooser.addOption("Default Settings", kDefaultDriver);      
         operatorChooser.setDefaultOption("James", kJamesOperator);
@@ -317,7 +317,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {
-        drive.setDriveMotorBrakeMode(false);
+        drive.setDriveMotorBrakeMode(true);
         drive.setTurnMotorBrakeMode(false);
     }
 

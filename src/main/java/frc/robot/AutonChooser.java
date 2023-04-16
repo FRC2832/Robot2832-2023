@@ -373,10 +373,12 @@ public class AutonChooser {
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z-5));
+        eventMap.put("armScoop", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X-2, Constants.ArmToPickupGround_Z-5));
         eventMap.put("armScore", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
         eventMap.put("spit", spit());
         eventMap.put("suck", suck());
+        eventMap.put("pivotPickup", new PivotSetPoint(pivot, 80));
         //eventMap.put("intakeDown", new IntakeDown());
 
         // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
@@ -385,7 +387,7 @@ public class AutonChooser {
             this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
             drive.getKinematics(), // SwerveDriveKinematics
             new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-            new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+            new PIDConstants(2.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
             drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
             eventMap,
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
