@@ -26,15 +26,15 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8778355388379817,
+        "x": 2.04,
         "y": 4.585618643419883
       },
       "prevControl": {
-        "x": 1.8778355388379817,
+        "x": 2.04,
         "y": 4.597054101383524
       },
       "nextControl": {
-        "x": 1.8778355388379817,
+        "x": 2.04,
         "y": 4.597054101383524
       },
       "holonomicAngle": 0,
@@ -51,16 +51,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.32,
-        "y": 4.585618643419883
+        "x": 6.17,
+        "y": 4.71
       },
       "prevControl": {
-        "x": 5.32,
-        "y": 4.585618643419883
+        "x": 6.17,
+        "y": 4.71
       },
       "nextControl": {
-        "x": 7.32,
-        "y": 4.585618643419883
+        "x": 6.17,
+        "y": 4.71
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -69,9 +69,10 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "suck"
+          "suck",
+          "armScoop"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -82,11 +83,11 @@
         "y": 4.574183185456242
       },
       "prevControl": {
-        "x": 4.347894458984353,
+        "x": 2.42,
         "y": 4.608489559347165
       },
       "nextControl": {
-        "x": 2.106595737056361,
+        "x": 2.42,
         "y": 4.568466367884164
       },
       "holonomicAngle": 0,
@@ -107,11 +108,11 @@
         "y": 4.436957689892555
       },
       "prevControl": {
-        "x": 1.660388612772017,
+        "x": 2.03,
         "y": 4.436957689892555
       },
       "nextControl": {
-        "x": 2.4040452405946136,
+        "x": 2.036,
         "y": 4.436957689892555
       },
       "holonomicAngle": 0.0,
@@ -155,16 +156,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.32,
+        "x": 6.17,
         "y": 3.3391537253830568
       },
       "prevControl": {
-        "x": 5.8346969211486925,
-        "y": 3.848031604765064
+        "x": 6.17,
+        "y": 3.3391537253830568
       },
       "nextControl": {
-        "x": 6.805303078851308,
-        "y": 2.8302758460010495
+        "x": 6.17,
+        "y": 3.3391537253830568
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -173,9 +174,10 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "suck"
+          "suck",
+          "armScoop"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -186,11 +188,11 @@
         "y": 4.9972951301109445
       },
       "prevControl": {
-        "x": 4.976844646984587,
+        "x": 4.702393655857212,
         "y": 4.9972951301109445
       },
       "nextControl": {
-        "x": 4.153491673602461,
+        "x": 4.702393655857212,
         "y": 4.9972951301109445
       },
       "holonomicAngle": 0,
@@ -207,16 +209,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8778355388379817,
+        "x": 2.04,
         "y": 4.9972951301109445
       },
       "prevControl": {
-        "x": 3.0515753835074526,
-        "y": 5.00158342684731
+        "x": 2.04,
+        "y": 4.9972951301109445
       },
       "nextControl": {
-        "x": 0.7040956941685108,
-        "y": 4.993006833374579
+        "x": 2.04,
+        "y": 4.9972951301109445
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -238,8 +240,8 @@
         "y": 5.47758436458385
       },
       "prevControl": {
-        "x": 4.919667357166384,
-        "y": 4.837198718619976
+        "x": 7.080968912294458,
+        "y": 5.47758436458385
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -263,7 +265,8 @@
       "position": 1.1054545454545825,
       "names": [
         "armDown",
-        "pivotPickup"
+        "pivotPickup",
+        "suck"
       ]
     },
     {
@@ -276,7 +279,8 @@
       "position": 4.072727272727369,
       "names": [
         "armDown",
-        "pivotPickup"
+        "pivotPickup",
+        "suck"
       ]
     },
     {
