@@ -15,6 +15,7 @@ public interface IArmControl {
     void setShoulderAngle(double angleDeg);
 
     void checkBrake();
+    void setAirBrake(boolean setBrake);
 
     void updateInputs();
 

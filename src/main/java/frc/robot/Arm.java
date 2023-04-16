@@ -21,6 +21,9 @@ public class Arm extends SubsystemBase{
     private double shoulderDelta;
     private double elbowDelta;
 
+    private double targetDelta = 0;
+    private int setBrakesCounts, relBrakesCounts;
+    
     public Arm(IArmControl hardware) {
         super();
         this.hardware = hardware;
@@ -53,7 +56,23 @@ public class Arm extends SubsystemBase{
         SmartDashboard.putNumber("Shoulder Delta", shoulderDelta);
         SmartDashboard.putNumber("Elbow Delta", elbowDelta);
 
-        hardware.checkBrake();
+        //check if we are within 2" of our target from kinematics
+        if(targetDelta > 2) {
+            setBrakesCounts++;
+            relBrakesCounts = 0;
+        } else {
+            relBrakesCounts++;
+            setBrakesCounts = 0;
+        }
+
+        //5 counts is 100ms debounce
+        if(setBrakesCounts > 5){
+            hardware.setAirBrake(true);
+        } else if (relBrakesCounts > 5) {
+            hardware.setAirBrake(false);
+        } else {
+            //don't change the brakes
+        }
     }
 
     public void setShoulderAngle(double angleDeg) {
@@ -132,6 +151,7 @@ public class Arm extends SubsystemBase{
         }
         // finds shoulder angle in radians
         
+        targetDelta = Math.sqrt(Math.pow(x - getArmXPosition(), 2) + Math.pow(z-getArmZPosition(),2));
         elbow = Math.toDegrees(elbow);
         shoulder = Math.toDegrees(shoulder);
         

@@ -66,7 +66,7 @@ public final class Constants {
     //sensor offsets
     public static final double SHOULDER_OFFSET = 14;       //90 is shoulder straight up
     public static final double ELBOW_OFFSET = 195;         //0 is elbow parallel to shoulder
-    public static final double INTAKE_OFFSET = 78;
+    public static final double INTAKE_OFFSET = 78-25;
 
     public static final double ARM_ACCEPT_ERROR = 3;      //MAX error in inches for arm going to set points autonomously 
     
@@ -86,14 +86,14 @@ public final class Constants {
     public static final double PivotToPickupHuman = 162;
 
     //level 2 back
-    public static final double ArmToScoreMiddle_X = -21.5;
-    public static final double ArmToScoreMiddle_Z = 27.3;
+    public static final double ArmToScoreMiddle_X = -22.5;
+    public static final double ArmToScoreMiddle_Z = 26.3;
     //223 pivot
 
     //level 2 front
-    public static final double ArmToScoreMiddleFront_X = 46.2;
-    public static final double ArmToScoreMiddleFront_Z = 25.7;
-    public static final double PivotToMiddleFront = 125;
+    public static final double ArmToScoreMiddleFront_X = 48.0;
+    public static final double ArmToScoreMiddleFront_Z = 27.7;
+    public static final double PivotToMiddleFront = 41;
     //558 pivot
 
     //level 3 back

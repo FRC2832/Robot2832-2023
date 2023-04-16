@@ -85,6 +85,10 @@ public class ArmSim implements IArmControl {
     }
 
     @Override
+    public void setAirBrake(boolean setBrake){
+    }
+
+    @Override
     public double getFeedForward(double offset) {
         return 0;
     }

@@ -143,6 +143,12 @@ public class ArmHw implements IArmControl {
     }
 
     @Override
+    public void setAirBrake(boolean setBrake){
+        brakes.Brake(!setBrake, 2);
+        brakes.Brake(!setBrake, 3);
+    }
+
+    @Override
     public void updateInputs() {
         
         //Frac is 0 at lowest point, 1 at max extension
