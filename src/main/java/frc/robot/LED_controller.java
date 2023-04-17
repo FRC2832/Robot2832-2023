@@ -4,6 +4,7 @@ import org.livoniawarriors.REVDigitBoard;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IDriveControls;
@@ -14,12 +15,37 @@ public class LED_controller {
     private static SerialPort sp;
     private REVDigitBoard digit;
     private boolean lastPieceMode;
+    private int loopCounts;
+    private int rumbleCounts;
 
     public LED_controller(){
         LED_controller.sp = new SerialPort(9600, Port.kOnboard);
         digit = new REVDigitBoard();
         lastPieceMode = false;
     }
+
+    /*
+        Operating modes:
+        1.  "prematch" - Default on powerup is "prematch".   This shows the sound reactive arm lights and puts a boombox animation on the LED panel.  At end of match, if we want to go back to this, send "prematch"
+        2.  "auton" - send to trigger the flash drive driver animation.  Puts the arm lights in balance mode.  See below for bubble command.
+        3.  "teleop" - send to put the robot in normal LED operating mode.  LED panel scrolls through sponsors and animations.   Arm lights react to "cone" and "cube" commands to change color.  Arm lights automatically build up energy and pulse when maxed out.
+        After match, send "prematch" to put us back in sound reactive mode.
+
+        Discrete commands:
+        "prematch" :  Puts us in prematch mode (default node on startup)
+        "auton" - Puts us in autonomous mode
+        "teleop" - Puts us in teleop mode
+        "bubbleX" - Displays the bubble animation on the arms during charge dock balancing.   X is in the range from -12 to 12.  0 is when balanced.
+        "cone" - Set arm lights to yellow in teleop
+        "cube" - set arm lights to purple in teleop
+        "bX" - sets overall brightness to value X.  Range 0-255
+        "tX" - sets targeting computer to turn on light X.   If 0, performs sweep animation
+        "kitt" - turns targeting computer to all red.   "t0" puts it back to rainbow colors
+        "l" (lower case letter L) - Triggers the lightning animation
+        "aX" - Turns on X number of arm lights, starting at base.   a0 allows automatic increment
+        "red" - turn lights red
+        "blue" - turn lights blue
+    */
     
     public enum cmds {
         Arm(1),
@@ -35,8 +61,6 @@ public class LED_controller {
             this.value = value;
         }
     }
-
-
 
     public static boolean send(cmds prefix){
         String cmd = "";
@@ -102,9 +126,20 @@ public class LED_controller {
         sp.writeString(msg+"\r\n");
     }
 
-    private int loopCounts;
-
     public void update(ISwerveDrive drive, Intake intake, Tail tail, IDriveControls driver, IOperatorControls opControls) {
+        //check for rumble
+        var rumble = 0.;
+        if(intake.HasPiece() || tail.HasPiece()) {
+            if(rumbleCounts < 40) {
+                rumble = 0.8;
+            }
+            rumbleCounts++;
+        } else {
+            rumbleCounts = 0;
+        }
+        driver.SetRumble(rumble);
+        opControls.SetRumble(rumble);
+
         if(loopCounts % 50 == 0) {
             if(!DriverStation.isEnabled()) {
                 send("prematch");
@@ -130,6 +165,12 @@ public class LED_controller {
             } else {
                 if (opControls.IntakeSpitRequested().getAsBoolean()) {
                     send("l");
+                } else if (rumble > 0.1) {
+                    if(DriverStation.getAlliance() == Alliance.Red) {
+                        send("red");
+                    } else {
+                        send("blue");
+                    }
                 } else if (Robot.getGamePieceMode() == Robot.CONE_MODE) {
                     //send cone mode
                     send("cone");
@@ -138,6 +179,7 @@ public class LED_controller {
                 }
             }
         }
+        loopCounts++;
 
         //run the digit board
         if(Logger.FaultSet()) {
@@ -153,13 +195,12 @@ public class LED_controller {
         } */
 
         //check if piece mode needs to be switched
+        String mode;
         var newMode = opControls.ChangePieceMode().getAsBoolean();
         boolean currentMode = Robot.getGamePieceMode();
         if(newMode == true && lastPieceMode == false) {
             Robot.setGamePieceMode(!currentMode);
         }
-
-        String mode;
         if(currentMode == Robot.CONE_MODE) {
             mode = "Cone!";
         } else {
@@ -167,19 +208,5 @@ public class LED_controller {
         }
         SmartDashboard.putString("Piece Mode", mode);
         lastPieceMode = newMode;
-
-        //check for rumble
-        var rumble = 0.;
-        if(intake.HasPiece() || tail.HasPiece()) {
-            if(rumbleCounts < 40) {
-                rumble = 0.8;
-            }
-            rumbleCounts++;
-        } else {
-            rumbleCounts = 0;
-        }
-        driver.SetRumble(rumble);
-        opControls.SetRumble(rumble);
     }
-    int rumbleCounts;
 }
