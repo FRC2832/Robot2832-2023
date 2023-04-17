@@ -61,6 +61,7 @@ public class AutonChooser {
 
     private String AutonomousStartPosition;
     ArrayList<PathPlannerTrajectory> threePieceLow;
+    HashMap<String, Command> eventMap;
     SwerveAutoBuilder autoBuilder;
 
     public AutonChooser(ISwerveDrive drive, Odometry odometry, Intake intake, Arm arm, Pivot pivot){
@@ -91,14 +92,14 @@ public class AutonChooser {
 
         // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        threePieceLow = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("3PieceLow", new PathConstraints(3, 3));
+        threePieceLow = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("3PieceLow", new PathConstraints(3.3, 9.8));
 
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
-        HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z-5));
-        eventMap.put("armScoop", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X+4, Constants.ArmToPickupGround_Z-5));
-        eventMap.put("armScore", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap = new HashMap<>();
+        //eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z-5));
+        //eventMap.put("armScoop", new ArmAutonPoint(arm, Constants.ArmToPickupGround_X+4, Constants.ArmToPickupGround_Z-5));
+        //eventMap.put("armScore", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
         eventMap.put("spit", spit());
         eventMap.put("suck", suck().withTimeout(1));
         eventMap.put("pivotPickup", new PivotSetPoint(pivot, 60));
@@ -109,13 +110,20 @@ public class AutonChooser {
             odometry::getPose, // Pose2d supplier
             this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
             drive.getKinematics(), // SwerveDriveKinematics
-            new PIDConstants(6, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-            new PIDConstants(6, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+            new PIDConstants(0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(1.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
             drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
             eventMap,
             false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
             drive // The drive subsystem. Used to properly set the requirements of path following commands
         );
+
+        SmartDashboard.putNumber("Auto Drive P", 3);
+        SmartDashboard.putNumber("Auto Drive I", 0);
+        SmartDashboard.putNumber("Auto Drive D", 0);
+        SmartDashboard.putNumber("Auto Turn P", 1.5);
+        SmartDashboard.putNumber("Auto Turn I", 0);
+        SmartDashboard.putNumber("Auto Turn D", 0);
     }
 
     public Command getAuton(){
@@ -396,6 +404,26 @@ public class AutonChooser {
     }
 
     public Command autoPlanThreePiece() {
+        var driveP = SmartDashboard.getNumber("Auto Drive P", 3);
+        var driveI = SmartDashboard.getNumber("Auto Drive I", 0);
+        var driveD = SmartDashboard.getNumber("Auto Drive D", 0);
+        var turnP = SmartDashboard.getNumber("Auto Turn P", 1.5);
+        var turnI = SmartDashboard.getNumber("Auto Turn I", 0);
+        var turnD = SmartDashboard.getNumber("Auto Turn D", 0);
+
+        // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+        autoBuilder = new SwerveAutoBuilder(
+            odometry::getPose, // Pose2d supplier
+            this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
+            drive.getKinematics(), // SwerveDriveKinematics
+            new PIDConstants(driveP, driveI, driveD), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(turnP, turnI, turnD), // PID constants to correct for rotation error (used to create the rotation controller)
+            drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
+            eventMap,
+            false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            drive // The drive subsystem. Used to properly set the requirements of path following commands
+        );
+
         return autoBuilder.fullAuto(threePieceLow);
     }
 

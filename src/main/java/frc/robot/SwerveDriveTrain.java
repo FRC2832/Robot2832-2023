@@ -179,9 +179,14 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for(int i=0; i<requestStates.length; i++) {
             requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
                 
-            var volts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
-            hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
-            hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
+            var driveVolts = drivePid[i].calculate(hardware.getCornerSpeed(i),requestStates[i].speedMetersPerSecond);
+            var ff = requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED * RobotController.getBatteryVoltage();
+            driveVolts += ff;
+
+            var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
+            
+            hardware.setDriveCommand(i, ControlMode.PercentOutput, driveVolts / RobotController.getBatteryVoltage());
+            hardware.setTurnCommand(i, ControlMode.PercentOutput, turnVolts / RobotController.getBatteryVoltage());
         }
     }
 
