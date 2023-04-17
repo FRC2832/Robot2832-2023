@@ -27,18 +27,15 @@ public class Odometry extends SubsystemBase {
 
     //base arm simulation
     private Mechanism2d m_mech2d;
-    private MechanismLigament2d shoulderBar;
-    private MechanismLigament2d elbowBar;
-    private MechanismLigament2d tailBar;
-    private Arm arm;
-    private Tail tail;
 
-    public Odometry(ISwerveDrive drive, IDriveControls controls, Arm arm, Tail tail) {
+
+    
+
+    public Odometry(ISwerveDrive drive, IDriveControls controls) {
         super();
         this.drive = drive;
         this.controls = controls;
-        this.tail = tail;
-        this.arm = arm;
+        
 
         swervePositions = drive.getCornerLocations();
         odometry = new SwerveDriveOdometry(drive.getKinematics(), drive.getHeading(), drive.getSwerveStates());
@@ -78,9 +75,7 @@ public class Odometry extends SubsystemBase {
         }
 
         //update the arm
-        shoulderBar.setAngle(Rotation2d.fromDegrees(arm.getShoulderAngle()));
-        elbowBar.setAngle(Rotation2d.fromDegrees(arm.getElbowAngle()));
-        tailBar.setAngle(Rotation2d.fromDegrees(tail.getTailAngle()));
+        
     }
 
     public void resetPose(Pose2d pose) {
@@ -115,20 +110,11 @@ public class Odometry extends SubsystemBase {
         robotBase.append(new MechanismLigament2d("Bumpers", 38, 0, 50, new Color8Bit(Color.kDarkGreen)));    //32" robot frame + 3" for bumpers each side
         MechanismRoot2d pivotBase = m_mech2d.getRoot("Pivot Base", 56.25, 16.5);  //edge of grid wall + 3" bumper + 3.5", ~5" frame height + 11.5" height piece
         pivotBase.append(new MechanismLigament2d("Arm Frame", 13, 270, 15, new Color8Bit(Color.kSilver)));
-        shoulderBar = new MechanismLigament2d("Shoulder", Constants.BICEP_LENGTH, 60, 15, new Color8Bit(Color.kPurple));
-        pivotBase.append(shoulderBar);
-        elbowBar = new MechanismLigament2d("Elbow", Constants.FOREARM_LENGTH, -60, 15, new Color8Bit(Color.kGold));
-        shoulderBar.append(elbowBar);
         MechanismRoot2d heightLimit = m_mech2d.getRoot("Height Root", 0, 72); //6" below the limit to take care of intake
         heightLimit.append(new MechanismLigament2d("Height", 120, 0, 5, new Color8Bit(Color.kDarkRed)));    //32" robot frame + 3" for bumpers each side
 
-        //tail
-        MechanismRoot2d tailBase = m_mech2d.getRoot("Tail Base", 84.25, 10.5);
-        tailBase.append(new MechanismLigament2d("Tail Frame", 7, 270, 15, new Color8Bit(Color.kSilver)));
-        tailBar = new MechanismLigament2d("Tail", 18, -105, 15, new Color8Bit(Color.kWhite));
-        tailBase.append(tailBar);
 
         // Put Mechanism 2d to SmartDashboard
-        SmartDashboard.putData("Arm Sim", m_mech2d);
+
     }
 }
