@@ -28,9 +28,9 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public double GetArmShoulderPct() { //driver/operator will use this method
         if(operCont.getPOV() == 0) {
-            return 0.3;
+            return 0.4;
         } else if (operCont.getPOV() == 180) {
-            return -0.3;
+            return -0.4;
         } else {
             return 0.0;
         }
@@ -39,9 +39,9 @@ public class LilJimmyDriveControls implements IOperatorControls {
     @Override
     public double GetArmElbowPct() { //driver/operator will use this method
         if(operCont.getPOV() == 90) {
-            return -0.3;
+            return -0.4;
         } else if (operCont.getPOV() == 270) {
-            return 0.3;
+            return 0.4;
         } else {
             return 0.0;
         }

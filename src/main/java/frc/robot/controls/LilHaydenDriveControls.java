@@ -24,13 +24,13 @@ public class LilHaydenDriveControls implements IOperatorControls {
     @Override
     public double GetArmShoulderPct() { //driver/operator will use this method
         if(armCont.getyAxis1() > 0) { //if he moves controller up, y goes towards 1 not -1
-            return 0.3 * armCont.getyAxis1();//positive #
+            return 0.4 * armCont.getyAxis1();//positive #
         } else if (armCont.getyAxis1() < 0) { //if he moves controller down, y towards -1
-            return 0.3 * armCont.getyAxis1();//negative #
+            return 0.4 * armCont.getyAxis1();//negative #
         } else if(armCont.getRawButton(10)) {
-            return 0.3;
+            return 0.4;
         } else if (armCont.getRawButton(5)) {
-            return -0.3;
+            return -0.4;
         } else {
             return 0;
         }
@@ -39,13 +39,13 @@ public class LilHaydenDriveControls implements IOperatorControls {
     @Override
     public double GetArmElbowPct() {  //driver/operator will use this method
         if(armCont.getxAxis1() > 0) { //if he moves controller left, y goes towards 1 not -1
-            return 0.3 * armCont.getxAxis1();//positive #
+            return 0.4 * armCont.getxAxis1();//positive #
         } else if (armCont.getxAxis1() < 0) { //if he moves controller right, y towards -1
-            return 0.3 * armCont.getxAxis1();//negative #
+            return 0.4 * armCont.getxAxis1();//negative #
         } else if(armCont.getRawButton(9)) {
-            return -0.3;
+            return -0.4;
         } else if (armCont.getRawButton(4)) {
-            return 0.3;
+            return 0.4;
         } else {
             return 0;
         }
