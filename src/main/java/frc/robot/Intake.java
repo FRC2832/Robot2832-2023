@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
     public Intake(IOperatorControls controls) {
         super();
         intakeMotor = new CANSparkMax(8,MotorType.kBrushless);
-        intakeMotor.setInverted(false);
+        //intakeMotor.setInverted(false);
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setSmartCurrentLimit(30);
         timer = new Timer();
@@ -97,7 +97,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeVolts(double volts) {
-        intakeMotor.setVoltage(-volts);
+        intakeMotor.setVoltage(volts);
     }
 
     public double getIntakeCurrent() {

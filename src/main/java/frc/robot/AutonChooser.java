@@ -238,7 +238,7 @@ public class AutonChooser {
             targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
             //pickup 2nd
             tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
-                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4), new PivotSetPoint(pivot, 60)))
+                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4).withTimeout(4), new PivotSetPoint(pivot, 60)))
                 //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
                 .andThen(suck());
         }
@@ -247,14 +247,14 @@ public class AutonChooser {
             targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
             //pickup 2nd
             tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
-                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.5,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4), new PivotSetPoint(pivot, 60)))
+                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.5,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4).withTimeout(4), new PivotSetPoint(pivot, 60)))
                 //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
                 .andThen(suck());
         }
         
         //drive back into community
         targetPoint = new Pose2d(startPosition.getX() + offsetX(0.5), startPosition.getY(), startPosition.getRotation());
-        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4), new PivotSetPoint(pivot, 0)));
+        tempSequence = tempSequence.andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z - 4), new PivotSetPoint(pivot, 135)));
         
         //drive to scoring position
         //targetPoint = new Pose2d(startPosition.getX(), startPosition.getY(), startPosition.getRotation());
