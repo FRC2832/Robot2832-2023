@@ -24,9 +24,9 @@ public class OperatorControls implements IOperatorControls {
     @Override
     public double GetArmShoulderPct() {
         if(operCont.getOrangeTopLeftButton()) {
-            return 0.3;
+            return 0.4;
         } else if (operCont.getOrangeBottomLeftButton()) {
-            return -0.3;
+            return -0.4;
         } else {
             return 0;
         }

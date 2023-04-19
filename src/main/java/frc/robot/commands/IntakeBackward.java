@@ -21,34 +21,20 @@ public class IntakeBackward extends CommandBase{
 
     @Override
     public void execute() {
-        //finishedCounts < 50, copy stuff similar to DriveToBalance but with 50 x 20 milliseconds
         intake.Grab(false);
         finishedCounts++;
     }
 
     @Override
     public boolean isFinished() {
-        // if(finishedCounts > 50){
-        //     return true;
-        // }
-        // else {
-        //     return false; 
-        // }
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            if(intake.HasPiece()){
-                return true;
-            }
-            else {
-                return false; 
-            }
+        if(finishedCounts < 10){
+            return false;
+        }
+        if(intake.HasPiece() || finishedCounts > 100){
+            return true;
         }
         else {
-            if(intake.HasPiece()){
-                return false;
-            }
-            else {
-                return true; 
-            }
+            return false; 
         }
     }
 

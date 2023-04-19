@@ -27,27 +27,16 @@ public class IntakeForward extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        // if(finishedCounts > 50){
-        //     return true;
-        // }
-        // else {
-        //     return false; 
-        // } 
-        if(Robot.getGamePieceMode() == Robot.CUBE_MODE){
-            if(intake.HasPiece()){
-                return false;
-            }
-            else {
-                return true; 
-            }
+        if(finishedCounts < 10){
+            return false;
+        } else if (finishedCounts > 100) {
+            return true;
+        }
+        if(intake.HasPiece()){
+            return false;
         }
         else {
-            if(intake.HasPiece()){
-                return true;
-            }
-            else {
-                return false; 
-            }
+            return true; 
         }
     }
 

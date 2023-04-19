@@ -42,11 +42,11 @@ public class PivotMove extends CommandBase{
         pieceMode = newMode;
 
         if(controls.IntakeUpRequested().getAsBoolean()){
-            pivot.setPivotMotorVolts(6);
+            pivot.setPivotMotorVolts(7);
             angleOffset = pivot.optimalPivotAngle() - pivot.getPivotAngle();
             targetAngle = pivot.getPivotAngle();
         } else if(controls.IntakeDownRequested().getAsBoolean()){
-            pivot.setPivotMotorVolts(-6);
+            pivot.setPivotMotorVolts(-7);
             angleOffset = pivot.optimalPivotAngle() - pivot.getPivotAngle();
             targetAngle = pivot.getPivotAngle();
         } else {
