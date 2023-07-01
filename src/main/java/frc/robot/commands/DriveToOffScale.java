@@ -43,7 +43,7 @@ public class DriveToOffScale extends CommandBase {
     @Override
     public boolean isFinished() {
         //check if the timer has finished
-        return finishedCounts > 50;
+        return finishedCounts > 62;
     }
 
     @Override
