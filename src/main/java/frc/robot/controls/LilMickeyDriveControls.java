@@ -17,7 +17,7 @@ public class LilMickeyDriveControls implements IDriveControls {
     public LilMickeyDriveControls(){
         driveCont = new XboxController(0);
         
-        SmartDashboard.putBoolean("Field Oriented", false);
+        SmartDashboard.putBoolean("Field Oriented", true);
     }
    
     @Override
