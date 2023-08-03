@@ -195,7 +195,7 @@ public class AutonChooser {
         Command tempSequence;
         Pose2d targetPoint;
         
-        targetPoint = new Pose2d(startPosition.getX() + offsetX(4), startPosition.getY(), startPosition.getRotation());
+        targetPoint = new Pose2d(startPosition.getX() + offsetX(5), startPosition.getY(), startPosition.getRotation());
             
         tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
