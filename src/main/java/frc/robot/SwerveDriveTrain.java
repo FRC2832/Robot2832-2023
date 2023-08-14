@@ -164,7 +164,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
                 var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(),requestStates[i].angle.getRadians());
                 
-                hardware.setDriveCommand(i, ControlMode.PercentOutput, driveVolts / RobotController.getBatteryVoltage());
+                //hardware.setDriveCommand(i, ControlMode.PercentOutput, driveVolts / RobotController.getBatteryVoltage());
+                hardware.setDriveCommand(i, ControlMode.MotionMagic, requestStates[i].speedMetersPerSecond);
                 hardware.setTurnCommand(i, ControlMode.PercentOutput, turnVolts / RobotController.getBatteryVoltage());
             }
             swerveTargets = requestStates;
