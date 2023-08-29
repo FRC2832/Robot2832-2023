@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
@@ -96,7 +96,8 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.slot0.kP = Constants.CTRE_P_RES / (0.5 * COUNTS_PER_METER);
             //old value of 0.03 means if we had 1m/s error for 1 second, add 0.03V to the PID (or 1.705 counts of 1023)
             //unknown why we need 2/3, but then the math works...
-            allConfigs.slot0.kI = 0.03 * Constants.CTRE_P_RES / COUNTS_PER_METER * (2/3);
+            //allConfigs.slot0.kI = 0.03 * Constants.CTRE_P_RES / COUNTS_PER_METER * (2./3);
+            allConfigs.slot0.kI = 0;
             allConfigs.slot0.kD = 0;
             //this works out to 1023 / Max speed in counts
             allConfigs.slot0.kF = 1023 / (Constants.MAX_DRIVETRAIN_SPEED * COUNTS_PER_METER);
@@ -108,6 +109,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             allConfigs.motionCruiseVelocity = Constants.MAX_DRIVETRAIN_SPEED * COUNTS_PER_METER;
             //the maximum acceleration we want the motor to go
             allConfigs.motionAcceleration = 5 * COUNTS_PER_METER;
+
             motor.configAllSettings(allConfigs);
             motor.setSelectedSensorPosition(0);
 
@@ -188,6 +190,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
             driveWheelVelocity[i] = driveMotor[i].getSelectedSensorVelocity() / COUNTS_PER_METER;
             driveWheelDistance[i] = driveMotor[i].getSelectedSensorPosition() / DIST_PER_METER;
             turnMotorAngle[i] = -turnMotor[i].getSelectedSensorPosition() / COUNTS_PER_DEGREE;
+            SmartDashboard.putNumber("Drive Motor Velo " + i, driveMotor[i].getSelectedSensorVelocity());
         }
     }
 
@@ -253,7 +256,16 @@ public class SwerveDriveHw implements ISwerveDriveIo {
 
     @Override
     public void setDriveCommand(int wheel, ControlMode mode, double output) {
-        if(mode == ControlMode.MotionMagic || mode == ControlMode.Velocity) {
+        if(mode == ControlMode.MotionMagic) {
+            driveMotor[wheel].set(mode, output * DIST_PER_METER);
+        } else if(mode == ControlMode.Velocity) {
+            /*
+            MathUtil.clamp(output, wheel, output)
+            double currentVel = driveMotor[wheel].getSelectedSensorVelocity();
+            double newVel = output * COUNTS_PER_METER;
+            double newDist = (driveWheelVelocity[wheel] * Constants.LOOP_TIME) + (0.5 * 5 * Constants.LOOP_TIME * Constants.LOOP_TIME);
+            double maxChange = (driveWheelVelocity[wheel] * Constants.LOOP_TIME) + (0.5 * 5 * Constants.LOOP_TIME * Constants.LOOP_TIME);
+            */
             driveMotor[wheel].set(mode, output * COUNTS_PER_METER);
         } else {
             driveMotor[wheel].set(mode, output);
