@@ -23,20 +23,20 @@ import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveTrain implements ISwerveDrive {
-    public final String MAX_ACCEL_KEY = "Swerve Drive/Max Wheel Accel";
-    public final String MAX_OMEGA_KEY = "Swerve Drive/Max Wheel Omega";
+    public static final String MAX_ACCEL_KEY = "Swerve Drive/Max Wheel Accel";
+    public static final String MAX_OMEGA_KEY = "Swerve Drive/Max Wheel Omega";
 
     //these should not be changed as they are "safe" values,
     //use NetworkTables to change them instead in the Preferences table
-    public final double MAX_ACCEL_DEFAULT = 8.0;
-    public final double MAX_OMEGA_DEFAULT = 100.0;
+    public static final double MAX_ACCEL_DEFAULT = 10.0;
+    public static final double MAX_OMEGA_DEFAULT = 3000.0;
 
     private SwerveDriveKinematics kinematics;
     private ISwerveDriveIo hardware;
     private SwerveModulePosition[] swerveStates;
     private SwerveModuleState[] swerveTargets;
     private Pose2d robotPose;
-    private String moduleNames[];
+    private static String moduleNames[];
     private double swerveOffsets[];
     private double turnOffsets[];
     private InterpolatingTreeMap<Double, Double> speedReduction;
@@ -44,9 +44,20 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private PIDController pidZero = new PIDController(0.15, 0.001, 0);
     private PIDController[] drivePid;
     private PIDController[] turnPid;
+    private SwerveModuleState[] currentState;
 
     TrapezoidProfile.Constraints constraints;
     TrapezoidProfile.State[] lastState;
+
+    // Initializer block starts
+    static {
+        //initialize module names
+        moduleNames = new String[Constants.NUM_WHEELS];
+        moduleNames[FL] = "Swerve FL ";
+        moduleNames[FR] = "Swerve FR ";
+        moduleNames[RL] = "Swerve RL ";
+        moduleNames[RR] = "Swerve RR ";
+    }
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         register();
@@ -88,13 +99,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
         }
         gyroOffset = getHeading().getDegrees();
 
-        //initialize module names
-        moduleNames = new String[Constants.NUM_WHEELS];
-        moduleNames[FL] = "Swerve FL ";
-        moduleNames[FR] = "Swerve FR ";
-        moduleNames[RL] = "Swerve RL ";
-        moduleNames[RR] = "Swerve RR ";
-
         //input is angle off desired, output is percent reduction
         speedReduction = new InterpolatingTreeMap<Double, Double>();
         speedReduction.put(0., 1.);
@@ -120,14 +124,13 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public void periodic() {
         hardware.updateInputs();
-        SwerveModuleState[] currentState = new SwerveModuleState[Constants.NUM_WHEELS];
+        currentState = new SwerveModuleState[Constants.NUM_WHEELS];
 
         //read the swerve corner state
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].distanceMeters = hardware.getCornerDistance(wheel);
 
             double angle = hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel];
-            angle = MathUtil.inputModulus(angle, -180, 180);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
 
             currentState[wheel] = new SwerveModuleState();
@@ -168,66 +171,34 @@ public class SwerveDriveTrain implements ISwerveDrive {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, turn);
         }
         
-        SmartDashboard.putNumber("XSpeed", xSpeed);
-        SmartDashboard.putNumber("YSpeed", ySpeed);
-        SmartDashboard.putNumber("OSpeed", turn);
+        SmartDashboard.putNumber("Swerve XSpeed", xSpeed);
+        SmartDashboard.putNumber("Swerve YSpeed", ySpeed);
+        SmartDashboard.putNumber("Swerve Turn", turn);
 
         //calculate the states from the speeds
         SwerveModuleState[] requestStates = kinematics.toSwerveModuleStates(speeds);
         // sometime the Kinematics spits out too fast of speeds, so this will fix this
         SwerveDriveKinematics.desaturateWheelSpeeds(requestStates, Constants.MAX_DRIVETRAIN_SPEED);
 
+        //filter the swerve wheels
+        requestStates = optomizeSwerve(requestStates, currentState);
+
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
-            SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
-
-            //smooth out turn command
-            double maxOmega = Preferences.getDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
-            double maxDelta = maxOmega * Constants.LOOP_TIME;           //acceleration * loop time
-            requestStates[i].angle = Rotation2d.fromDegrees(MathUtil.clamp(
-                requestStates[i].angle.getDegrees(),                  //current request
-                swerveTargets[i].angle.getDegrees() - maxDelta,       //last request minimum
-                swerveTargets[i].angle.getDegrees() + maxDelta));      //last request maximum
-
-            //smooth out drive command
-            double maxAccel = Preferences.getDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
-            maxDelta = maxAccel * Constants.LOOP_TIME;           //acceleration * loop time
-            double curSpeed = hardware.getCornerSpeed(i);
-            double dir = 1;
-            if(curSpeed <0) {
-                dir = -1;
+            //turn PID
+            if (Math.abs(swerveStates[i].angle.minus(requestStates[i].angle).getDegrees()) < 1) {
+                turnPid[i].reset();
             }
-            requestStates[i].speedMetersPerSecond = MathUtil.clamp(
-                requestStates[i].speedMetersPerSecond,                  //current request
-                curSpeed - maxDelta * dir,       //last request minimum
-                curSpeed + maxDelta * dir);      //last request maximum
-            //take out minimal speed so that the motors don't jitter
-            if(Math.abs(requestStates[i].speedMetersPerSecond) < maxDelta) {
-                requestStates[i].speedMetersPerSecond = 0;
-            }
-
-            //optomize the result
-            requestStates[i] = SwerveModuleState.optimize(requestStates[i], swerveStates[i].angle);
-
-            //check to see if the robot request is moving
-            if (Math.abs(requestStates[i].speedMetersPerSecond) < maxDelta) {
-                //stop the requests if there is no movement
-                hardware.setTurnCommand(i, ControlMode.Disabled, 0.0);
-            }
-            else {
-                //turn PID
-                var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(), requestStates[i].angle.getRadians());
-                hardware.setTurnCommand(i, ControlMode.PercentOutput, turnVolts / RobotController.getBatteryVoltage());
-            }
-        
+            var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(), requestStates[i].angle.getRadians());
+            hardware.setTurnCommand(i, ControlMode.PercentOutput, turnVolts / RobotController.getBatteryVoltage());
             
-            // voltage output mode
+            // voltage drive mode
             //var driveVolts = drivePid[i].calculate(hardware.getCornerSpeed(i),requestStates[i].speedMetersPerSecond);
             //var ff = requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED * RobotController.getBatteryVoltage();
             //driveVolts += ff;
             //hardware.setDriveCommand(i, ControlMode.PercentOutput, driveVolts / RobotController.getBatteryVoltage());
 
-            // velocity control mode
+            // velocity drive mode
             hardware.setDriveCommand(i, ControlMode.Velocity, requestStates[i].speedMetersPerSecond);
 
             //motion magic mode (note, motion magic only works on position PID control, so we will make "fake" distance points to go to)
@@ -251,6 +222,54 @@ public class SwerveDriveTrain implements ISwerveDrive {
             hardware.setDriveCommand(i, ControlMode.PercentOutput, requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED);
             hardware.setTurnCommand(i, ControlMode.PercentOutput, volts / RobotController.getBatteryVoltage());
         }
+    }
+
+    public static SwerveModuleState[] optomizeSwerve(SwerveModuleState[] requestStates, SwerveModuleState[] currentState) {
+        SwerveModuleState[] outputStates = new SwerveModuleState[requestStates.length];
+        // command each swerve module
+        for (int i = 0; i < requestStates.length; i++) {
+            SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
+            SmartDashboard.putNumber(moduleNames[i] + "Requested Speed", requestStates[i].speedMetersPerSecond);
+            outputStates[i] = new SwerveModuleState();
+
+            //smooth out drive command
+            double maxAccel = Preferences.getDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
+            double maxSpeedDelta = maxAccel * Constants.LOOP_TIME;           //acceleration * loop time
+            //whatever value is bigger flips when forwards vs backwards
+            double value1 = currentState[i].speedMetersPerSecond - maxSpeedDelta;
+            double value2 = currentState[i].speedMetersPerSecond + maxSpeedDelta;
+            outputStates[i].speedMetersPerSecond = MathUtil.clamp(
+                requestStates[i].speedMetersPerSecond,                  //current request
+                Math.min(value1, value2),                               //last request minimum
+                Math.max(value1, value2));                              //last request maximum
+
+
+            //smooth out turn command
+            double maxOmega = Preferences.getDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
+            double maxAngleDelta = maxOmega * Constants.LOOP_TIME;           //acceleration * loop time
+            double curAngle = currentState[i].angle.getDegrees();
+
+            double angleReq = requestStates[i].angle.getDegrees();
+            if (Math.abs(requestStates[i].speedMetersPerSecond) > maxSpeedDelta) {
+                angleReq = MathUtil.inputModulus(angleReq, curAngle - 180, curAngle + 180);
+            } else {
+                angleReq = curAngle;
+            }
+
+            outputStates[i].angle = Rotation2d.fromDegrees(MathUtil.clamp(
+                angleReq,                   //current request
+                curAngle - maxAngleDelta,        //last request minimum
+                curAngle + maxAngleDelta));      //last request maximum
+
+            //check to see if the robot request is moving
+            if (Math.abs(requestStates[i].speedMetersPerSecond) < maxSpeedDelta) {
+                //stop the requests if there is no movement
+                outputStates[i].angle = currentState[i].angle;
+                //take out minimal speed so that the motors don't jitter
+                outputStates[i].speedMetersPerSecond = 0;
+            }
+        }
+        return outputStates;
     }
 
     @Override
