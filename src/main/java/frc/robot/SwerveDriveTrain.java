@@ -262,7 +262,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 curAngle + maxAngleDelta));      //last request maximum
 
             //check to see if the robot request is moving
-            if (Math.abs(requestStates[i].speedMetersPerSecond) < maxSpeedDelta) {
+            if (Math.abs(requestStates[i].speedMetersPerSecond) < Constants.MIN_DRIVER_SPEED) {
                 //stop the requests if there is no movement
                 outputStates[i].angle = currentState[i].angle;
                 //take out minimal speed so that the motors don't jitter
