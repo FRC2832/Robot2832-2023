@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.leds.RainbowLeds;
+import frc.robot.commands.leds.TestLeds;
 import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.IOperatorControls;
 import frc.robot.interfaces.ISwerveDrive;
@@ -17,11 +19,21 @@ public class LED_controller {
     private boolean lastPieceMode;
     private int loopCounts;
     private int rumbleCounts;
+    private LedSubsystem leds;
 
     public LED_controller(){
         LED_controller.sp = new SerialPort(9600, Port.kOnboard);
         digit = new REVDigitBoard();
         lastPieceMode = false;
+
+        //new LED controller
+        leds = new LedSubsystem();
+        var defaultCmd = new RainbowLeds(leds);
+        leds.setDefaultCommand(defaultCmd);
+        defaultCmd.schedule();
+        
+        //put button to try leds on the dashboard
+        SmartDashboard.putData(new TestLeds(leds));
     }
 
     /*
