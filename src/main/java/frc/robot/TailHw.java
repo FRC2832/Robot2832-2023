@@ -32,7 +32,7 @@ public class TailHw implements ITailControl{
         tailMotor = new TalonSRX(49);
         tailMotor.setNeutralMode(NeutralMode.Brake);
         tailMotor.setInverted(false);
-        tailEncoder = new DutyCycle(new DigitalInput(3));
+        tailEncoder = new DutyCycle(new DigitalInput(6));
         
         distSensor = new Rev2mDistanceSensor(Port.kOnboard);
         distSensor.setAutomaticMode(true);
