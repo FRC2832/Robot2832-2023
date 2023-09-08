@@ -129,5 +129,5 @@ public final class Constants {
     public static final double TAIL_HUMAN_POINT = 52;
     
     
-    public static final double CTRE_P_RES = 1024 / 12;
+    public static final double CTRE_P_RES = 1024.0 / 12;
 }

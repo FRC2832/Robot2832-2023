@@ -95,11 +95,14 @@ public class SwerveDriveSim implements ISwerveDriveIo {
             swerveStates[i] = new SwerveModuleState();
 
             //process drive command
-            if(driveCommand[i] == ControlMode.Velocity) {
+            if (driveCommand[i] == ControlMode.MotionMagic) {
+                //drive power is actually distance traveled
+                driveSpeed[i] = drivePower[i] / Constants.LOOP_TIME;
+            } else if (driveCommand[i] == ControlMode.Velocity) {
                 driveSpeed[i] = drivePower[i];
-            } else if(driveCommand[i] == ControlMode.PercentOutput) {
+            } else if (driveCommand[i] == ControlMode.PercentOutput) {
                 driveSpeed[i] = drivePower[i] * Constants.MAX_DRIVETRAIN_SPEED;
-            }else {
+            } else {
                 driveSpeed[i] = 0;
             }
             driveDist[i] += driveSpeed[i] * Constants.LOOP_TIME;
