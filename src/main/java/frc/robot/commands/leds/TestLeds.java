@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TestLeds extends CommandBase {
     ILedSubsystem leds;
-    int m_rainbowFirstPixelHue;
     AddressableLEDBuffer m_ledBuffer;
 
     public TestLeds(ILedSubsystem leds) {

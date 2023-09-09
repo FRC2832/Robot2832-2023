@@ -163,3 +163,4 @@ bin/
 *.wpilog
 
 !/lib/*
+.Glass/

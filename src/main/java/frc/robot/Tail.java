@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -65,7 +64,8 @@ public class Tail extends SubsystemBase {
     }
 
     public boolean HasPiece() {
-        var tailDist = hardware.getDistSensor();
-        return tailDist > 0 && tailDist < 5.3;
+        //var tailDist = hardware.getDistSensor();
+        //return tailDist > 0 && tailDist < 5.3;
+        return false;
     }
 }
