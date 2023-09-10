@@ -25,12 +25,12 @@ public class LED_controller {
     public static final String kNormalLeds = "Normal";
     public static final String kPinkLeds = "Pink";
  
-    public static final int PinkHue = 147;
+    public static final int PinkHue = 158;
     public static final int GreenHue = 60;
     public static final int RedHue = 0;
     public static final int BlueHue = 120;
     public static final int ConeHue = 17;
-    public static final int CubeHue = 155;
+    public static final int CubeHue = 136;
 
     private REVDigitBoard digit;
     private boolean lastPieceMode;
@@ -119,8 +119,7 @@ public class LED_controller {
                 );
             } else {
                 //disabled
-                //newCommand = new PinkWave(leds);
-                newCommand = new TargetLeds(leds);
+                newCommand = new PinkWave(leds);
             }
             leds.setDefaultCommand(newCommand);
             newCommand.schedule();

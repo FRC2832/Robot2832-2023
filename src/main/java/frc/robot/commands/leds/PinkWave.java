@@ -4,6 +4,7 @@ import org.livoniawarriors.ILedSubsystem;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.LED_controller;
 
 public class PinkWave extends CommandBase {
     ILedSubsystem leds;
@@ -14,7 +15,7 @@ public class PinkWave extends CommandBase {
         this.leds = leds;
         addRequirements(leds);
         m_ledBuffer = new AddressableLEDBuffer(leds.getLength());
-        hueCalc = new UpdateValues(140, 153, 80);
+        hueCalc = new UpdateValues(LED_controller.PinkHue-10, LED_controller.PinkHue+10, 80);
         valueCalc = new UpdateValues(5, 60, 110);
     }
 

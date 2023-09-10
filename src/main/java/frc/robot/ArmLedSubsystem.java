@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmLedSubsystem extends SubsystemBase implements ILedSubsystem {
     //we need ~1A of current per 15 LEDs (or 9W per 30LEDs)
-    private static int ARM_LENGTH = 1;
-    public static int TARGET_LENGTH = 4;
+    private static int ARM_LENGTH = 47;
+    public static int TARGET_LENGTH = 27;
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
     
     public ArmLedSubsystem() {
         //initialize the string
-        m_led = new AddressableLED(5);
+        m_led = new AddressableLED(1);
         m_led.setLength(ARM_LENGTH + TARGET_LENGTH);
 
         //turn the string off in init
