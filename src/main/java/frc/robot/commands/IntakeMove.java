@@ -1,8 +1,6 @@
 package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.Intake;
-import frc.robot.LED_controller;
-import frc.robot.LED_controller.cmds;
 import frc.robot.interfaces.IOperatorControls;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -36,7 +34,6 @@ public class IntakeMove extends CommandBase{
         else if(controls.IntakeSpitRequested().getAsBoolean()){
             intakeVolts = -Constants.IntakeVoltage * operCont.getLeftTriggerAxis() * sign;
             intake.setIntakeVolts(intakeVolts);
-            LED_controller.send(cmds.lightning);
         } else {
             intake.setIntakeVolts(-1);
         }
