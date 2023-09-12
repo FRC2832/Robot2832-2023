@@ -34,7 +34,7 @@ public class DriveToBalance extends CommandBase {
 
         if(DriverStation.isFMSAttached()) {
             //bigger = slower
-            balanceConst = 36; 
+            balanceConst = 26; 
         } else {
             //we are on out field, go faster
             //28 for our scale, 32 for kettering, 34 for official scale
