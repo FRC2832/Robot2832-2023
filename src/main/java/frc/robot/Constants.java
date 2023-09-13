@@ -29,10 +29,12 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_RIGHT_ENCODER_PORT = 43;
 
     //CanCoder zero locations
+    //to change, zero the wheel to flat, then read the calc angle value.  Subtract that to the offset.
+    //like if old offset is 119, and the new zeroed offset is 35, the new value is 84
     public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 142.2;
     public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 13.8;
     public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 227.5;
-    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 119.0;
+    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 84.0;
 
     //Swerve corner locations for kinematics
     //22.25 -1.5" width 10.375"

@@ -250,7 +250,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
             double curAngle = currentState[i].angle.getDegrees();
 
             double angleReq = requestStates[i].angle.getDegrees();
-            if (Math.abs(requestStates[i].speedMetersPerSecond) > maxSpeedDelta) {
+            if (Math.abs(requestStates[i].speedMetersPerSecond) > Constants.MIN_DRIVER_SPEED) {
                 angleReq = MathUtil.inputModulus(angleReq, curAngle - 180, curAngle + 180);
             } else {
                 angleReq = curAngle;
