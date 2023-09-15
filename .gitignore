@@ -161,6 +161,12 @@ bin/
 # Simulation GUI and other tools window save file
 *-window.json
 *.wpilog
-
-!/lib/*
+networktables.json
+networktables.json.bck
+simgui.json
+simgui-ds.json
 .Glass/
+
+# the Rev sensor library
+!/lib/*
+
