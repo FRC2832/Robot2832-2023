@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import org.livoniawarriors.UtilFunctions;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -38,6 +40,7 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
     private double driveWheelDistance[];
     private double turnMotorAngle[];
     private double absOffset[];
+    private String absOffsetKey[];
 
     private Translation2d[] swervePositions = {
         new Translation2d(0.291, 0.291),
@@ -73,6 +76,13 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
         absOffset[ISwerveDrive.FR] = 318.0;
         absOffset[ISwerveDrive.RL] = 179.2;
         absOffset[ISwerveDrive.RR] = 19.3;
+
+        absOffsetKey = new String[] {
+            FL_OFFSET_KEY,
+            FR_OFFSET_KEY,
+            RL_OFFSET_KEY,
+            RR_OFFSET_KEY
+        };
 
         pigeon = new PigeonIMU(Constants.PIGEON_IMU_ID);
 
@@ -238,6 +248,6 @@ public class SwerveDriveHwPractice implements ISwerveDriveIo {
 
     @Override
     public double getWheelOffset(int wheel) {
-        return absOffset[wheel];
+        return UtilFunctions.getSetting(absOffsetKey[wheel], absOffset[wheel]);
     }
 }

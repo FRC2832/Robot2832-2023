@@ -8,6 +8,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public  interface ISwerveDriveIo {
+    final String FL_OFFSET_KEY = "Swerve Hardware/FL Offset";
+    final String FR_OFFSET_KEY = "Swerve Hardware/FR Offset";
+    final String RL_OFFSET_KEY = "Swerve Hardware/RL Offset";
+    final String RR_OFFSET_KEY = "Swerve Hardware/RR Offset";
+
     void updateInputs();
     Rotation2d getHeading();
     double getPitch();

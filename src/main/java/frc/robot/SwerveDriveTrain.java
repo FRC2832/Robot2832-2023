@@ -1,6 +1,7 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
+import org.livoniawarriors.UtilFunctions;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -14,16 +15,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveTrain implements ISwerveDrive {
-    public static final String MAX_ACCEL_KEY = "Swerve Drive/Max Wheel Accel";
-    public static final String MAX_OMEGA_KEY = "Swerve Drive/Max Wheel Omega";
-
     //these should not be changed as they are "safe" values,
     //use NetworkTables to change them instead in the Preferences table
     public static final double MAX_ACCEL_DEFAULT = 10.0;
@@ -76,14 +73,6 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //setup the gyro offset logic
         hardware.updateInputs();
         gyroOffset = getHeading().getDegrees();
-
-        //write the preference keys if they aren't there
-        if(!Preferences.containsKey(MAX_ACCEL_KEY)) {
-            Preferences.setDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
-        }
-        if(!Preferences.containsKey(MAX_OMEGA_KEY)) {
-            Preferences.setDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
-        }
     }
     
     @Override
@@ -196,6 +185,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
     public static SwerveModuleState[] optomizeSwerve(SwerveModuleState[] requestStates, SwerveModuleState[] currentState) {
         SwerveModuleState[] outputStates = new SwerveModuleState[requestStates.length];
+        double optomizeAngle = UtilFunctions.getSetting(OPTOMIZE_ANGLE_KEY, 90);
+
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
             SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
@@ -207,13 +198,13 @@ public class SwerveDriveTrain implements ISwerveDrive {
             double curAngle = currentState[i].angle.getDegrees();
             double speedReq = requestStates[i].speedMetersPerSecond;
             double deltaMod = MathUtil.inputModulus(angleReq - curAngle,-180,180);
-            if(Math.abs(deltaMod) > 90) {
+            if(Math.abs(deltaMod) > optomizeAngle) {
                 angleReq = angleReq - 180;
                 speedReq = -requestStates[i].speedMetersPerSecond;
             }
 
             //smooth out drive command
-            double maxAccel = Preferences.getDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
+            double maxAccel = UtilFunctions.getSetting(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
             double maxSpeedDelta = maxAccel * Constants.LOOP_TIME;           //acceleration * loop time
             //whatever value is bigger flips when forwards vs backwards
             double value1 = currentState[i].speedMetersPerSecond - maxSpeedDelta;
@@ -224,7 +215,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
                 Math.max(value1, value2));                              //last request maximum
 
             //smooth out turn command
-            double maxOmega = Preferences.getDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
+            double maxOmega = UtilFunctions.getSetting(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
             double maxAngleDelta = maxOmega * Constants.LOOP_TIME;           //acceleration * loop time
             if (Math.abs(speedReq) > Constants.MIN_DRIVER_SPEED) {
                 angleReq = MathUtil.inputModulus(angleReq, curAngle - 180, curAngle + 180);

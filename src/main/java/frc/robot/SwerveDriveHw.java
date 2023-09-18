@@ -2,6 +2,7 @@ package frc.robot;
 
 
 import org.livoniawarriors.Logger;
+import org.livoniawarriors.UtilFunctions;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -43,6 +44,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     private double driveWheelDistance[];
     private double turnMotorAngle[];
     private double absOffset[];
+    private String absOffsetKey[];
 
     private Translation2d[] swervePositions = {
         Constants.SWERVE_FRONT_LEFT_LOCATION,
@@ -78,6 +80,13 @@ public class SwerveDriveHw implements ISwerveDriveIo {
         absOffset[ISwerveDrive.FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
         absOffset[ISwerveDrive.RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
         absOffset[ISwerveDrive.RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+
+        absOffsetKey = new String[] {
+            FL_OFFSET_KEY,
+            FR_OFFSET_KEY,
+            RL_OFFSET_KEY,
+            RR_OFFSET_KEY
+        };
 
         pigeon = new Pigeon2(Constants.PIGEON_IMU_ID);
 
@@ -300,7 +309,7 @@ public class SwerveDriveHw implements ISwerveDriveIo {
 
     @Override
     public double getWheelOffset(int wheel) {
-        return absOffset[wheel];
+        return UtilFunctions.getSetting(absOffsetKey[wheel], absOffset[wheel]);
     }
     
 }
