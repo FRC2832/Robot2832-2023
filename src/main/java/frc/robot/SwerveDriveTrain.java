@@ -13,8 +13,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
@@ -37,18 +35,12 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveModuleState[] swerveTargets;
     private Pose2d robotPose;
     private static String moduleNames[];
-    private double swerveOffsets[];
-    private double turnOffsets[];
-    private InterpolatingTreeMap<Double, Double> speedReduction;
     private double gyroOffset = 0;
     private PIDController pidZero = new PIDController(0.15, 0.001, 0);
     private PIDController[] drivePid;
     private PIDController[] turnPid;
     private SwerveModuleState[] currentState;
     private boolean optimize;
-
-    TrapezoidProfile.Constraints constraints;
-    TrapezoidProfile.State[] lastState;
 
     // Initializer block starts
     static {
@@ -81,38 +73,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
             turnPid[wheel] = new PIDController(5,1.8,0);
         }
 
-        //initialize the swerve offsets
-        swerveOffsets = new double[Constants.NUM_WHEELS];
-        swerveOffsets[FL] = hardware.getWheelOffset(FL);
-        swerveOffsets[FR] = hardware.getWheelOffset(FR);
-        swerveOffsets[RL] = hardware.getWheelOffset(RL);
-        swerveOffsets[RR] = hardware.getWheelOffset(RR);
-
+        //setup the gyro offset logic
         hardware.updateInputs();
-        turnOffsets = new double[Constants.NUM_WHEELS];
-        for(int i=0; i<turnOffsets.length; i++) {
-            double offset = (swerveOffsets[i] - hardware.getCornerAbsAngle(i));
-            if (offset > 180) {
-                offset -= 360;
-            } else if (offset < -180) {
-                offset += 360;
-            }
-            turnOffsets[i] = offset + hardware.getCornerAngle(i);
-        }
         gyroOffset = getHeading().getDegrees();
-
-        //input is angle off desired, output is percent reduction
-        speedReduction = new InterpolatingTreeMap<Double, Double>();
-        speedReduction.put(0., 1.);
-        speedReduction.put(45., 1.);
-        speedReduction.put(90., 1.);
-
-        //setup for motion profiling
-        constraints = new TrapezoidProfile.Constraints(Constants.MAX_DRIVETRAIN_SPEED, Constants.MAX_DRIVETRAIN_SPEED);
-        lastState = new TrapezoidProfile.State[Constants.NUM_WHEELS];
-        for(int i=0; i<Constants.NUM_WHEELS; i++) {
-            lastState[i] = new TrapezoidProfile.State(0, 0.0);
-        }
 
         //write the preference keys if they aren't there
         if(!Preferences.containsKey(MAX_ACCEL_KEY)) {
@@ -132,7 +95,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].distanceMeters = hardware.getCornerDistance(wheel);
 
-            double angle = hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel];
+            double angle = hardware.getCornerAbsAngle(wheel) - hardware.getWheelOffset(wheel);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
 
             currentState[wheel] = new SwerveModuleState();
@@ -140,7 +103,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
             currentState[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
 
             if(DriverStation.isDisabled()) {
+                //when we are disabled, reset the turn pids as we don't want to act on the "error" when reenabled
                 turnPid[wheel].reset();
+                gyroOffset = getHeading().getDegrees();
             }
         }
 
@@ -189,8 +154,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
-            //turn PID
+            //turn software PID
             if (Math.abs(swerveStates[i].angle.minus(requestStates[i].angle).getDegrees()) < 1) {
+                //reset the PID to remove all the I term error so we don't overshoot and rebound
                 turnPid[i].reset();
             }
             var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(), requestStates[i].angle.getRadians());

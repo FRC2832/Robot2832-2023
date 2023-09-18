@@ -30,14 +30,14 @@ public class DriveToBalance extends CommandBase {
     @Override
     public void initialize() {
         finishedCounts = 0;
-        System.out.println("Balance Start");
 
+        System.out.println("Balance Start");
         if(DriverStation.isFMSAttached()) {
             //bigger = slower
+            //28 for our scale, 32 for kettering, 34 for official scale
             balanceConst = 26; 
         } else {
-            //we are on out field, go faster
-            //28 for our scale, 32 for kettering, 34 for official scale
+            //we are on our field, go faster            
             balanceConst = 30; 
         }
     }
