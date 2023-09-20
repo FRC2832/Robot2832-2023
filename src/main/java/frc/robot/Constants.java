@@ -50,7 +50,7 @@ public final class Constants {
 
     public static final double MIN_DRIVER_SPEED = 0.3;                  //Min speed (meters/sec) used in SwerveDriveTrain
     public static final double MAX_DRIVER_SPEED = 3.3;                //Max speed (meters/sec) the driver can go
-    public static final double MAX_DRIVER_OMEGA = 1.0 * Math.PI;    //Max angle (rad/sec) the driver can go
+    public static final double MAX_DRIVER_OMEGA = 1.8 * Math.PI;    //Max angle (rad/sec) the driver can go
     public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
     public static final double MAX_AUTO_SPEED = 1.5;//2.5;                //Max speed (meters/sec) the robot can go in auton
     public static final double MAX_AUTO_TURN_SPEED = 3 * Math.PI;                //Max speed (rad/sec) the robot can rotate
@@ -95,8 +95,8 @@ public final class Constants {
     //223 pivot
 
     //level 2 front
-    public static final double ArmToScoreMiddleFront_X = 48.0;
-    public static final double ArmToScoreMiddleFront_Z = 27.7;
+    public static final double ArmToScoreMiddleFront_X = 50.0;
+    public static final double ArmToScoreMiddleFront_Z = 23;
     public static final double PivotToMiddleFront = 41;
     //558 pivot
 

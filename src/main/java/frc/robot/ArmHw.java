@@ -54,7 +54,7 @@ public class ArmHw implements IArmControl {
         allConfigs.slot0.kI = 4.603e-5;
         allConfigs.slot0.kD = 0;
         allConfigs.slot0.kF = 0;
-        allConfigs.slot0.integralZone = 10 * COUNTS_PER_DEGREE_SHOULDER;
+        allConfigs.slot0.integralZone = 3 * COUNTS_PER_DEGREE_SHOULDER;
         allConfigs.slot0.allowableClosedloopError = 0;
         allConfigs.motionCruiseVelocity = 80 * COUNTS_PER_DEGREE_SHOULDER_V;
         allConfigs.motionAcceleration = 70 * COUNTS_PER_DEGREE_SHOULDER_V;
