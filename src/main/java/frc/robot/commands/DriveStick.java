@@ -42,6 +42,7 @@ public class DriveStick extends CommandBase {
         turtleSpeed = UtilFunctions.getSetting(ISwerveDrive.TURTLE_SPEED_KEY, 1);
         turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 1);
         double maxSpeed = UtilFunctions.getSetting(ISwerveDrive.MAX_DRIVER_SPEED_KEY, Constants.MAX_DRIVER_SPEED);
+        double omega = UtilFunctions.getSetting(ISwerveDrive.MAX_DRIVER_OMEGA_KEY, Constants.MAX_DRIVER_OMEGA);
         
         double xSpeed = cont.GetXDrivePct();
         double ySpeed = cont.GetYDrivePct();
@@ -53,7 +54,7 @@ public class DriveStick extends CommandBase {
         if(boost > 0.1){
             xSpeed = (xSpeed * maxSpeed) + ((boostSpeed - maxSpeed) * boost * Math.signum(xSpeed));
             ySpeed = (ySpeed * maxSpeed) + ((boostSpeed - maxSpeed) * boost * Math.signum(ySpeed));
-            turn = turn * Constants.MAX_DRIVER_OMEGA;
+            turn = turn * omega;
         } else if(turtle > 0.1) {
             xSpeed = (xSpeed * maxSpeed) - ((maxSpeed - turtleSpeed) * turtle * Math.signum(xSpeed));
             ySpeed = (ySpeed * maxSpeed) - ((maxSpeed - turtleSpeed) * turtle * Math.signum(ySpeed));
@@ -61,7 +62,7 @@ public class DriveStick extends CommandBase {
         } else {
             xSpeed = xSpeed * maxSpeed;
             ySpeed = ySpeed * maxSpeed;
-            turn = turn * Constants.MAX_DRIVER_OMEGA;
+            turn = turn * omega;
         }
         drive.SwerveDrive(xSpeed, ySpeed, turn, fieldOriented);
     }
