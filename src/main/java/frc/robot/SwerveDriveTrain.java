@@ -1,6 +1,7 @@
 package frc.robot;
 
 import org.livoniawarriors.Logger;
+import org.livoniawarriors.UtilFunctions;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -13,19 +14,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
 public class SwerveDriveTrain implements ISwerveDrive {
-    public static final String MAX_ACCEL_KEY = "Swerve Drive/Max Wheel Accel";
-    public static final String MAX_OMEGA_KEY = "Swerve Drive/Max Wheel Omega";
-
     //these should not be changed as they are "safe" values,
     //use NetworkTables to change them instead in the Preferences table
     public static final double MAX_ACCEL_DEFAULT = 10.0;
@@ -37,17 +32,12 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveModuleState[] swerveTargets;
     private Pose2d robotPose;
     private static String moduleNames[];
-    private double swerveOffsets[];
-    private double turnOffsets[];
-    private InterpolatingTreeMap<Double, Double> speedReduction;
     private double gyroOffset = 0;
     private PIDController pidZero = new PIDController(0.15, 0.001, 0);
     private PIDController[] drivePid;
     private PIDController[] turnPid;
     private SwerveModuleState[] currentState;
-
-    TrapezoidProfile.Constraints constraints;
-    TrapezoidProfile.State[] lastState;
+    private boolean optimize;
 
     // Initializer block starts
     static {
@@ -62,6 +52,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         register();
         this.hardware = hSwerveDriveIo;
+        optimize = true;
 
         //initialize the corner locations
         kinematics = new SwerveDriveKinematics(hSwerveDriveIo.getCornerLocations());
@@ -79,46 +70,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
             turnPid[wheel] = new PIDController(5,1.8,0);
         }
 
-        //initialize the swerve offsets
-        swerveOffsets = new double[Constants.NUM_WHEELS];
-        swerveOffsets[FL] = hardware.getWheelOffset(FL);
-        swerveOffsets[FR] = hardware.getWheelOffset(FR);
-        swerveOffsets[RL] = hardware.getWheelOffset(RL);
-        swerveOffsets[RR] = hardware.getWheelOffset(RR);
-
+        //setup the gyro offset logic
         hardware.updateInputs();
-        turnOffsets = new double[Constants.NUM_WHEELS];
-        for(int i=0; i<turnOffsets.length; i++) {
-            double offset = (swerveOffsets[i] - hardware.getCornerAbsAngle(i));
-            if (offset > 180) {
-                offset -= 360;
-            } else if (offset < -180) {
-                offset += 360;
-            }
-            turnOffsets[i] = offset + hardware.getCornerAngle(i);
-        }
         gyroOffset = getHeading().getDegrees();
-
-        //input is angle off desired, output is percent reduction
-        speedReduction = new InterpolatingTreeMap<Double, Double>();
-        speedReduction.put(0., 1.);
-        speedReduction.put(45., 1.);
-        speedReduction.put(90., 1.);
-
-        //setup for motion profiling
-        constraints = new TrapezoidProfile.Constraints(Constants.MAX_DRIVETRAIN_SPEED, Constants.MAX_DRIVETRAIN_SPEED);
-        lastState = new TrapezoidProfile.State[Constants.NUM_WHEELS];
-        for(int i=0; i<Constants.NUM_WHEELS; i++) {
-            lastState[i] = new TrapezoidProfile.State(0, 0.0);
-        }
-
-        //write the preference keys if they aren't there
-        if(!Preferences.containsKey(MAX_ACCEL_KEY)) {
-            Preferences.setDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
-        }
-        if(!Preferences.containsKey(MAX_OMEGA_KEY)) {
-            Preferences.setDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
-        }
     }
     
     @Override
@@ -130,7 +84,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].distanceMeters = hardware.getCornerDistance(wheel);
 
-            double angle = hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel];
+            double angle = hardware.getCornerAbsAngle(wheel) - hardware.getWheelOffset(wheel);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
 
             currentState[wheel] = new SwerveModuleState();
@@ -138,7 +92,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
             currentState[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
 
             if(DriverStation.isDisabled()) {
+                //when we are disabled, reset the turn pids as we don't want to act on the "error" when reenabled
                 turnPid[wheel].reset();
+                gyroOffset = getHeading().getDegrees();
             }
         }
 
@@ -181,12 +137,15 @@ public class SwerveDriveTrain implements ISwerveDrive {
         SwerveDriveKinematics.desaturateWheelSpeeds(requestStates, Constants.MAX_DRIVETRAIN_SPEED);
 
         //filter the swerve wheels
-        requestStates = optomizeSwerve(requestStates, currentState);
+        if(optimize) {
+            requestStates = optomizeSwerve(requestStates, currentState);
+        }
 
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
-            //turn PID
+            //turn software PID
             if (Math.abs(swerveStates[i].angle.minus(requestStates[i].angle).getDegrees()) < 1) {
+                //reset the PID to remove all the I term error so we don't overshoot and rebound
                 turnPid[i].reset();
             }
             var turnVolts = -turnPid[i].calculate(swerveStates[i].angle.getRadians(), requestStates[i].angle.getRadians());
@@ -226,43 +185,55 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
     public static SwerveModuleState[] optomizeSwerve(SwerveModuleState[] requestStates, SwerveModuleState[] currentState) {
         SwerveModuleState[] outputStates = new SwerveModuleState[requestStates.length];
+        double optomizeAngle = UtilFunctions.getSetting(OPTOMIZE_ANGLE_KEY, 90);
+
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
             SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
             SmartDashboard.putNumber(moduleNames[i] + "Requested Speed", requestStates[i].speedMetersPerSecond);
             outputStates[i] = new SwerveModuleState();
 
+            //figure out if we should invert the request
+            double angleReq = requestStates[i].angle.getDegrees();
+            double curAngle = currentState[i].angle.getDegrees();
+            double speedReq = requestStates[i].speedMetersPerSecond;
+            double deltaMod = MathUtil.inputModulus(angleReq - curAngle,-180,180);
+            if(Math.abs(deltaMod) > optomizeAngle) {
+                angleReq = angleReq - 180;
+                speedReq = -requestStates[i].speedMetersPerSecond;
+            }
+
             //smooth out drive command
-            double maxAccel = Preferences.getDouble(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
+            double maxAccel = UtilFunctions.getSetting(MAX_ACCEL_KEY, MAX_ACCEL_DEFAULT);
             double maxSpeedDelta = maxAccel * Constants.LOOP_TIME;           //acceleration * loop time
             //whatever value is bigger flips when forwards vs backwards
             double value1 = currentState[i].speedMetersPerSecond - maxSpeedDelta;
             double value2 = currentState[i].speedMetersPerSecond + maxSpeedDelta;
             outputStates[i].speedMetersPerSecond = MathUtil.clamp(
-                requestStates[i].speedMetersPerSecond,                  //current request
+                speedReq,                  //current request
                 Math.min(value1, value2),                               //last request minimum
                 Math.max(value1, value2));                              //last request maximum
 
-
             //smooth out turn command
-            double maxOmega = Preferences.getDouble(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
+            double maxOmega = UtilFunctions.getSetting(MAX_OMEGA_KEY, MAX_OMEGA_DEFAULT);
             double maxAngleDelta = maxOmega * Constants.LOOP_TIME;           //acceleration * loop time
-            double curAngle = currentState[i].angle.getDegrees();
-
-            double angleReq = requestStates[i].angle.getDegrees();
-            if (Math.abs(requestStates[i].speedMetersPerSecond) > Constants.MIN_DRIVER_SPEED) {
+            if (Math.abs(speedReq) > Constants.MIN_DRIVER_SPEED) {
                 angleReq = MathUtil.inputModulus(angleReq, curAngle - 180, curAngle + 180);
             } else {
                 angleReq = curAngle;
             }
-
-            outputStates[i].angle = Rotation2d.fromDegrees(MathUtil.clamp(
-                angleReq,                   //current request
-                curAngle - maxAngleDelta,        //last request minimum
-                curAngle + maxAngleDelta));      //last request maximum
+            double delta = angleReq - curAngle;
+            if(delta > maxAngleDelta) {
+                angleReq = curAngle + maxAngleDelta;
+            } else if (delta < -maxAngleDelta) {
+                angleReq = curAngle - maxAngleDelta;
+            } else {
+                //angle request if fine
+            }
+            outputStates[i].angle = Rotation2d.fromDegrees(angleReq);
 
             //check to see if the robot request is moving
-            if (Math.abs(requestStates[i].speedMetersPerSecond) < Constants.MIN_DRIVER_SPEED) {
+            if (Math.abs(speedReq) < Constants.MIN_DRIVER_SPEED) {
                 //stop the requests if there is no movement
                 outputStates[i].angle = currentState[i].angle;
                 //take out minimal speed so that the motors don't jitter
@@ -310,5 +281,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public Translation2d[] getCornerLocations() {
         return hardware.getCornerLocations();
+    }
+
+    public void setOptomizeOn(boolean enabled) {
+        optimize = enabled;
     }
 }

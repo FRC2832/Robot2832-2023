@@ -14,6 +14,21 @@ public interface ISwerveDrive extends Subsystem {
     final int RL = 2;
     final int RR = 3;
 
+    /** The fastest rate we want the drive wheels to change speeds in m/s */
+    final String MAX_ACCEL_KEY = "Swerve Drive/Max Wheel Accel";
+    /** The fastest rate we want the swerve wheels to turn in deg/s */
+    final String MAX_OMEGA_KEY = "Swerve Drive/Max Wheel Omega";
+    /** How fast we want the driver to go during normal operation in m/s */
+    final String MAX_DRIVER_SPEED_KEY = "Swerve Drive/Max Driver Speed";
+    /** How fast we want the driver to turn during normal operation in deg/s */
+    final String MAX_DRIVER_OMEGA_KEY = "Swerve Drive/Max Driver Omega";
+    /** The max speed possible with the swerve wheels in m/s */
+    final String MAX_SPEED_KEY = "Swerve Drive/Max Speed";
+    /** How slow we want the driver to go in turtle mode */
+    final String TURTLE_SPEED_KEY = "Swerve Drive/Turtle Speed";
+    /** The angle in degrees we want the swerve to invert the request to get to position faster */
+    final String OPTOMIZE_ANGLE_KEY = "Swerve Drive/Optomize Angle";
+
      /**
      * Method to drive the robot using joystick info.
      *

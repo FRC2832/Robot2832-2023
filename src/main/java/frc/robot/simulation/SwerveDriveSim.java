@@ -1,5 +1,7 @@
 package frc.robot.simulation;
 
+import org.livoniawarriors.UtilFunctions;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -23,6 +25,7 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     private double absAngle[];
     private double absOffset[];
+    private String absOffsetKey[];
     private double turnAngle[];
     private double driveSpeed[];
     private double driveDist[];
@@ -61,6 +64,12 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         absOffset[ISwerveDrive.FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
         absOffset[ISwerveDrive.RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
         absOffset[ISwerveDrive.RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        absOffsetKey = new String[] {
+            FL_OFFSET_KEY,
+            FR_OFFSET_KEY,
+            RL_OFFSET_KEY,
+            RR_OFFSET_KEY
+        };
 
         turnMotorSim = new FlywheelSim[Constants.NUM_WHEELS];
         turningPIDController = new PIDController[Constants.NUM_WHEELS];
@@ -251,6 +260,6 @@ public class SwerveDriveSim implements ISwerveDriveIo {
 
     @Override
     public double getWheelOffset(int wheel) {
-        return absOffset[wheel];
+        return UtilFunctions.getSetting(absOffsetKey[wheel], absOffset[wheel]);
     }
 }

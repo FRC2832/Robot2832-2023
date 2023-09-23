@@ -6,16 +6,19 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LED_controller;
 
-public class PinkWave extends CommandBase {
+public class ColorWave extends CommandBase {
     ILedSubsystem leds;
     AddressableLEDBuffer m_ledBuffer;
     UpdateValues hueCalc, valueCalc;
+    String lastMode;
 
-    public PinkWave(ILedSubsystem leds) {
+    public ColorWave(ILedSubsystem leds) {
         this.leds = leds;
         addRequirements(leds);
         m_ledBuffer = new AddressableLEDBuffer(leds.getLength());
-        hueCalc = new UpdateValues(LED_controller.PinkHue-10, LED_controller.PinkHue+10, 80);
+
+        lastMode = "";
+        hueCalc = new UpdateValues(-10, 10, 80);
         valueCalc = new UpdateValues(5, 60, 110);
     }
 
@@ -28,6 +31,20 @@ public class PinkWave extends CommandBase {
 
     @Override
     public void execute() {
+        //check if there is a color change or first loop
+        String curMode = LED_controller.getLedMode();
+        if(lastMode != curMode) {
+            int hue;
+            if (curMode == LED_controller.kPinkLeds) {
+                hue = LED_controller.PinkHue;
+            } else {
+                hue = LED_controller.GreenHue;
+            }
+            hueCalc = new UpdateValues(hue-5, hue+5, 80);
+            valueCalc = new UpdateValues(5, 60, 110);
+            lastMode = curMode;
+        }
+
         // For every pixel
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
             double hue = hueCalc.get(i);

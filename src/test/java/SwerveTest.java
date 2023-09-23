@@ -23,7 +23,10 @@ public class SwerveTest {
     @BeforeAll // this method will setup once
     void setup() {
         assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
+    }
 
+    @BeforeEach // this method will run before each test
+    void setupEach() {
         //initialize data
         request = new SwerveModuleState(0,Rotation2d.fromDegrees(0));
         requestArray = new SwerveModuleState[] {request};
@@ -34,10 +37,7 @@ public class SwerveTest {
         Preferences.setDouble(SwerveDriveTrain.MAX_ACCEL_KEY, 10);
         //swerves will change at max 2* per loop
         Preferences.setDouble(SwerveDriveTrain.MAX_OMEGA_KEY, 100);
-    }
 
-    @BeforeEach // this method will run before each test
-    void setupEach() {
         current.speedMetersPerSecond = 0;
         request.speedMetersPerSecond = 0;
         current.angle = Rotation2d.fromDegrees(0);
@@ -105,26 +105,6 @@ public class SwerveTest {
         request.angle = Rotation2d.fromDegrees(-90);
         result = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
         assertEquals(-4, result[0].angle.getDegrees(), DELTA);
-
-        //check left turn at cross
-        current.angle = Rotation2d.fromDegrees(-1);
-        request.angle = Rotation2d.fromDegrees(90);
-        result = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
-        assertEquals(1, result[0].angle.getDegrees(), DELTA);
-
-        //check right turn at cross
-        current.angle = Rotation2d.fromDegrees(1);
-        request.angle = Rotation2d.fromDegrees(-90);
-        result = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
-        assertEquals(-1, result[0].angle.getDegrees(), DELTA);
-
-        
-
-        //check right turn at 180 cross
-        current.angle = Rotation2d.fromDegrees(1);
-        request.angle = Rotation2d.fromDegrees(-90);
-        result = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
-        assertEquals(result[0].angle.getDegrees(),-1, DELTA);
     }
 
     //we want this to request past 180 for this loop just to get the hardware over, then the optomize will correct it to -180 to 180 range next loop
@@ -136,5 +116,46 @@ public class SwerveTest {
         request.angle = Rotation2d.fromDegrees(170);
         result = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
         assertEquals(-181, result[0].angle.getDegrees(), DELTA);
+    }
+
+    @Test
+    void SwerveLeftTurnGreater90() {
+        //instead of going to 135*, the request should go to -45*
+        current.speedMetersPerSecond = 1;
+        request.speedMetersPerSecond = 1;
+        current.angle = Rotation2d.fromDegrees(0);
+        request.angle = Rotation2d.fromDegrees(135);
+        for(int i=0; i<100;i++) {
+            currentArray = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
+        }
+        assertEquals(-1, currentArray[0].speedMetersPerSecond, DELTA);
+        assertEquals(-45, currentArray[0].angle.getDegrees(), DELTA);
+    }
+
+    @Test
+    void SwerveLeftTurnGreater90Offset() {
+        current.speedMetersPerSecond = 1;
+        request.speedMetersPerSecond = 1;
+        current.angle = Rotation2d.fromDegrees(20);
+        request.angle = Rotation2d.fromDegrees(155);
+        for(int i=0; i<100;i++) {
+            currentArray = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
+        }
+        assertEquals(-1, currentArray[0].speedMetersPerSecond, DELTA);
+        assertEquals(-25, currentArray[0].angle.getDegrees(), DELTA);
+    }
+
+    @Test
+    void SwerveRightTurnGreater90() {
+        //instead of going to -135*, the request should go to 45*
+        current.speedMetersPerSecond = 1;
+        request.speedMetersPerSecond = 1;
+        current.angle = Rotation2d.fromDegrees(0);
+        request.angle = Rotation2d.fromDegrees(-135);
+        for(int i=0; i<100;i++) {
+            currentArray = SwerveDriveTrain.optomizeSwerve(requestArray,currentArray);
+        }
+        assertEquals(-1, currentArray[0].speedMetersPerSecond, DELTA);
+        assertEquals(45, currentArray[0].angle.getDegrees(), DELTA);
     }
 }

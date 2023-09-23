@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.livoniawarriors.UtilFunctions;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -29,8 +31,6 @@ public class DriveStick extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.putNumber("Boost Speed", Constants.MAX_DRIVETRAIN_SPEED);
-        SmartDashboard.putNumber("Turtle Speed", 1);
         SmartDashboard.putNumber("Turtle Turn Speed", 4);
         drive.SwerveDrive(0, 0, 0, false);
     }
@@ -38,9 +38,11 @@ public class DriveStick extends CommandBase {
     @Override
     public void execute() {
         boolean fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
-        boostSpeed = SmartDashboard.getNumber("Boost Speed", 4);
-        turtleSpeed = SmartDashboard.getNumber("Turtle Speed", 1);
+        boostSpeed = UtilFunctions.getSetting(ISwerveDrive.MAX_SPEED_KEY, Constants.MAX_DRIVETRAIN_SPEED);
+        turtleSpeed = UtilFunctions.getSetting(ISwerveDrive.TURTLE_SPEED_KEY, 1);
         turtleTurnSpeed = SmartDashboard.getNumber("Turtle Turn Speed", 1);
+        double maxSpeed = UtilFunctions.getSetting(ISwerveDrive.MAX_DRIVER_SPEED_KEY, Constants.MAX_DRIVER_SPEED);
+        double omega = UtilFunctions.getSetting(ISwerveDrive.MAX_DRIVER_OMEGA_KEY, Constants.MAX_DRIVER_OMEGA);
         
         double xSpeed = cont.GetXDrivePct();
         double ySpeed = cont.GetYDrivePct();
@@ -50,17 +52,17 @@ public class DriveStick extends CommandBase {
         double turtle = cont.GetPrecisionTriggerRequest();
 
         if(boost > 0.1){
-            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) + ((boostSpeed - Constants.MAX_DRIVER_SPEED) * boost * Math.signum(ySpeed));
-            turn = turn * Constants.MAX_DRIVER_OMEGA;
+            xSpeed = (xSpeed * maxSpeed) + ((boostSpeed - maxSpeed) * boost * Math.signum(xSpeed));
+            ySpeed = (ySpeed * maxSpeed) + ((boostSpeed - maxSpeed) * boost * Math.signum(ySpeed));
+            turn = turn * omega;
         } else if(turtle > 0.1) {
-            xSpeed = (xSpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(xSpeed));
-            ySpeed = (ySpeed * Constants.MAX_DRIVER_SPEED) - ((Constants.MAX_DRIVER_SPEED - turtleSpeed) * turtle * Math.signum(ySpeed));
+            xSpeed = (xSpeed * maxSpeed) - ((maxSpeed - turtleSpeed) * turtle * Math.signum(xSpeed));
+            ySpeed = (ySpeed * maxSpeed) - ((maxSpeed - turtleSpeed) * turtle * Math.signum(ySpeed));
             turn = turn * turtleTurnSpeed;
         } else {
-            xSpeed = xSpeed * Constants.MAX_DRIVER_SPEED;
-            ySpeed = ySpeed * Constants.MAX_DRIVER_SPEED;
-            turn = turn * Constants.MAX_DRIVER_OMEGA;
+            xSpeed = xSpeed * maxSpeed;
+            ySpeed = ySpeed * maxSpeed;
+            turn = turn * omega;
         }
         drive.SwerveDrive(xSpeed, ySpeed, turn, fieldOriented);
     }
