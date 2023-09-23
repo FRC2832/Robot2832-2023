@@ -38,12 +38,8 @@ public class Pivot extends SubsystemBase {
 
     public double optimalPivotAngle(){
         double value;
-        if(Robot.getGamePieceMode() == Robot.CONE_MODE) { 
-            value =  180 + arm.getElbowAngle() + arm.getShoulderAngle();
-        }
-        else { 
-            value =  90 + arm.getElbowAngle() + arm.getShoulderAngle();
-        }
+        
+        value =  180 + arm.getElbowAngle() + arm.getShoulderAngle();
 
         //flip offset based on arm position
         double offset;
