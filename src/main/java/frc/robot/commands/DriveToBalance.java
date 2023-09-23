@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.livoniawarriors.UtilFunctions;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -35,10 +37,10 @@ public class DriveToBalance extends CommandBase {
         if(DriverStation.isFMSAttached()) {
             //bigger = slower
             //28 for our scale, 32 for kettering, 34 for official scale
-            balanceConst = 26; 
+            balanceConst = UtilFunctions.getSetting("DriveToBalance/FmsBalanceConst", 37);
         } else {
             //we are on our field, go faster            
-            balanceConst = 30; 
+            balanceConst = UtilFunctions.getSetting("DriveToBalance/HomeBalanceConst", 35);
         }
     }
 
