@@ -14,7 +14,7 @@ import frc.robot.commands.leds.BalanceLeds;
 import frc.robot.commands.leds.BreathLeds;
 import frc.robot.commands.leds.FillLeds;
 import frc.robot.commands.leds.LightningFlash;
-import frc.robot.commands.leds.PinkWave;
+import frc.robot.commands.leds.ColorWave;
 import frc.robot.commands.leds.TargetLeds;
 import frc.robot.commands.leds.TestLeds;
 import frc.robot.interfaces.IDriveControls;
@@ -44,13 +44,13 @@ public class LED_controller {
         lastPieceMode = false;
 
         m_ledPattern = new SendableChooser<>();
-        m_ledPattern.addOption(kNormalLeds, kNormalLeds);
-        m_ledPattern.setDefaultOption(kPinkLeds, kPinkLeds);
+        m_ledPattern.setDefaultOption(kNormalLeds, kNormalLeds);
+        m_ledPattern.addOption(kPinkLeds, kPinkLeds);
         SmartDashboard.putData("Color Scheme", m_ledPattern);
 
         //new LED controller
         leds = new ArmLedSubsystem();
-        Command defaultCmd = new PinkWave(leds);
+        Command defaultCmd = new ColorWave(leds);
         leds.setDefaultCommand(defaultCmd);
         defaultCmd.schedule();
 
@@ -119,7 +119,7 @@ public class LED_controller {
                 );
             } else {
                 //disabled
-                newCommand = new PinkWave(leds);
+                newCommand = new ColorWave(leds);
             }
             leds.setDefaultCommand(newCommand);
             newCommand.schedule();
