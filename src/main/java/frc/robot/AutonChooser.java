@@ -3,6 +3,8 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.livoniawarriors.UtilFunctions;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -226,6 +228,7 @@ public class AutonChooser {
     public Command autoTwoPiece(boolean isClear){
         Command tempSequence;
         Pose2d targetPoint;
+        double intakeAngle = UtilFunctions.getSetting("Auto2P/Intake Angle", 90);
         //Put arm in scoring position
         tempSequence = new ArmAutonPointNoLimit(this.arm, Constants.ArmToScoreTopAuto_X, Constants.ArmToScoreTopAuto_Z)
             .deadlineWith(new MoveWheelsStraight(drive));
@@ -235,10 +238,14 @@ public class AutonChooser {
         
         if(isClear){
             //drive to next piece and lower arm
-            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
+            targetPoint = new Pose2d(startPosition.getX() + offsetX(4.6), startPosition.getY(), startPosition.getRotation());
             //pickup 2nd
             tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
-                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.75,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4).withTimeout(4), new PivotSetPoint(pivot, 60)))
+                .andThen(Commands.parallel(
+                    new DriveToPoint(drive,odometry,targetPoint,1.75,1), 
+                    new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 9).withTimeout(3.5), 
+                    new PivotSetPoint(pivot, intakeAngle),
+                    new IntakeBackward(intake)))
                 //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
                 .andThen(suck());
         }
@@ -247,7 +254,11 @@ public class AutonChooser {
             targetPoint = new Pose2d(startPosition.getX() + offsetX(4.5), startPosition.getY(), startPosition.getRotation());
             //pickup 2nd
             tempSequence = tempSequence//.andThen(new WaitCommand(0.5))
-                .andThen(Commands.parallel(new DriveToPoint(drive,odometry,targetPoint,1.5,1), new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 4).withTimeout(4), new PivotSetPoint(pivot, 60)))
+                .andThen(Commands.parallel(
+                    new DriveToPoint(drive,odometry,targetPoint,1.5,1), 
+                    new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 11).withTimeout(3.5), 
+                    new PivotSetPoint(pivot, intakeAngle),
+                    new IntakeBackward(intake)))
                 //.andThen(Commands.parallel(new ArmAutonPoint(this.arm, Constants.ArmToPickupGround_X, Constants.ArmToPickupGround_Z - 2)), suck());//pickup 2nd piece
                 .andThen(suck());
         }

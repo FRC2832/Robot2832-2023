@@ -44,8 +44,8 @@ public class LED_controller {
         lastPieceMode = false;
 
         m_ledPattern = new SendableChooser<>();
-        m_ledPattern.setDefaultOption(kNormalLeds, kNormalLeds);
-        m_ledPattern.addOption(kPinkLeds, kPinkLeds);
+        m_ledPattern.addOption(kNormalLeds, kNormalLeds);
+        m_ledPattern.setDefaultOption(kPinkLeds, kPinkLeds);
         SmartDashboard.putData("Color Scheme", m_ledPattern);
 
         //new LED controller

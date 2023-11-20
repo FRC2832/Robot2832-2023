@@ -37,10 +37,10 @@ public class DriveToBalance extends CommandBase {
         if(DriverStation.isFMSAttached()) {
             //bigger = slower
             //28 for our scale, 32 for kettering, 34 for official scale
-            balanceConst = UtilFunctions.getSetting("DriveToBalance/FmsBalanceConst", 37);
+            balanceConst = UtilFunctions.getSetting("DriveToBalance/FmsBalanceConst", 43);
         } else {
             //we are on our field, go faster            
-            balanceConst = UtilFunctions.getSetting("DriveToBalance/HomeBalanceConst", 35);
+            balanceConst = UtilFunctions.getSetting("DriveToBalance/HomeBalanceConst", 38);
         }
     }
 
@@ -55,7 +55,7 @@ public class DriveToBalance extends CommandBase {
             finishedCounts = 0;
             
             var speed = Constants.MAX_AUTO_SPEED * Math.abs(pitch) / balanceConst;    //this number is the tuning constant, larger number = slower the robot drives (ideal pitch up the ramp is 12*)
-            var speed2 = -Math.signum(pitch) * Math.max(speed, Constants.MIN_DRIVER_SPEED);
+            var speed2 = -Math.signum(pitch) * speed;
             SmartDashboard.putNumber("Balance Speed", speed2);
 
             drive.SwerveDrive(speed2, 0, 0, false);
