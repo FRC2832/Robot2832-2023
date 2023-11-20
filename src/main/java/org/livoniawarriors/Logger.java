@@ -321,7 +321,7 @@ public class Logger implements Runnable {
         }
 
         commandTable.getEntry(name).setDouble(talon.getMotorOutputVoltage());
-        currentTable.getEntry(name).setDouble(talon.getStatorCurrent());
+        currentTable.getEntry(name).setDouble(talon.getSupplyCurrent());
         faultTable.getEntry(name).setString(faultStr);
         stickyTable.getEntry(name).setString(sFaultStr);
         tempTable.getEntry(name).setDouble(talon.getTemperature());
