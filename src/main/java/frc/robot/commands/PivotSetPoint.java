@@ -33,10 +33,11 @@ public class PivotSetPoint extends CommandBase{
         if(DriverStation.isTeleop()) {
             return false;
         }
-        return Math.abs(pivot.getPivotAngle() - angleDeg) < 10;
+        return Math.abs(pivot.getPivotAngle() - angleDeg) < 3;
     }
 
     @Override
     public void end(boolean interrupted) {
+        pivot.setPivotMotorVolts(0);
     }
 }

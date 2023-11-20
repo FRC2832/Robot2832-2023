@@ -5,6 +5,7 @@ import org.livoniawarriors.Logger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.interfaces.IArmControl;
 
@@ -129,7 +130,7 @@ public class Arm extends SubsystemBase{
         double bicepLen = Constants.BICEP_LENGTH;
 
         boolean sideLimit = x < 77.5 && x > -41.1;
-        boolean heightLimit = z < 59 && z > -14;
+        boolean heightLimit = z < 59 && z > -16;
         boolean robotHeightLimit = (-5 < x && x < 30) && (z < 0);
         boolean armLengthLimit = Math.sqrt(x*x + z*z) < forearmLen + bicepLen;
 
