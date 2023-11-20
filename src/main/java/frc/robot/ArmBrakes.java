@@ -18,8 +18,8 @@ public class ArmBrakes extends SubsystemBase {
     
     public ArmBrakes(){
         super();
-        shoulderBrake = new Solenoid(PneumaticsModuleType.REVPH,2);
-        elbowBrake = new Solenoid(PneumaticsModuleType.REVPH,3);
+        shoulderBrake = new Solenoid(PneumaticsModuleType.REVPH,6);
+        elbowBrake = new Solenoid(PneumaticsModuleType.REVPH,7);
 
         m_chooser = new SendableChooser<String>();
         m_chooser.setDefaultOption("Brakes Auto Apply", BRAKES_AUTO);
