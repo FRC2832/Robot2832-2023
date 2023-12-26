@@ -1,8 +1,22 @@
 package frc.robot;
 
+import java.io.IOException;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -18,7 +32,7 @@ import frc.robot.interfaces.ISwerveDrive;
 
 public class Odometry extends SubsystemBase {
     private final boolean PLOT_SWERVE_CORNERS = false;
-    SwerveDriveOdometry odometry;
+    SwerveDrivePoseEstimator odometry;
     ISwerveDrive drive;
     IDriveControls controls;
     Pose2d robotPose = new Pose2d();
@@ -32,20 +46,34 @@ public class Odometry extends SubsystemBase {
     private MechanismLigament2d tailBar;
     private Arm arm;
     private Tail tail;
+    private PhotonCamera camera;
+    private AprilTagFieldLayout aprilTagFieldLayout;
+    private PhotonPoseEstimator photonPoseEstimator;
 
     public Odometry(ISwerveDrive drive, IDriveControls controls, Arm arm, Tail tail) {
         super();
+
+        try {
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         this.drive = drive;
         this.controls = controls;
         this.tail = tail;
         this.arm = arm;
 
         swervePositions = drive.getCornerLocations();
-        odometry = new SwerveDriveOdometry(drive.getKinematics(), drive.getHeading(), drive.getSwerveStates());
+        odometry = new SwerveDrivePoseEstimator(drive.getKinematics(), drive.getHeading(), drive.getSwerveStates(), getPose());
         SmartDashboard.putData("Field", field);
-
+        camera = new PhotonCamera("Global_Shutter_Camera");
+        robotToCam = new Transform3d(new Translation3d(0.5, 0, 0.88), new Rotation3d(0,0, 0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+        photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, camera, robotToCam);
+        photonPoseEstimator.setReferencePose(getPose());
         initArm();
     }
+    Transform3d robotToCam;
 
     public void setDriverControls(IDriveControls controls) {
         this.controls = controls;
@@ -58,11 +86,49 @@ public class Odometry extends SubsystemBase {
         robotPose = odometry.update(heading, states);
         drive.setPose(robotPose);
         field.setRobotPose(robotPose);
+        var result = camera.getLatestResult();
+        boolean hasTargets = result.hasTargets();
 
         if(controls.IsFieldOrientedResetRequested()) {
             resetHeading();
         }
 
+        if(hasTargets){
+
+            var cameraPose = photonPoseEstimator.update(result);
+            if(cameraPose != null && cameraPose.isPresent()) {
+                odometry.addVisionMeasurement(
+                    cameraPose.get().estimatedPose.toPose2d(), 
+                    result.getTimestampSeconds());
+            }
+            //var timestamp = result.getTimestampSeconds();
+            //var newPose = photonPoseEstimator.update();
+            //if(newPose.isPresent()){
+            //    odometry.addVisionMeasurement(newPose.get().estimatedPose.toPose2d(), timestamp);
+            //}
+        }
+        else{
+            SmartDashboard.putString("Target", "Not Found");
+        }
+
+        //var result = camera.getLatestResult().getBestTarget();
+        //if(result != null) {
+        //    Transform3d target = result.getBestCameraToTarget();
+        //    var angle = Math.toDegrees(target.getRotation().getAngle());
+//
+        //    //var newPose = target4.transformBy(new Transform2d(new Translation2d(target.getX(),target.getY()), Rotation2d.fromDegrees(angle)));
+        //    //resetPose(newPose);
+        //    SmartDashboard.putNumber("Target X", target.getX());
+        //    SmartDashboard.putNumber("Target Y", target.getY());
+        //    SmartDashboard.putNumber("Target Z", target.getZ());
+        //    SmartDashboard.putNumber("Target ID", result.getFiducialId());
+        //    SmartDashboard.putNumber("Target Angle", angle);
+//
+        //    if(camera.getLatestResult().hasTargets()) {
+        //        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target, aprilTagFieldLayout.getTagPose(result.getFiducialId()).get(), new Transform3d());
+        //        resetPose(robotPose.toPose2d());
+        //    }
+        //}
         if(PLOT_SWERVE_CORNERS) {
             // Update the poses for the swerveModules. Note that the order of rotating the
             // position and then adding the translation matters

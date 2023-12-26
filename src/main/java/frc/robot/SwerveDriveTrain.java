@@ -91,10 +91,11 @@ public class SwerveDriveTrain implements ISwerveDrive {
             currentState[wheel].angle = swerveStates[wheel].angle;
             currentState[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
 
-            if(DriverStation.isDisabled()) {
+            if(DriverStation.isDisabled() || DriverStation.isAutonomous()) {
                 //when we are disabled, reset the turn pids as we don't want to act on the "error" when reenabled
                 turnPid[wheel].reset();
                 gyroOffset = getHeading().getDegrees();
+                pidZero.reset();
             }
         }
 

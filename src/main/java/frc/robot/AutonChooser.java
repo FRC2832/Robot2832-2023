@@ -60,6 +60,7 @@ public class AutonChooser {
     private static final String kThreePiece = "Score Three";
     private static final String kPathPlan = "Drive Around Balance";
     private static final String kPlan3P = "3 piece pathplan";
+    private static final String kThanks = "Thanksgiving Special";
 
     private String AutonomousStartPosition;
 
@@ -84,6 +85,7 @@ public class AutonChooser {
         startPosChooser.addOption("Score Three", kThreePiece);
         //startPosChooser.addOption(kPathPlan, kPathPlan);
         startPosChooser.addOption(kPlan3P, kPlan3P);
+        startPosChooser.addOption(kThanks, kThanks);
         
         SmartDashboard.putData("StartPos Select", startPosChooser);
 
@@ -113,6 +115,8 @@ public class AutonChooser {
             sequence = autoPathPlanner();
         } else if (AutonomousStartPosition.equals(kPlan3P)){ //path plan 3 piece
             sequence = autoPlanThreePiece();
+        } else if (AutonomousStartPosition.equals(kThanks)){ //path plan 3 piece
+            sequence = autoThanksgiving();
         } else {
             sequence = new MoveWheelsStraight(drive);
         }
@@ -397,6 +401,36 @@ public class AutonChooser {
             drive.getKinematics(), // SwerveDriveKinematics
             new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
             new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+            drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
+            eventMap,
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            drive // The drive subsystem. Used to properly set the requirements of path following commands
+        );
+
+        return autoBuilder.fullAuto(pathGroup);
+    }
+
+    public Command autoThanksgiving() {
+        // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+        // for every path in the group
+        ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("ThanksgivingSurprise", new PathConstraints(1, 3));
+
+        // This is just an example event map. It would be better to have a constant, global event map
+        // in your code that will be used by all path following commands.
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("armDown", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("armScore", new ArmAutonPoint(arm, Constants.ArmToPickupGroundBack_X, Constants.ArmToPickupGroundBack_Z));
+        eventMap.put("spit", spit());
+        eventMap.put("suck", suck());
+        //eventMap.put("intakeDown", new IntakeDown());
+
+        // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+        SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+            odometry::getPose, // Pose2d supplier
+            this::setStartPos, // Pose2d consumer, used to reset odometry at the beginning of auto
+            drive.getKinematics(), // SwerveDriveKinematics
+            new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(0.7, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
             drive::setWheelCommand, // Module states consumer used to output to the drive subsystem
             eventMap,
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true

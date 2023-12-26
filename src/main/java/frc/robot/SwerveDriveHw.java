@@ -28,8 +28,8 @@ public class SwerveDriveHw implements ISwerveDriveIo {
 
     //measuring the robot, we got 13899 counts/rev, theoretical is 13824 counts/rev (L2 gearset at 6.75:1 ratio)
     //needs to be scaled * 39.37 (in/m) / (4"*Pi wheel diameter) / 10 (units per 100ms)
-    private final double COUNTS_PER_METER = 4331.1;     //velocity units
-    private final double DIST_PER_METER = 43311;        //distance units
+    private final double COUNTS_PER_METER = 4331.1 / 0.94362;     //velocity units
+    private final double DIST_PER_METER = COUNTS_PER_METER*10;        //distance units
 
     //motors and sensors
     private TalonFX turnMotor[];
